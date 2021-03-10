@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>thatsn0tmysite</title>
-    <link>localhost/</link>
+    <link>thatsn0tmysite.github.io/</link>
     <description>Recent content on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><atom:link href="localhost/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><atom:link href="thatsn0tmysite.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>About</title>
-      <link>localhost/about/</link>
+      <link>thatsn0tmysite.github.io/about/</link>
       <pubDate>Mon, 02 May 2016 00:00:00 +0000</pubDate>
       
-      <guid>localhost/about/</guid>
+      <guid>thatsn0tmysite.github.io/about/</guid>
       <description>I will eventually write something about me here&amp;hellip;</description>
     </item>
     

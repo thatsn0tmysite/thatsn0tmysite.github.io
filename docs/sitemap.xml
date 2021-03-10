@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>localhost/about/</loc>
+    <loc>thatsn0tmysite.github.io/about/</loc>
     <lastmod>2016-05-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>localhost/blog/</loc>
+    <loc>thatsn0tmysite.github.io/blog/</loc>
   </url><url>
-    <loc>localhost/series/</loc>
+    <loc>thatsn0tmysite.github.io/series/</loc>
   </url><url>
-    <loc>localhost/tags/</loc>
+    <loc>thatsn0tmysite.github.io/tags/</loc>
   </url><url>
-    <loc>localhost/</loc>
+    <loc>thatsn0tmysite.github.io/</loc>
   </url>
 </urlset>
