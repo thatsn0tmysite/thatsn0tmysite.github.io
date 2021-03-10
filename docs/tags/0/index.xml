@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>thatsn0tmysite</title>
-    <link>thatsn0tmysite.github.io/</link>
-    <description>Recent content on thatsn0tmysite</description>
+    <title>0 on thatsn0tmysite</title>
+    <link>thatsn0tmysite.github.io/tags/0/</link>
+    <description>Recent content in 0 on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 10 Mar 2021 02:18:22 +0100</lastBuildDate><atom:link href="thatsn0tmysite.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Mar 2021 02:18:22 +0100</lastBuildDate><atom:link href="thatsn0tmysite.github.io/tags/0/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>First commit</title>
       <link>thatsn0tmysite.github.io/posts/2021/03/first-commit/</link>
@@ -15,15 +15,6 @@
       
       <guid>thatsn0tmysite.github.io/posts/2021/03/first-commit/</guid>
       <description>Just a simple test.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>thatsn0tmysite.github.io/about/</link>
-      <pubDate>Mon, 02 May 2016 00:00:00 +0000</pubDate>
-      
-      <guid>thatsn0tmysite.github.io/about/</guid>
-      <description>I will eventually write something about me here&amp;hellip;</description>
     </item>
     
   </channel>
