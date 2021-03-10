@@ -22,7 +22,7 @@ canonifyURLs = true
 enableRobotsTXT = true
 enableGitInfo   = false
 enableEmoji     = true
-enableMissingTranslationPlaceholders = false<
+enableMissingTranslationPlaceholders = false
 disableRSS     = false
 disableSitemap = false
 disable404     = false
@@ -142,14 +142,14 @@ disableHugoGeneratorInject = false
 [[menu.main]]
     identifier = "blog"
     name       = "Blog"
-    URL        = "/posts"
+    url        = "posts/"
 
 [[menu.main]]
     identifier = "projects"
     name       = "Projects"
-    URL	       = "/projects"
+    url	       = "projects"
 
 [[menu.main]]
     identifier = "about"
     name       = "About"
-    URL	       = "/about/"
+    url	       = "about/"
