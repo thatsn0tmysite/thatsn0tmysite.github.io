@@ -1,4 +1,4 @@
-baseurl      = "thatsn0tmysite.github.io"
+baseurl      = "/"
 title        = "thatsn0tmysite"
 languageCode = "en-us"
 theme        = "hello-friend-ng"
