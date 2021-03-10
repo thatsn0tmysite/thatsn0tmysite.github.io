@@ -15,8 +15,18 @@
             <pubDate>Wed, 10 Mar 2021 02:18:22 +0100</pubDate>
             
             <guid>/posts/2021/03/first-commit/</guid>
-            <description>Just a simple test.</description>
-            <content type="html"><![CDATA[<p>Just a simple test.</p>
+            <description>For the few souls that ever followed my blog. I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.
+I migrated to Github pages, because&amp;hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&amp;rsquo;s.</description>
+            <content type="html"><![CDATA[<p>For the few souls that ever followed my blog. I finally migrated.
+There was no real reason to keep a <a href="https://thatsn0tmysite.wordpress.com">wordpress blog</a>, as I really never used any features from Wordpress.</p>
+<p>I migrated to Github pages, because&hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&rsquo;s.</p>
+<p>Truth is, deep inside my brain there is a gopher lurking.</p>
+<p>Well, this was only a first post, I do not really have anything else to share. As always I end up writing once or less a year.</p>
+<p>Hopefully having migrated to github pages will push me to write more.</p>
+<p>Before fading to radio silence again, I will leave you with a question that has been hunting me lately.
+Do people really read reports from <a href="https://openbugbounty.org/">openbugbounty</a>, I reported several XSS issues since December, and they haven&rsquo;t been fixed yet, nothing exciting, just the usual suspect: <code>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code>.</p>
+<p>In a few days the reports are going to be disclosed&hellip;
+Until then, cheers!</p>
 ]]></content>
         </item>
         
