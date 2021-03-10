@@ -1,0 +1,155 @@
+baseurl      = "localhost"
+title        = "thatsn0tmysite"
+languageCode = "en-us"
+theme        = "hello-friend-ng"
+paginate     = 10
+
+# googleAnalytics = ""
+# disqusShortname = ""
+archetypeDir = "archetypes"
+contentDir   = "content"
+dataDir      = "data"
+layoutDir    = "layouts"
+publishDir   = "docs"
+
+copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License." # This message is only used by the RSS template.
+
+buildDrafts  = false
+buildFuture  = false
+buildExpired = false
+canonifyURLs = true
+
+enableRobotsTXT = true
+enableGitInfo   = false
+enableEmoji     = true
+enableMissingTranslationPlaceholders = false
+disableRSS     = false
+disableSitemap = false
+disable404     = false
+disableHugoGeneratorInject = false
+
+
+[permalinks]
+  posts = "/posts/:year/:month/:title/"
+
+[author]
+  name = "n0tme"
+
+[taxonomies]
+    category = "blog"
+    tag      = "tags"
+    series   = "series"
+  
+[params]
+    dateform        = "Jan 2, 2006"
+    dateformShort   = "Jan 2"
+    dateformNum     = "2006-01-02"
+    dateformNumTime = "2006-01-02 15:04"
+
+    # Subtitle for home
+    homeSubtitle = "The life of a newborn cyber security kid."
+    
+    # Set disableReadOtherPosts to true in order to hide the links to other posts.
+    #
+    disableReadOtherPosts = false
+
+    # Sharing buttons
+    #
+    # There are a lot of buttons preconfigured. If you want to change them,
+    # generate the buttons here: https://sharingbuttons.io
+    # and add them into your own `layouts/partials/sharing-buttons.html`
+    #
+    enableSharingButtons = true
+    
+    # Integrate Javascript files or stylesheets by adding the url to the external assets or by
+    # linking local files with their path relative to the static folder, e.g. "css/styles.css"
+    #
+    customCSS = []
+    customJS  = []
+    
+    footerLeft = "Powered by <a href=\"http://gohugo.io\">Hugo</a>"
+    footerRight = "Made with &#10084; by <a href=\"https://github.com/rhazdon\">Djordje Atlialp</a>"
+
+    
+    [params.logo]
+        # Set to a valid CSS color to change the cursor in the logo.
+        logoCursorColor = "#ffffff"
+        #logoMark     = ">"
+        #logoText     = "$ cd /home/"
+        #logoHomeLink = "/"
+        # Set true to remove the logo cursor entirely.
+        # logoCursorDisabled = false
+        # logoCursorAnimate  = "2s"
+
+        
+    # Social icons
+    [[params.social]]
+        name = "twitter"
+        url  = "https://twitter.com/thatsn0tmysite"
+    [[params.social]]
+        name = "github"
+        url  = "https://github.com/thatsn0tmysite"
+    [[params.social]]
+        name = "matrix"
+        url  = "https://matrix.to/#/@thatsn0tmysite:matrix.org"
+    #[[params.social]]
+        #  name = "email"
+        #  url  = "mailto:"
+        
+    # Commento is more than just a comments widget you can embed — 
+    # it’s a return to the roots of the internet. 
+    # An internet without the tracking and invasions of privacy. 
+    # An internet that is simple and lightweight. 
+    # An internet that is focused on interesting discussions, not ads. 
+    # A better internet.
+    # Uncomment this to enable Commento.
+    #
+    [params.commento]
+        url = ""    
+    
+    #Portrait
+    [params.portrait]
+        path     = "/img/n0tme.svg"
+        alt      = "Portrait"
+        maxWidth = "150px"
+        
+    # Set disableReadOtherPosts to true in order to hide the links to other posts.
+    disableReadOtherPosts = false
+
+    # Enable sharing buttons, if you like
+    enableSharingButtons = true
+
+    # Metadata mostly used in document's head
+    description = "Thatsn0tmysite's blog."
+    keywords = "homepage, blog, thatsn0tmysite, n0tme, cyber, security, hacking, programming, development, random, rant"
+    images = ["/img/n0tme.svg"]
+
+[languages]
+    [languages.en]
+        title = "thatsn0tmysite"
+        subtitle = "The life of a newbor cyber security kid."
+        keywords = ""
+        copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+        readOtherPosts = "Read other posts"
+
+    [languages.en.params.logo]
+        logoText = "thatsn0tmysite"
+        logoHomeLink = "/"
+        #path = "/img/n0tme.svg"
+        #alt = "thatsn0tmysite' logo"
+
+# And you can even create generic menu
+[[menu.main]]
+identifier = "blog"
+name       = "Blog"
+url        = "/posts"
+
+[[menu.main]]
+identifier = "projects"
+name       = "Projects"
+url	       = "/projects"
+
+[[menu.main]]
+identifier = "about"
+name       = "About"
+url	       = "/about/"
