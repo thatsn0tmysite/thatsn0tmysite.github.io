@@ -35,10 +35,10 @@ disableHugoGeneratorInject = false
 [author]
   name = "n0tme"
 
-[taxonomies]
-    category = "blog"
-    tag      = "tags"
-    series   = "series"
+#[taxonomies]
+#    category = "blog"
+#    tag      = "tags"
+#    series   = "series"
   
 [params]
     dateform        = "Jan 2, 2006"
