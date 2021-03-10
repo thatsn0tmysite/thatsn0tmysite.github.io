@@ -104,8 +104,8 @@ disableHugoGeneratorInject = false
     # A better internet.
     # Uncomment this to enable Commento.
     #
-    [params.commento]
-        url = ""    
+    #[params.commento]
+    #    url = ""    
     
     #Portrait
     [params.portrait]
