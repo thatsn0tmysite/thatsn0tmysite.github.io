@@ -16,7 +16,7 @@
       <guid>/posts/2021/03/public-disclosures/</guid>
       <description>Well, as mentioned in the last post some lame XSS I found just went public.
 For those wanting to jump straight to the point:
- muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it  I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsably.
+ muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it  I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.
 That attempt failed.
 Apparently what a researcher thinks is going to happen and what actually happens not always matches.</description>
     </item>
