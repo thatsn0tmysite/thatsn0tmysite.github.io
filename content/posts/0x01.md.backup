@@ -1,0 +1,43 @@
+---
+title: "Public disclosures"
+date: 2021-03-16T22:37:40+01:00
+draft: false
+toc: false
+images:
+tags:
+  - 0x01
+  - public
+  - disclosure 
+  - openbugbounty
+  
+---
+
+Well, as mentioned in the last [post](/posts/2021/03/first-commit/) some lame XSS I found just went public.
+
+For those wanting to jump straight to the point:
+ - [muoversiaroma.it](https://www.openbugbounty.org/reports/1610312/)
+ - [romamobile.it](https://www.openbugbounty.org/reports/1610327/)
+ - [travel.mob.cotralspa.it](https://www.openbugbounty.org/reports/1610334/)
+ - [servizi.cotralspa.it](https://www.openbugbounty.org/reports/1610344/)
+ 
+I am a firm believer in the philosophy of "disclose as you please", for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsably.
+
+That attempt failed.
+
+Apparently what a researcher thinks is going to happen and what actually happens not always matches. Actually, almost never does in my experience.
+
+I used [openbugbounty](https://www.openbugbounty.org) because, in all honestly, I  have no desire in time juggling myself through findingsecurity contacts, emailing and explaining things, so if I can just break things, and have the rest happen auto-magically, so be it... or to put it differently, I'm a lazy bum and I just don't give a flying fu*k (hell, it's my blog, why do I censure myself, fuck, I meant **FUCK** - sorry kids).
+
+Well long story short: those vulnerabilities are still unpatched to this day and I am kind of bored, so... blogpost.
+
+If anyone from [@InfoAtac](https://twitter.com/InfoAtac), [@BusCotral](https://twitter.com/BusCotral) or [@romamobilita](https://twitter.com/romamobilita) happens to read this blog post, maybe, just maybe, fix them? I'm sure your users would appreciate it.
+Also, consider using a [security.txt](https://securitytxt.org/), or making it easier to find security contacts.
+
+Notice: Public disclosures are a free as in beer service, rewards are still appreciated.
+  
+Until next time, 
+pop alerts.
+
+
+
+
