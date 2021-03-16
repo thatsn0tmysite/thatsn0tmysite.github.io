@@ -12,7 +12,7 @@ author:
 
 ---
 
-For the few souls that ever followed my blog. I finally migrated. 
+For the few souls that ever followed my blog: I finally migrated. 
 There was no real reason to keep a [wordpress blog](https://thatsn0tmysite.wordpress.com), as I really never used any features from Wordpress.
 
 I migrated to Github pages, because... free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo's.
@@ -27,7 +27,5 @@ Before fading to radio silence again, I will leave you with a question that has 
 Do people really read reports from [openbugbounty](https://openbugbounty.org/), I reported several XSS issues since December, and they haven't been fixed yet, nothing exciting, just the usual suspect: `"><script>alert(1)</script>`.
 
 In a few days the reports are going to be disclosed...
+
 Until then, cheers!
-
-
-Oh, by the way, 

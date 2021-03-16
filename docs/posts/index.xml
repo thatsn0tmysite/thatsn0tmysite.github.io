@@ -6,8 +6,40 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 10 Mar 2021 02:18:22 +0100</lastBuildDate>
+        <lastBuildDate>Tue, 16 Mar 2021 22:37:40 +0100</lastBuildDate>
         <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Public disclosures</title>
+            <link>/posts/2021/03/public-disclosures/</link>
+            <pubDate>Tue, 16 Mar 2021 22:37:40 +0100</pubDate>
+            
+            <guid>/posts/2021/03/public-disclosures/</guid>
+            <description>Well, as mentioned in the last post some lame XSS I found just went public.
+For those wanting to jump straight to the point:
+ muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it  I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsably.
+That attempt failed.
+Apparently what a researcher thinks is going to happen and what actually happens not always matches.</description>
+            <content type="html"><![CDATA[<p>Well, as mentioned in the last <a href="/posts/2021/03/first-commit/">post</a> some lame XSS I found just went public.</p>
+<p>For those wanting to jump straight to the point:</p>
+<ul>
+<li><a href="https://www.openbugbounty.org/reports/1610312/">muoversiaroma.it</a></li>
+<li><a href="https://www.openbugbounty.org/reports/1610327/">romamobile.it</a></li>
+<li><a href="https://www.openbugbounty.org/reports/1610334/">travel.mob.cotralspa.it</a></li>
+<li><a href="https://www.openbugbounty.org/reports/1610344/">servizi.cotralspa.it</a></li>
+</ul>
+<p>I am a firm believer in the philosophy of &ldquo;disclose as you please&rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsably.</p>
+<p>That attempt failed.</p>
+<p>Apparently what a researcher thinks is going to happen and what actually happens not always matches. Actually, almost never does in my experience.</p>
+<p>I used <a href="https://www.openbugbounty.org">openbugbounty</a> because, in all honestly, I  have no desire in time juggling myself through findingsecurity contacts, emailing and explaining things, so if I can just break things, and have the rest happen auto-magically, so be it&hellip; or to put it differently, I&rsquo;m a lazy bum and I just don&rsquo;t give a flying fu*k (hell, it&rsquo;s my blog, why do I censure myself, fuck, I meant <strong>FUCK</strong> - sorry kids).</p>
+<p>Well long story short: those vulnerabilities are still unpatched to this day and I am kind of bored, so&hellip; blogpost.</p>
+<p>If anyone from <a href="https://twitter.com/InfoAtac">@InfoAtac</a>, <a href="https://twitter.com/BusCotral">@BusCotral</a> or <a href="https://twitter.com/romamobilita">@romamobilita</a> happens to read this blog post, maybe, just maybe, fix them? I&rsquo;m sure your users would appreciate it.
+Also, consider using a <a href="https://securitytxt.org/">security.txt</a>, or making it easier to find security contacts.</p>
+<p>Notice: Public disclosures are a free as in beer service, rewards are still appreciated.</p>
+<p>Until next time,
+pop alerts.</p>
+]]></content>
+        </item>
         
         <item>
             <title>First commit</title>
@@ -15,9 +47,9 @@
             <pubDate>Wed, 10 Mar 2021 02:18:22 +0100</pubDate>
             
             <guid>/posts/2021/03/first-commit/</guid>
-            <description>For the few souls that ever followed my blog. I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.
+            <description>For the few souls that ever followed my blog: I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.
 I migrated to Github pages, because&amp;hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&amp;rsquo;s.</description>
-            <content type="html"><![CDATA[<p>For the few souls that ever followed my blog. I finally migrated.
+            <content type="html"><![CDATA[<p>For the few souls that ever followed my blog: I finally migrated.
 There was no real reason to keep a <a href="https://thatsn0tmysite.wordpress.com">wordpress blog</a>, as I really never used any features from Wordpress.</p>
 <p>I migrated to Github pages, because&hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&rsquo;s.</p>
 <p>Truth is, deep inside my brain there is a gopher lurking.</p>
@@ -25,8 +57,8 @@ There was no real reason to keep a <a href="https://thatsn0tmysite.wordpress.com
 <p>Hopefully having migrated to github pages will push me to write more.</p>
 <p>Before fading to radio silence again, I will leave you with a question that has been hunting me lately.
 Do people really read reports from <a href="https://openbugbounty.org/">openbugbounty</a>, I reported several XSS issues since December, and they haven&rsquo;t been fixed yet, nothing exciting, just the usual suspect: <code>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code>.</p>
-<p>In a few days the reports are going to be disclosed&hellip;
-Until then, cheers!</p>
+<p>In a few days the reports are going to be disclosed&hellip;</p>
+<p>Until then, cheers!</p>
 ]]></content>
         </item>
         
