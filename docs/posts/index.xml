@@ -6,8 +6,156 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Tue, 16 Mar 2021 22:37:40 +0100</lastBuildDate>
+        <lastBuildDate>Fri, 09 Apr 2021 21:35:36 +0200</lastBuildDate>
         <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Go(ogle) Play Books</title>
+            <link>/posts/2021/04/google-play-books/</link>
+            <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
+            
+            <guid>/posts/2021/04/google-play-books/</guid>
+            <description>The title is kind of a very bad pun, one of the &amp;ldquo;&amp;ldquo;that&amp;rsquo;s not even funny&amp;rdquo; ones. So, what is today&amp;rsquo;s post about? Google.
+No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&amp;hellip; but books.
+I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&amp;hellip;</description>
+            <content type="html"><![CDATA[<p>The title is kind of a very bad pun, one of the &ldquo;&ldquo;that&rsquo;s not even funny&rdquo; ones. So, what is today&rsquo;s post about? Google.</p>
+<p>No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&hellip; but books.</p>
+<p>I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&hellip;</p>
+<p>I thought it would take me half a second (more like a bunch of hours, considering the near dial-up internet connection I have recently), but: nope! Apparently my assumptions about a big blue button saying &ldquo;Download all&rdquo;, right there, in plain sight for the user to press were wrong.</p>
+<p>Now, chances are I could be VERY blind and have totally missed it, but that hasn&rsquo;t stopped me from <del>finding a lame excuse to code in Go</del> finding a way around the problem.</p>
+<p>So, since I was only able to download <strong>one-book-at-the-time</strong>, which I guess is fine for say&hellip; 1 to 5 books, it looked quite a chore to do it 130+ times.</p>
+<p>Took me around 20 minutes to hack this thing together. Now&hellip; I know the code is ugly, I know it&rsquo;s messy, I know I could have tried just a little bit harder to use selenium instead of <strong>saving the rendered page from the browser</strong> and parsing it&hellip; but I just wanted my books back! D:</p>
+<p>So without any further ado&hellip; here it goes, in all its gorgeous monstrosity, <strong>GoGetMyBooks</strong>:</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">package</span> main
+
+<span style="color:#6ab825;font-weight:bold">import</span> (
+        <span style="color:#ed9d13">&#34;fmt&#34;</span>
+        <span style="color:#ed9d13">&#34;io&#34;</span>
+        <span style="color:#ed9d13">&#34;mime&#34;</span>
+        <span style="color:#ed9d13">&#34;net/http&#34;</span>
+        <span style="color:#ed9d13">&#34;net/url&#34;</span>
+        <span style="color:#ed9d13">&#34;os&#34;</span>
+        <span style="color:#ed9d13">&#34;strings&#34;</span>
+        <span style="color:#ed9d13">&#34;sync&#34;</span>
+
+        <span style="color:#ed9d13">&#34;github.com/antchfx/htmlquery&#34;</span>
+)
+
+<span style="color:#6ab825;font-weight:bold">type</span> Book <span style="color:#6ab825;font-weight:bold">struct</span> {
+        Title <span style="color:#6ab825;font-weight:bold">string</span>
+        URL   <span style="color:#6ab825;font-weight:bold">string</span>
+        ID    <span style="color:#6ab825;font-weight:bold">string</span>
+}
+
+<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">main</span>() {
+        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;&gt; GoGetMyBooks v.0.1 - by thatsn0tmysite (a.k.a. n0tme)&#34;</span>)
+         
+        cookies := <span style="color:#ed9d13">&#34;&#34;</span> <span style="color:#999;font-style:italic">// Too lazy to use the flag package, or sys.argv, or anything really...
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">if</span> cookies == <span style="color:#ed9d13">&#34;&#34;</span> {
+                <span style="color:#24909d">panic</span>(<span style="color:#ed9d13">&#34;Error: variable cookies has no value... copy it from your browser requests&#34;</span>)
+        }
+        c := &amp;http.Client{}
+
+        <span style="color:#999;font-style:italic">// Read Google Play.html
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">var</span> books []Book
+        booksHTML, err := htmlquery.<span style="color:#447fcf">LoadDoc</span>(<span style="color:#ed9d13">&#34;Google Play.html&#34;</span>)
+        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                <span style="color:#24909d">panic</span>(<span style="color:#ed9d13">&#34;Error: save the Google Play Books page with firefox/chrome&#34;</span>)
+        }
+        nodes, err := htmlquery.<span style="color:#447fcf">QueryAll</span>(booksHTML, <span style="color:#ed9d13">&#34;//a[contains(@class, &#39;overlay&#39;)]&#34;</span>)
+        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                <span style="color:#24909d">panic</span>(<span style="color:#ed9d13">&#34;Error: not a valid XPath expression&#34;</span>)
+        }
+
+        <span style="color:#999;font-style:italic">// yes, we iterate here...
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">for</span> _, node := <span style="color:#6ab825;font-weight:bold">range</span> nodes {
+                book := Book{Title: htmlquery.<span style="color:#447fcf">SelectAttr</span>(node, <span style="color:#ed9d13">&#34;title&#34;</span>), URL: htmlquery.<span style="color:#447fcf">SelectAttr</span>(node, <span style="color:#ed9d13">&#34;href&#34;</span>)}
+                u, _ := url.<span style="color:#447fcf">Parse</span>(book.URL) <span style="color:#999;font-style:italic">// blindly assume this won&#39;t fail
+</span><span style="color:#999;font-style:italic"></span>                book.ID = strings.<span style="color:#447fcf">Split</span>(u.RawQuery, <span style="color:#ed9d13">&#34;=&#34;</span>)[<span style="color:#3677a9">1</span>]
+                books = <span style="color:#24909d">append</span>(books, book)
+        }
+        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;Found &#34;</span>, <span style="color:#24909d">len</span>(books), <span style="color:#ed9d13">&#34; books...&#34;</span>)
+
+        <span style="color:#999;font-style:italic">// ...and here, useless, but whatever...
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">var</span> wg sync.WaitGroup
+        <span style="color:#6ab825;font-weight:bold">for</span> _, book := <span style="color:#6ab825;font-weight:bold">range</span> books {
+                wg.<span style="color:#447fcf">Add</span>(<span style="color:#3677a9">1</span>)
+
+                <span style="color:#999;font-style:italic">//GOGOGO!
+</span><span style="color:#999;font-style:italic"></span>                <span style="color:#6ab825;font-weight:bold">go</span> <span style="color:#6ab825;font-weight:bold">func</span>(book Book) {
+                        <span style="color:#6ab825;font-weight:bold">defer</span> wg.<span style="color:#447fcf">Done</span>()
+                        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;Processing: &#34;</span>, book.Title)
+
+                        <span style="color:#999;font-style:italic">//filename was unnecessary, so i am using iwantmyfileback
+</span><span style="color:#999;font-style:italic"></span>                        downloadURL := fmt.<span style="color:#447fcf">Sprintf</span>(<span style="color:#ed9d13">&#34;https://books.google.com/books/download/iwantmyfileback?id=%v&amp;output=uploaded_content&amp;source=gbs_api&amp;authuser=0&#34;</span>, book.ID)
+                        req, err := http.<span style="color:#447fcf">NewRequest</span>(<span style="color:#ed9d13">&#34;GET&#34;</span>, downloadURL, <span style="color:#6ab825;font-weight:bold">nil</span>)
+                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                                fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;httpClientError: &#34;</span>, err)
+                        }
+
+                        <span style="color:#999;font-style:italic">//Set request headers for authentication (not using req.SetCookie because... lazyness)
+</span><span style="color:#999;font-style:italic"></span>                        req.Header.<span style="color:#447fcf">Set</span>(<span style="color:#ed9d13">&#34;Cookie&#34;</span>, cookies)
+
+                        <span style="color:#999;font-style:italic">// Get the file data
+</span><span style="color:#999;font-style:italic"></span>                        resp, err := c.<span style="color:#447fcf">Do</span>(req)
+                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;httpClientDoError: &#34;</span>, err)
+                        }
+                        <span style="color:#6ab825;font-weight:bold">defer</span> resp.Body.<span style="color:#447fcf">Close</span>()
+
+                        <span style="color:#999;font-style:italic">// Get a filename
+</span><span style="color:#999;font-style:italic"></span>                        _, params, err := mime.<span style="color:#447fcf">ParseMediaType</span>(resp.Header.<span style="color:#447fcf">Get</span>(<span style="color:#ed9d13">&#34;Content-Disposition&#34;</span>))
+                        filename := <span style="color:#24909d">string</span>(params[<span style="color:#ed9d13">&#34;filename&#34;</span>])
+                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                                <span style="color:#999;font-style:italic">//fmt.Println(&#34;mimeTypeError: &#34;, err)
+</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// for some reason some files throw a mime: invalid media parameter error,
+</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// lets try to handle this quietly forcing a name to the file
+</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// seems to do it on some epub files where it fails to parse the title correctly(?)
+</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// should we always assume it&#39;s an epub?
+</span><span style="color:#999;font-style:italic"></span>                                x := strings.<span style="color:#447fcf">Split</span>(book.Title, <span style="color:#ed9d13">&#34;.&#34;</span>)
+                                ext := x[<span style="color:#24909d">len</span>(x)-<span style="color:#3677a9">1</span>]
+
+                                <span style="color:#6ab825;font-weight:bold">if</span> ext == <span style="color:#ed9d13">&#34;&#34;</span> {
+                                        filename = fmt.<span style="color:#447fcf">Sprintf</span>(<span style="color:#ed9d13">&#34;%v.%v&#34;</span>, book.Title, <span style="color:#ed9d13">&#34;UNKNOWN_EXTENTION&#34;</span>)
+                                } <span style="color:#6ab825;font-weight:bold">else</span> {
+                                        filename = book.Title
+                                }
+                        }
+
+                        <span style="color:#999;font-style:italic">// Create empty file
+</span><span style="color:#999;font-style:italic"></span>                        out, err := os.<span style="color:#447fcf">Create</span>(filename)
+                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;osCreateError(&#34;</span>, filename, <span style="color:#ed9d13">&#34;): &#34;</span>, err)
+                        }
+                        <span style="color:#6ab825;font-weight:bold">defer</span> out.<span style="color:#447fcf">Close</span>()
+
+                        <span style="color:#999;font-style:italic">// Save to file
+</span><span style="color:#999;font-style:italic"></span>                        written, err := io.<span style="color:#447fcf">Copy</span>(out, resp.Body)
+                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
+                                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;ioCopyError: &#34;</span>, err)
+                        }
+                        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;Saved file: &#34;</span>, filename, <span style="color:#ed9d13">&#34; (&#34;</span>, written, <span style="color:#ed9d13">&#34; bytes)&#34;</span>)
+
+                }(book)
+        }
+        wg.<span style="color:#447fcf">Wait</span>()
+}
+
+</code></pre></div><p>The usage is quite simple:</p>
+<ol>
+<li>login to Google Play Books</li>
+</ol>
+<ul>
+<li>copy the Cookie header value from the authenticated requests into the variable <code>cookies</code></li>
+<li>click on the &ldquo;show all&rdquo; button on the Play Books page to list all the books</li>
+<li>ctrl-s / save the page from your browser into <strong>GoGetMyBooks</strong>' working directory (be sure to name it <code>Google Play.html</code>)</li>
+<li>run <strong>GoGetMyBooks</strong></li>
+</ul>
+<p>As some of the comments in the code suggest, there are a few issues like the fact that some books' titles get lost (so it falls back to the uploaded filename).</p>
+<p>So to sum it all up, fuck Javascript &amp;&amp; enjoy my shitty code :).</p>
+<p>See ya next time.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Public disclosures</title>

@@ -28,6 +28,8 @@ disableSitemap = false
 disable404     = false
 disableHugoGeneratorInject = false
 
+PygmentsCodeFences = true
+PygmentsStyle = "native"
 
 [permalinks]
   posts = "/posts/:year/:month/:title/"
