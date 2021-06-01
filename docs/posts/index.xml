@@ -17,11 +17,11 @@
             <guid>/posts/2021/06/approaching-windows/</guid>
             <description>Well, hello there! Last few weeks have been a little busy between my mere analog life and pwning industrial ovens work. Lately I have been banging my head against this thing known as Windows.
 It&amp;rsquo;s APIs to be precise, as I am trying to move out of my comfort zone of &amp;ldquo;development&amp;rdquo; (I am by no means a developer, but when I make stuff, it&amp;rsquo;s usually on Linux).
-As a side note, while we talking dev, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go.</description>
+As a side note, while we&amp;rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go.</description>
             <content type="html"><![CDATA[<p>Well, hello there! Last few weeks have been a little busy between my mere analog life and <del>pwning industrial ovens</del> work.
 Lately I have been banging my head against this thing known as <strong>Windows</strong>.</p>
 <p>It&rsquo;s APIs to be precise, as I am trying to move out of my comfort zone of &ldquo;development&rdquo; (I am by <strong>no means</strong> a developer, but when I make stuff, it&rsquo;s usually on Linux).</p>
-<p>As a side note, while we talking dev, I recently decided to produce a rip-off of the amazing <a href="https://xsshunter.com">xsshunter</a> and write it in Go.
+<p>As a side note, while we&rsquo;re talking about development, I recently decided to produce a rip-off of the amazing <a href="https://xsshunter.com">xsshunter</a> and write it in Go.
 Mostly as a learning exercise for Go stuff. It&rsquo;s coded like shit, and currenty on the low priority list, so feel free to hop in and <a href="https://github.com/thatsn0tmysite/xsserve">help</a>.</p>
 <p>Now, back to Windows. While there are a lot of complaints I have, mostly about situations where you read the documentation and end up facing a dead end because whatever you are looking at is undocumented&hellip; and the only information you can find about the topic is from some temporary account on codeproject, which made a stackoverflow question 8 years ago, which he self-answered. For Windows XP, SP1.</p>
 <p>Looking at you &ldquo;dwData&rdquo; pointers&hellip;</p>
@@ -47,7 +47,7 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 	
 	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.	
 </span><span style="color:#999;font-style:italic"></span>	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, <span style="color:#24909d">NULL</span>, sh_size, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
-	<span style="color:#6ab825;font-weight:bold">if</span> (RemoteStringPtr == <span style="color:#24909d">NULL</span>) {
+	<span style="color:#6ab825;font-weight:bold">if</span> (lpStartAddress == <span style="color:#24909d">NULL</span>) {
 		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">2</span>;
 	}
 	
@@ -144,8 +144,8 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 
 	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">nil</span>
 }
-</code></pre></div><p>As you see, the process is almost the same, mostly thanks to the <strong>golang.org/x/sys/windows</strong>  package. Now, in a real-world scenarion just plain injecting the shellcode may not be as easy, as the injector is still highly easy to spot (common API pattern, cleartext references, etc).</p>
-<p>Windows makes it pretty straight forward to perform operations on remote processes, no wonder userspace malwares are so popular! They are easy to implement, quick to develop and if they get caught, well&hellip; just make a new one.</p>
+</code></pre></div><p>As you see, the process is almost the same, mostly thanks to the <strong>golang.org/x/sys/windows</strong>  package. Now, in a real-world scenario just plain injecting the shellcode may not be as easy, as the injector is still highly easy to spot (common API pattern, cleartext references, etc).</p>
+<p>Anyhow, Windows makes it generally pretty straight forward to perform operations on remote processes, no wonder userspace malwares are so popular! They are easy to implement, quick to develop and if they get caught, well&hellip; just make a new one.</p>
 <p>I do plan on eventually sharing other snippets for stuff I find interesting, Windows-related&hellip; this is if I don&rsquo;t get slapped to numbness with a printed version of MSDN by my friend that has been trying to get me to learn all this shit.</p>
 <p>Over and out.</p>
 ]]></content>
