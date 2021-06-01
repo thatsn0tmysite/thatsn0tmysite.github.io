@@ -156,7 +156,7 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 	DWORD lpflOldProtect = PAGE_READWRITE;
 	
 	<span style="color:#999;font-style:italic">//Get a handle from the given pid
-</span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(CREATE_THREAD_ACCESS, FALSE, pid);
+</span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	<span style="color:#6ab825;font-weight:bold">if</span>(!hProc) {
 		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">1</span>;
 	}

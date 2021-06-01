@@ -46,7 +46,7 @@ int Inj_CreateRemoteThread(UINT pid, BYTE[] shellcode, SIZE_T sh_size) {
 	DWORD lpflOldProtect = PAGE_READWRITE;
 	
 	//Get a handle from the given pid
-	hProc = OpenProcess(CREATE_THREAD_ACCESS, FALSE, pid);
+	hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if(!hProc) {
 		return -1;
 	}
