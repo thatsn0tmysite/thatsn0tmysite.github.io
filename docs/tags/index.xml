@@ -7,7 +7,70 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 09 Apr 2021 21:35:36 +0200</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Jun 2021 00:41:45 +0200</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>4</title>
+      <link>/tags/4/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/4/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>api</title>
+      <link>/tags/api/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/api/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;</title>
+      <link>/tags/c&#43;&#43;/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>clueless</title>
+      <link>/tags/clueless/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/clueless/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cpp</title>
+      <link>/tags/cpp/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/cpp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go</title>
+      <link>/tags/go/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>windows</title>
+      <link>/tags/windows/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/tags/windows/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>2</title>
       <link>/tags/2/</link>
@@ -23,15 +86,6 @@
       <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
       
       <guid>/tags/books/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>go</title>
-      <link>/tags/go/</link>
-      <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
-      
-      <guid>/tags/go/</guid>
       <description></description>
     </item>
     

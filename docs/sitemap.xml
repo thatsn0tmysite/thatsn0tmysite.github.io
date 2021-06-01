@@ -2,10 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/projects/</loc>
-    <lastmod>2021-04-13T02:14:30+02:00</lastmod>
+    <loc>/tags/4/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/api/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/posts/2021/06/approaching-windows/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/c&#43;&#43;/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/clueless/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/cpp/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/go/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/posts/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
   </url><url>
     <loc>/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/tags/windows/</loc>
+    <lastmod>2021-06-01T00:41:45+02:00</lastmod>
+  </url><url>
+    <loc>/projects/</loc>
     <lastmod>2021-04-13T02:14:30+02:00</lastmod>
   </url><url>
     <loc>/projects/xsserve/</loc>
@@ -17,9 +47,6 @@
     <loc>/tags/books/</loc>
     <lastmod>2021-04-09T21:35:36+02:00</lastmod>
   </url><url>
-    <loc>/tags/go/</loc>
-    <lastmod>2021-04-09T21:35:36+02:00</lastmod>
-  </url><url>
     <loc>/posts/2021/04/google-play-books/</loc>
     <lastmod>2021-04-09T21:35:36+02:00</lastmod>
   </url><url>
@@ -29,13 +56,7 @@
     <loc>/tags/play/</loc>
     <lastmod>2021-04-09T21:35:36+02:00</lastmod>
   </url><url>
-    <loc>/posts/</loc>
-    <lastmod>2021-04-09T21:35:36+02:00</lastmod>
-  </url><url>
     <loc>/tags/rant/</loc>
-    <lastmod>2021-04-09T21:35:36+02:00</lastmod>
-  </url><url>
-    <loc>/tags/</loc>
     <lastmod>2021-04-09T21:35:36+02:00</lastmod>
   </url><url>
     <loc>/tags/1/</loc>
