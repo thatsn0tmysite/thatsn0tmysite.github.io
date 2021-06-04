@@ -264,7 +264,7 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 <p><strong>Update:</strong></p>
 <p>As I was testing (and correcting) the C++ code I noticed there was a useless step in the function: I was allocating an area as Read-Write and only later modifying it to be executable.
 This was indeed unneeded.</p>
-<p>While it worked, one can totally skip the <strong>VirtualProtectEx</strong> in the go version, and just do as the updated C++ code: calling VirtualAlloc with <code>PAGE_EXECUTE_READ_WRITE</code>.</p>
+<p>While it worked, one can totally skip the <strong>VirtualProtectEx</strong> in the Go version, and just do as the updated C++ code: calling VirtualAlloc with <code>PAGE_EXECUTE_READ_WRITE</code>.</p>
 <p>I&rsquo;ll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battle Star Galactica, instead of removing a few lines of code. I&rsquo;m lazy, fight me&hellip;or don&rsquo;t, it&rsquo;s less tiring.</p>
 
       </div>

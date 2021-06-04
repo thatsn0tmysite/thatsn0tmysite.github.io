@@ -167,6 +167,6 @@ Over and out.
 As I was testing (and correcting) the C++ code I noticed there was a useless step in the function: I was allocating an area as Read-Write and only later modifying it to be executable.
 This was indeed unneeded. 
 
-While it worked, one can totally skip the **VirtualProtectEx** in the go version, and just do as the updated C++ code: calling VirtualAlloc with `PAGE_EXECUTE_READ_WRITE`.
+While it worked, one can totally skip the **VirtualProtectEx** in the Go version, and just do as the updated C++ code: calling VirtualAlloc with `PAGE_EXECUTE_READ_WRITE`.
 
 I'll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battle Star Galactica, instead of removing a few lines of code. I'm lazy, fight me...or don't, it's less tiring.
