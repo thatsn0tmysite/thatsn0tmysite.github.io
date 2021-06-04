@@ -39,7 +39,7 @@ As a side note, while we&amp;rsquo;re talking about development, I recently deci
 Its APIs to be precise, as I am trying to move out of my comfort zone of &ldquo;development&rdquo; (I am by no means a developer, but when I make stuff, it&rsquo;s usually on Linux).
 As a side note, while we&rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go."><meta itemprop="datePublished" content="2021-06-01T00:41:45&#43;02:00" />
 <meta itemprop="dateModified" content="2021-06-01T00:41:45&#43;02:00" />
-<meta itemprop="wordCount" content="981">
+<meta itemprop="wordCount" content="980">
 <meta itemprop="keywords" content="3,windows,api,clueless,cpp,c&#43;&#43;,go," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Approaching Windows"/>
@@ -264,8 +264,8 @@ To do this we will need a way obtain a handle of a give process (<strong>OpenPro
 <p><strong>Update:</strong></p>
 <p>As I was testing (and correcting) the C++ code I noticed there was a useless step in the function: I was allocating an area as Read-Write and only later modifying it to be executable.
 This was indeed unneeded.</p>
-<p>While it worked, one can totally skip the <strong>VirtualProtectEx</strong> in the Go version, and just do as the updated C++ code: calling <strong>VirtualAlloc</strong> with <code>PAGE_EXECUTE_READ_WRITE</code>.</p>
-<p>I&rsquo;ll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battle Star Galactica, instead of removing a few lines of code. I&rsquo;m lazy, fight me&hellip;or don&rsquo;t, it&rsquo;s less tiring.</p>
+<p>While it worked, one can totally skip the <strong>VirtualProtectEx</strong> in the Go version, and just do as the updated C++ code: calling <strong>VirtualAllocEx</strong> with <code>PAGE_EXECUTE_READ_WRITE</code>.</p>
+<p>I&rsquo;ll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battlestar Galactica, instead of removing a few lines of code. I&rsquo;m lazy, fight me&hellip;or don&rsquo;t, it&rsquo;s less tiring.</p>
 
       </div>
     </article>
@@ -297,7 +297,7 @@ This was indeed unneeded.</p>
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        981 Words
+        980 Words
       </p>
 
       <p>
