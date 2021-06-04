@@ -18,7 +18,7 @@ tags:
 Well, hello there! Last few weeks have been a little busy between my mere analog life and ~~pwning industrial ovens~~ work.
 Lately I have been banging my head against this thing known as **Windows**. 
 
-It's APIs to be precise, as I am trying to move out of my comfort zone of "development" (I am by **no means** a developer, but when I make stuff, it's usually on Linux). 
+Its APIs to be precise, as I am trying to move out of my comfort zone of "development" (I am by **no means** a developer, but when I make stuff, it's usually on Linux). 
 
 As a side note, while we're talking about development, I recently decided to produce a rip-off of the amazing [xsshunter](https://xsshunter.com) and write it in Go. 
 Mostly as a learning exercise for Go stuff. It's coded like shit, and currenty on the low priority list, so feel free to hop in and [help](https://github.com/thatsn0tmysite/xsserve).
