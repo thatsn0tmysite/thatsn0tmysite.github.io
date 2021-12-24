@@ -155,15 +155,15 @@ It has positive reviews. It has 4 stars. It looks cheaper than other brands - th
 <p>As a user, you want to take advantage of ALL the features you see available, such as <strong>ssh-ing</strong> into it, fiddling with config files, inspecting running processes,&hellip; all the things one would normally do when playing with a new toy!</p>
 <p>A quick run-down.
 First of all the NAS is running nginx, as shown by the <code>ps aux</code> output:</p>
-<pre tabindex="0"><code>root      2094  0.0  0.0  14364   848 ?        Ss   Nov16   0:00 nginx: master process /usr/sbin/nginx
-root      2095  0.0  0.1  15000  2156 ?        S    Nov16   0:00 nginx: worker process
-root      2096  0.0  0.1  15000  2164 ?        S    Nov16   0:01 nginx: worker process
-root      2097  0.0  0.1  15000  2080 ?        S    Nov16   0:02 nginx: worker process
-root      2098  0.0  0.1  15040  2188 ?        S    Nov16   0:01 nginx: worker process
-root      2195  0.0  0.1 165496  2484 ?        Ss   Nov16   1:18 php-fpm: master process (/etc/nginx/php-fpm.conf)
-root     22699  0.0  0.0   3232   384 pts/0    S+   10:55   0:00 grep nginx
-</code></pre><p>the current users on the system are:</p>
-<pre tabindex="0"><code>root❌0:0:root:/root:/bin/bash
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root      <span style="color:#3677a9">2094</span>  0.0  0.0  <span style="color:#3677a9">14364</span>   <span style="color:#3677a9">848</span> ?        Ss   Nov16   0:00 nginx: master process /usr/sbin/nginx
+root      <span style="color:#3677a9">2095</span>  0.0  0.1  <span style="color:#3677a9">15000</span>  <span style="color:#3677a9">2156</span> ?        S    Nov16   0:00 nginx: worker process
+root      <span style="color:#3677a9">2096</span>  0.0  0.1  <span style="color:#3677a9">15000</span>  <span style="color:#3677a9">2164</span> ?        S    Nov16   0:01 nginx: worker process
+root      <span style="color:#3677a9">2097</span>  0.0  0.1  <span style="color:#3677a9">15000</span>  <span style="color:#3677a9">2080</span> ?        S    Nov16   0:02 nginx: worker process
+root      <span style="color:#3677a9">2098</span>  0.0  0.1  <span style="color:#3677a9">15040</span>  <span style="color:#3677a9">2188</span> ?        S    Nov16   0:01 nginx: worker process
+root      <span style="color:#3677a9">2195</span>  0.0  0.1 <span style="color:#3677a9">165496</span>  <span style="color:#3677a9">2484</span> ?        Ss   Nov16   1:18 php-fpm: master process (/etc/nginx/php-fpm.conf)
+root     <span style="color:#3677a9">22699</span>  0.0  0.0   <span style="color:#3677a9">3232</span>   <span style="color:#3677a9">384</span> pts/0    S+   10:55   0:00 grep nginx
+</code></pre></div><p>the current users on the system are:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root❌0:0:root:/root:/bin/bash
 daemon❌1:1:daemon:/usr/sbin:/bin/false
 admin❌3:3:TOS User,:/home/admin:/bin/bash
 sync❌4💯sync:/bin:/bin/sync
@@ -179,19 +179,19 @@ input❌1003:1003::/:/bin/false
 nslcd❌1004:1004:nslcd user:/:/bin/false
 sshd❌1005:1005:SSH drop priv user:/:/bin/false
 n0tme❌2:4:TOS User,,,:/home/n0tme:/bin/bash
-</code></pre><p>and there seems to be an interesting sqlite database file at <code>/etc/base/nasdb</code>:</p>
-<pre tabindex="0"><code>n0tme@nas:~# sqlite3 /etc/base/nasdb 
+</code></pre></div><p>and there seems to be an interesting sqlite database file at <code>/etc/base/nasdb</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme@nas:~# sqlite3 /etc/base/nasdb 
 SQLite version 3.8.11.1 2015-07-29 20:00:57
-Enter &quot;.help&quot; for usage hints.
+Enter <span style="color:#ed9d13">&#34;.help&#34;</span> <span style="color:#6ab825;font-weight:bold">for</span> usage hints.
 sqlite&gt; .databases
 seq  name             file                                                      
 ---  ---------------  ----------------------------------------------------------
-0    main             /etc/base/nasdb                                           
+<span style="color:#3677a9">0</span>    main             /etc/base/nasdb                                           
 sqlite&gt; .tables
 acl_host        app_table       group_users     share_crypt     vpn_user_table
 acl_list        dav_list        interface       user_extend   
 acl_webdav      dfs_list        share           user_table    
-</code></pre><p>For now that&rsquo;s enough poking around, let&rsquo;s get down to business.</p>
+</code></pre></div><p>For now that&rsquo;s enough poking around, let&rsquo;s get down to business.</p>
 <h2 id="break-it">Break it</h2>
 <p>Now the juicy part. I will explain the things in the same order that I found them, so&hellip; enjoy.</p>
 <p>The chain consists of:</p>
@@ -214,7 +214,7 @@ u�45�O��}�Ѹ�*��S�C���kL��u+��RY�~��%6�i
 </span></code></pre></div><p>I know what you&rsquo;re thinking&hellip; WTF. Looks like some <code>.php</code> files are encrypted, based on a very arcane knowledge of mine I recall that php scripts are not binary files, so something must be decrypting those before they reach the interpreter so it can execute them.</p>
 <p>Since this thing runs nginx my bets were either some nginx module or a php module. That or some black magic happening somewhere else.
 By checking the <code>/etc/nginx/nginx.conf</code> and running <code>nginx -V</code> does not reveal any module or special executable used, which means hopefully our answer will be in the php configuration:</p>
-<pre tabindex="0"><code>n0tme@nas:/etc/php7# ls
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme@nas:/etc/php7# ls
 +PACKAGE_php7-mod-iconv:icu  20_exif.ini      20_intl.ini      20_pdo_mysql.ini         20_shmop.ini      20_tokenizer.ini
 15_openssl.ini               20_fileinfo.ini  20_json.ini      20_pdo_pgsql.ini         20_simplexml.ini  20_xml.ini
 20_bcmath.ini                20_ftp.ini       20_mbstring.ini  20_pdo_sqlite.ini        20_sockets.ini    20_xmlreader.ini
@@ -224,34 +224,34 @@ By checking the <code>/etc/nginx/nginx.conf</code> and running <code>nginx -V</c
 20_dom.ini                   20_iconv.ini     20_pdo.ini       20_session.ini           20_sysvshm.ini    33_redis.ini
 
 n0tme@nas:/etc/php7# cat 20_php_terra_master.ini 
-extension=php_terra_master.so
-</code></pre><p>Well, looks like we have something interesting here! There seems to actually be a convinently named <code>php_terra_master.so</code> extension loaded in PHP. To the GHIDRA mobile!</p>
+<span style="color:#40ffff">extension</span>=php_terra_master.so
+</code></pre></div><p>Well, looks like we have something interesting here! There seems to actually be a convinently named <code>php_terra_master.so</code> extension loaded in PHP. To the GHIDRA mobile!</p>
 <h3 id="reversing-101">Reversing 101</h3>
 <p>Ok so, I am not a good reverse engineer by a long shot, so I&rsquo;ll be showing my totally naive approach to this. Do not do this at home, or do, I mean after all it kind of worked out for me.
 First step, is to get our hands on the binary and check if the binary is stripped or contains any useful debug info:</p>
-<pre tabindex="0"><code>n0tme :: ~/Downloads » file php_terra_master.so                                                                                 1 ↵
-php_terra_master.so: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, stripped
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme :: ~/Downloads » file php_terra_master.so                                                                                 <span style="color:#3677a9">1</span> ↵
+php_terra_master.so: ELF 64-bit LSB shared object, ARM aarch64, version <span style="color:#3677a9">1</span> (SYSV), dynamically linked, stripped
 
-n0tme :: ~/Downloads » readelf -sW php_terra_master.so|grep &quot;FUNC&quot;
-     3: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND memcpy@GLIBC_2.17 (2)
-     4: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND strlen@GLIBC_2.17 (2)
-     8: 000000000000356c   296 FUNC    GLOBAL DEFAULT   10 pm9screw_compile_file
-     9: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND perror@GLIBC_2.17 (2)
-    11: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND tmpfile@GLIBC_2.17 (2)
-    16: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND readlink@GLIBC_2.17 (2)
-    17: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND __cxa_finalize@GLIBC_2.17 (2)
-    20: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND fileno@GLIBC_2.17 (2)
-    21: 0000000000003808     0 FUNC    GLOBAL DEFAULT   11 _fini
+n0tme :: ~/Downloads » readelf -sW php_terra_master.so|grep <span style="color:#ed9d13">&#34;FUNC&#34;</span>
+     3: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND memcpy@GLIBC_2.17 (2)
+     4: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND strlen@GLIBC_2.17 (2)
+     8: 000000000000356c   <span style="color:#3677a9">296</span> FUNC    GLOBAL DEFAULT   <span style="color:#3677a9">10</span> pm9screw_compile_file
+     9: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND perror@GLIBC_2.17 (2)
+    11: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND tmpfile@GLIBC_2.17 (2)
+    16: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND readlink@GLIBC_2.17 (2)
+    17: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    WEAK   DEFAULT  UND __cxa_finalize@GLIBC_2.17 (2)
+    20: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND fileno@GLIBC_2.17 (2)
+    21: <span style="color:#3677a9">0000000000003808</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT   <span style="color:#3677a9">11</span> _fini
         ...
-    41: 00000000000037ec    12 FUNC    GLOBAL DEFAULT   10 get_module
-    44: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND fwrite@GLIBC_2.17 (2)
-    45: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND socket@GLIBC_2.17 (2)
-    46: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND strcpy@GLIBC_2.17 (2)
-    47: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND __fxstat@GLIBC_2.17 (2)
-    48: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND strncpy@GLIBC_2.17 (2)
-    52: 0000000000000fd8     0 FUNC    GLOBAL DEFAULT    8 _init
-    53: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ioctl@GLIBC_2.17 (2)
-</code></pre><p>The only thing that caught my eye here is really just the function <strong>pm9screw_compile_file</strong>, googling around for like a minute: <a href="https://sourceforge.net/projects/php-screw/files/php-screw/">here is a 2007 repository which might be useful</a>.</p>
+    41: 00000000000037ec    <span style="color:#3677a9">12</span> FUNC    GLOBAL DEFAULT   <span style="color:#3677a9">10</span> get_module
+    44: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND fwrite@GLIBC_2.17 (2)
+    45: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND socket@GLIBC_2.17 (2)
+    46: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND strcpy@GLIBC_2.17 (2)
+    47: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND __fxstat@GLIBC_2.17 (2)
+    48: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND strncpy@GLIBC_2.17 (2)
+    52: 0000000000000fd8     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT    <span style="color:#3677a9">8</span> _init
+    53: <span style="color:#3677a9">0000000000000000</span>     <span style="color:#3677a9">0</span> FUNC    GLOBAL DEFAULT  UND ioctl@GLIBC_2.17 (2)
+</code></pre></div><p>The only thing that caught my eye here is really just the function <strong>pm9screw_compile_file</strong>, googling around for like a minute: <a href="https://sourceforge.net/projects/php-screw/files/php-screw/">here is a 2007 repository which might be useful</a>.</p>
 <p>From it&rsquo;s README:</p>
 <div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-md" data-lang="md"><span style="color:#6ab825;font-weight:bold">1.</span> What&#39;s SCREW?
 
@@ -260,15 +260,15 @@ n0tme :: ~/Downloads » readelf -sW php_terra_master.so|grep &quot;FUNC&quot;
  until just before execution. This preserves your intellectual property.
 </code></pre></div><p>This seems to fit our use case, we can take a look at the code to have a general overview of the algorithm used, then check with Ghidra if it is roughly the same, and take it from there!</p>
 <p>Listing all defined strings gives us a quite short list, which I made even shorter:</p>
-<pre tabindex="0"><code>0010081a        zend_compile_file       &quot;zend_compile_file&quot;     ds
-0010082c        org_compile_file        &quot;org_compile_file&quot;      ds
-0010083d        pm9screw_compile_file   &quot;pm9screw_compile_file&quot; ds
-00103824        php_terra_master support        &quot;php_terra_master support&quot;      ds
-0010384e        GH65Hws2jedf3fl3MeK     &quot;GH65Hws2jedf3fl3MeK&quot;   ds
-00103862        show_source     &quot;show_source&quot;   ds
-001038a4        php_terra_master        &quot;php_terra_master&quot;      ds
-001038cb        tos_encrypt_str &quot;tos_encrypt_str&quot;       ds
-</code></pre><p>As you can see there are a few interesting strings, and some strings which strongly hint us we are on the right track.
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">0010081a        zend_compile_file       <span style="color:#ed9d13">&#34;zend_compile_file&#34;</span>     ds
+0010082c        org_compile_file        <span style="color:#ed9d13">&#34;org_compile_file&#34;</span>      ds
+0010083d        pm9screw_compile_file   <span style="color:#ed9d13">&#34;pm9screw_compile_file&#34;</span> ds
+<span style="color:#3677a9">00103824</span>        php_terra_master support        <span style="color:#ed9d13">&#34;php_terra_master support&#34;</span>      ds
+0010384e        GH65Hws2jedf3fl3MeK     <span style="color:#ed9d13">&#34;GH65Hws2jedf3fl3MeK&#34;</span>   ds
+<span style="color:#3677a9">00103862</span>        show_source     <span style="color:#ed9d13">&#34;show_source&#34;</span>   ds
+001038a4        php_terra_master        <span style="color:#ed9d13">&#34;php_terra_master&#34;</span>      ds
+001038cb        tos_encrypt_str <span style="color:#ed9d13">&#34;tos_encrypt_str&#34;</span>       ds
+</code></pre></div><p>As you can see there are a few interesting strings, and some strings which strongly hint us we are on the right track.
 There is also one very long string <strong>GH65Hws2jedf3fl3MeK</strong> - all of a sudden a flashback from my first crackmes struck me: <strong>hardcoded passphrases</strong>.</p>
 <p>Jumping at the only available XREF for our candidate passphrase we land at <code>0010341c</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#999;font-style:italic">/*...*/</span>
@@ -405,7 +405,7 @@ Which leaves us hunting for APIs which manage authentication logic or sessions.<
 </code></pre></div><p>The first part checks for an existing session, which we obviously do not have, if it does not exist, it checks some cookies: <code>kod_name</code> and <code>kod_token</code> which are the username and the session cookie.</p>
 <p>So, to bypass the login and get a valid session we need to:</p>
 <ul>
-<li>craft a <code>kod_name</code> with an existing user (quiet easy)</li>
+<li>craft a <code>kod_name</code> with an existing user (quite easy)</li>
 <li>craft a valid <code>kod_token</code> (requires us to find out what <code>tos_encrypt_str</code> does)</li>
 </ul>
 <p>Turns out, <code>tos_encrypted_str</code> is not defined in any of the PHP files, which leaves it as a &ldquo;native&rdquo; function, which might be defined in the loaded custom module: <code>php_terra_master.so</code>.</p>
