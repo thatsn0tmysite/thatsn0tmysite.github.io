@@ -27,18 +27,26 @@ I recently decided to download back all the e-books which I so carefully uploade
 
 
 
-<link rel="stylesheet" href="/main.c46cbca46fa76c0fcd3da8313ecf4adee5fb3ffb0288c0902d7e90aead220d79.css">
+<link rel="stylesheet" href="/main.17863a81d979b637a02cd7632a4d86e9d80563ef460fd6af1a56962efcaa066b.css">
 
 
 
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+    <meta name="theme-color" content="">
 
 
 
 <meta itemprop="name" content="Go(ogle) Play Books">
 <meta itemprop="description" content="The title is kind of a very bad pun, one of the &ldquo;that&rsquo;s not even funny&rdquo; ones. So, what is today&rsquo;s post about? Google.
 No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&hellip; but books.
-I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&hellip;"><meta itemprop="datePublished" content="2021-04-09T21:35:36&#43;02:00" />
-<meta itemprop="dateModified" content="2021-04-09T21:35:36&#43;02:00" />
+I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&hellip;"><meta itemprop="datePublished" content="2021-04-09T21:35:36+02:00" />
+<meta itemprop="dateModified" content="2021-04-09T21:35:36+02:00" />
 <meta itemprop="wordCount" content="776">
 <meta itemprop="keywords" content="2,google,play,books,rant,go," />
 <meta name="twitter:card" content="summary"/>
@@ -55,6 +63,8 @@ I recently decided to download back all the e-books which I so carefully uploade
 
 
     <meta property="article:published_time" content="2021-04-09 21:35:36 &#43;0200 CEST" />
+
+
 
 
 
@@ -142,7 +152,7 @@ I recently decided to download back all the e-books which I so carefully uploade
 <p>So, since I was only able to download <strong>one-book-at-the-time</strong>, which I guess is fine for say&hellip; 1 to 5 books, it looked quite a chore to do it 130+ times.</p>
 <p>Took me around 20 minutes to hack this thing together. Now&hellip; I know the code is ugly, I know it&rsquo;s messy, I know I could have tried just a little bit harder to use selenium instead of <strong>saving the rendered page from the browser</strong> and parsing it&hellip; but I just wanted my books back! D:</p>
 <p>So without any further ado&hellip; here it goes, in all its gorgeous monstrosity, <strong>GoGetMyBooks</strong>:</p>
-<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">package</span> main
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">package</span> main
 
 <span style="color:#6ab825;font-weight:bold">import</span> (
         <span style="color:#ed9d13">&#34;fmt&#34;</span>
