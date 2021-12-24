@@ -14,7 +14,7 @@
       <pubDate>Fri, 24 Dec 2021 21:48:00 +0100</pubDate>
       
       <guid>/posts/2021/12/how-to-summon-rces/</guid>
-      <description>How to summon RCEs The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
+      <description>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
 In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</description>
     </item>
     

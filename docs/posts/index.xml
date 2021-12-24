@@ -15,10 +15,9 @@
             <pubDate>Fri, 24 Dec 2021 21:48:00 +0100</pubDate>
             
             <guid>/posts/2021/12/how-to-summon-rces/</guid>
-            <description>How to summon RCEs The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
+            <description>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
 In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</description>
-            <content type="html"><![CDATA[<h1 id="how-to-summon-rces">How to summon RCEs</h1>
-<p>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: <code>shell_exec</code>.</p>
+            <content type="html"><![CDATA[<p>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: <code>shell_exec</code>.</p>
 <p>In the last couple weeks I was waiting for <a href="https://www.zerodayinitiative.com/">ZDI</a> to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</p>
 <p>I don&rsquo;t know if many of you are aware but legends speak of magic devices, called NASes (Network Attached Storage), which can be used to store all your data and backups so your other devices stay quick and light!</p>
 <p>Wouldn&rsquo;t it be a shame if somebody broke into it and, let&rsquo;s say asked for a ransom? Yes. Exactly.</p>
