@@ -363,7 +363,7 @@ So we can call the <code>fileDownload</code> API then:</p>
 <li>Pick one of the 3 RCEs and pwn the NAS.</li>
 </ol>
 <p>Finally, here is the exploit:</p>
-<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#999;font-style:italic">#/bin/env python</span>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic">#/bin/env python</span>
 
 <span style="color:#ed9d13">&#34;&#34;&#34;
 </span><span style="color:#ed9d13">Product: Terramaster F4-210, Terramaster F2-210
