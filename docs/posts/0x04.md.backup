@@ -463,7 +463,7 @@ Now we just have to go over it all, again, in the right order:
 4) Pick one of the 3 RCEs and pwn the NAS.
 
 Finally, here is the exploit:
-```
+```python3
 #/bin/env python
 
 """
