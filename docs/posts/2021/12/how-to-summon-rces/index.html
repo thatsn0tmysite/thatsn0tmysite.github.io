@@ -163,22 +163,22 @@ root      <span style="color:#3677a9">2098</span>  0.0  0.1  <span style="color:
 root      <span style="color:#3677a9">2195</span>  0.0  0.1 <span style="color:#3677a9">165496</span>  <span style="color:#3677a9">2484</span> ?        Ss   Nov16   1:18 php-fpm: master process (/etc/nginx/php-fpm.conf)
 root     <span style="color:#3677a9">22699</span>  0.0  0.0   <span style="color:#3677a9">3232</span>   <span style="color:#3677a9">384</span> pts/0    S+   10:55   0:00 grep nginx
 </code></pre></div><p>the current users on the system are:</p>
-<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root❌0:0:root:/root:/bin/bash
-daemon❌1:1:daemon:/usr/sbin:/bin/false
-admin❌3:3:TOS User,:/home/admin:/bin/bash
-sync❌4💯sync:/bin:/bin/sync
-guest❌6:4:Linux User,:/home/guest:/bin/false
-mail❌8:8:mail:/var/spool/mail:/bin/false
-www-data❌33:33:www-data:/var/www:/bin/false
-operator❌37:37:Operator:/var:/bin/false
-nobody❌65534:65534:nobody:/home:/bin/false
-TimeMachine❌1000:1000:Linux User,:/home:/bin/false
-avahi❌1001:1001::/:/bin/false
-dbus❌1002:1002:DBus messagebus user:/var/run/dbus:/bin/false
-input❌1003:1003::/:/bin/false
-nslcd❌1004:1004:nslcd user:/:/bin/false
-sshd❌1005:1005:SSH drop priv user:/:/bin/false
-n0tme❌2:4:TOS User,,,:/home/n0tme:/bin/bash
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/bin/false
+admin:x:3:3:TOS User,:/home/admin:/bin/bash
+sync:x:4:100:sync:/bin:/bin/sync
+guest:x:6:4:Linux User,:/home/guest:/bin/false
+mail:x:8:8:mail:/var/spool/mail:/bin/false
+www-data:x:33:33:www-data:/var/www:/bin/false
+operator:x:37:37:Operator:/var:/bin/false
+nobody:x:65534:65534:nobody:/home:/bin/false
+TimeMachine:x:1000:1000:Linux User,:/home:/bin/false
+avahi:x:1001:1001::/:/bin/false
+dbus:x:1002:1002:DBus messagebus user:/var/run/dbus:/bin/false
+input:x:1003:1003::/:/bin/false
+nslcd:x:1004:1004:nslcd user:/:/bin/false
+sshd:x:1005:1005:SSH drop priv user:/:/bin/false
+n0tme:x:2:4:TOS User,,,:/home/n0tme:/bin/bash
 </code></pre></div><p>and there seems to be an interesting sqlite database file at <code>/etc/base/nasdb</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">n0tme@nas:~# sqlite3 /etc/base/nasdb 
 SQLite version 3.8.11.1 2015-07-29 20:00:57

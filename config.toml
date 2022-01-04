@@ -21,7 +21,7 @@ canonifyURLs = true
 
 enableRobotsTXT = true
 enableGitInfo   = false
-enableEmoji     = true
+enableEmoji     = false
 enableMissingTranslationPlaceholders = false
 disableRSS     = false
 disableSitemap = false
