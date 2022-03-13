@@ -15,11 +15,11 @@
             <pubDate>Sun, 13 Mar 2022 05:57:57 +0100</pubDate>
             
             <guid>/posts/2022/03/all-you-can-pwn-buffet/</guid>
-            <description>Hi folks! I recently read about a few vulnerabilities on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
+            <description>Hi folks! I recently read about a few vulnerabilities on Terramaster which were basically stolen from me heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
 This time I didn&amp;rsquo;t spend much time reasearching, and I couldn&amp;rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&amp;rsquo;t worry tho, you ransomware operators can still get the admin hashes and username.</description>
             <content type="html"><![CDATA[<p>Hi folks!
-I recently read about a <a href="https://thehackernews.com/2022/03/critical-bugs-in-terramaster-tos-could.html">few vulnerabilities</a> on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.</p>
-<p>This time I didn&rsquo;t spend much time reasearching, and I couldn&rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&rsquo;t worry tho, you ransomware operators can still get the admin hashes and username. Some ~assembly~ hashcat required.</p>
+I recently read about a <a href="https://thehackernews.com/2022/03/critical-bugs-in-terramaster-tos-could.html">few vulnerabilities</a> on Terramaster which were <del>basically stolen from me</del> heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.</p>
+<p>This time I didn&rsquo;t spend much time reasearching, and I couldn&rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&rsquo;t worry tho, you ransomware operators can still get the admin hashes and username. Some <del>assembly</del> hashcat required.</p>
 <p>Speaking of ransomware,about the impact the last exploit I published got on the devices, I am sorry for everyone who got their stuff locked by deadbolt. I tried to get in touch with Terramaster, they never replied to me.</p>
 <p>Yet, I persisted and this time I made another attempt at getting in touch with the developers - once more I got ghosted.
 As always if in a hurry just get the code form <a href="https://gist.github.com/thatsn0tmysite/fca704a47248722590ccd9cc6304cb75">here</a>.</p>
@@ -76,7 +76,7 @@ To achieve this we simply send any malformed request to:</p>
 <pre tabindex="0"><code>http://nas.ip:8181/v1/SessionEvents/update
 </code></pre><p>This time we only get back a couple information about php, the webserver and&hellip; the username of the <code>admin</code> user.</p>
 <ul>
-<li>~Get admin user~ DONE.</li>
+<li><del>Get admin user</del> DONE.</li>
 </ul>
 <p>Also, it is worthy to notice that the update procedure does not seem to delete old files, after upgrading I still had the <code>m1.php</code> and <code>m2.php</code> files.
 This still leaves the app vulnerable to the MAC address disclosure discussed in the <a href="https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/">previous blogpost</a>.</p>
@@ -87,16 +87,16 @@ Turns out one can just get the password hash from the database using a double bl
 <p>I optimized the sqlmap command as much as I could, modify as needed:</p>
 <div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sqlmap -u <span style="color:#ed9d13">&#34;http://nas.ip/tos/index.php?user/loginSubmit&amp;name=sqli&amp;password=n0t&amp;platform=me&#34;</span> --dbms=sqlite --level=<span style="color:#3677a9">5</span> --risk=<span style="color:#3677a9">2</span> --technique=t -p name -T user_table -C password --dump --time-sec {args.sqlmap_time} --where <span style="color:#ed9d13">&#34;username=</span><span style="color:#6ab825;font-weight:bold">$(</span><span style="color:#24909d">printf</span> <span style="color:#40ffff">$ADMIN</span> | base64<span style="color:#6ab825;font-weight:bold">)</span><span style="color:#ed9d13">&#34;</span>
 </code></pre></div><p>Obviously replace $ADMIN with the username of the administrator from the previous step.</p>
-<p>This takes a little time, but not too long, so go grab a coffee and wait ~for the new ransomware wave~. This joke is not as funny now that it actually happened - is it? You can&rsquo;t say I did not warn you though.</p>
+<p>This takes a little time, but not too long, so go grab a coffee and wait <del>for the new ransomware wave</del>. This joke is not as funny now that it actually happened - is it? You can&rsquo;t say I did not warn you though.</p>
 <ul>
-<li>~Get the admin hash~ DONE.</li>
+<li><del>Get the admin hash</del> DONE.</li>
 </ul>
 <h3 id="rces">RCEs</h3>
 <p>As usual, it has not been very difficult to pwn TOS, using the <a href="https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/">previously mentioned technique</a> of grepping for <code>shell</code>.</p>
 <p>As for the RCEs, same ol&rsquo;story, user input <strong>still</strong> doesn&rsquo;t get validated in many places, or gets validated poorly (seriously, get a <a href="https://www.php.net/manual/en/function.escapeshellcmd.php">hint</a> or <a href="https://www.php.net/manual/en/function.escapeshellarg.php">two</a>).</p>
 <p>They are all pretty obvious in the exploit.</p>
 <ul>
-<li>~PWN~ DONE.</li>
+<li><del>PWN</del> DONE.</li>
 </ul>
 <h3 id="xss-galore">XSS galore</h3>
 <p>Basically all parameters used in these pages are vulnerable, in case you needed a reminder that <code>echo $_GET['whatever'];</code> is always a bad idea:</p>
