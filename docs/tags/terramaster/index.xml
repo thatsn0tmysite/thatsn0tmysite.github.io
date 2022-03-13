@@ -2,28 +2,28 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>terramaster on thatsn0tmysite</title>
-    <link>/tags/terramaster/</link>
+    <link>https://thatsn0tmy.site/tags/terramaster/</link>
     <description>Recent content in terramaster on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 13 Mar 2022 05:57:57 +0100</lastBuildDate><atom:link href="/tags/terramaster/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Mar 2022 05:57:57 +0100</lastBuildDate><atom:link href="https://thatsn0tmy.site/tags/terramaster/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>All you can PWN buffet</title>
-      <link>/posts/2022/03/all-you-can-pwn-buffet/</link>
+      <link>https://thatsn0tmy.site/posts/2022/03/all-you-can-pwn-buffet/</link>
       <pubDate>Sun, 13 Mar 2022 05:57:57 +0100</pubDate>
       
-      <guid>/posts/2022/03/all-you-can-pwn-buffet/</guid>
+      <guid>https://thatsn0tmy.site/posts/2022/03/all-you-can-pwn-buffet/</guid>
       <description>Hi folks! I recently read about a few vulnerabilities on Terramaster which were basically stolen from me heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
 This time I didn&amp;rsquo;t spend much time reasearching, and I couldn&amp;rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&amp;rsquo;t worry tho, you ransomware operators can still get the admin hashes and username.</description>
     </item>
     
     <item>
       <title>How to summon RCEs</title>
-      <link>/posts/2021/12/how-to-summon-rces/</link>
+      <link>https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/</link>
       <pubDate>Fri, 24 Dec 2021 21:48:00 +0100</pubDate>
       
-      <guid>/posts/2021/12/how-to-summon-rces/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/</guid>
       <description>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
 In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</description>
     </item>

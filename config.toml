@@ -1,4 +1,4 @@
-baseurl      = "/"
+baseurl      = "https://thatsn0tmy.site"
 title        = "thatsn0tmysite"
 languageCode = "en-us"
 theme        = "hello-friend-ng"
@@ -32,7 +32,7 @@ PygmentsCodeFences = true
 PygmentsStyle = "native"
 
 [permalinks]
-  posts = "https://thatsn0tmy.site/posts/:year/:month/:title/"
+  posts = "/posts/:year/:month/:title/"
 
 [author]
   name = "n0tme"

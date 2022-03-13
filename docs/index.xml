@@ -2,38 +2,38 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>thatsn0tmysite</title>
-    <link>/</link>
+    <link>https://thatsn0tmy.site/</link>
     <description>Recent content on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 13 Mar 2022 05:57:57 +0100</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Mar 2022 05:57:57 +0100</lastBuildDate><atom:link href="https://thatsn0tmy.site/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>All you can PWN buffet</title>
-      <link>/posts/2022/03/all-you-can-pwn-buffet/</link>
+      <link>https://thatsn0tmy.site/posts/2022/03/all-you-can-pwn-buffet/</link>
       <pubDate>Sun, 13 Mar 2022 05:57:57 +0100</pubDate>
       
-      <guid>/posts/2022/03/all-you-can-pwn-buffet/</guid>
+      <guid>https://thatsn0tmy.site/posts/2022/03/all-you-can-pwn-buffet/</guid>
       <description>Hi folks! I recently read about a few vulnerabilities on Terramaster which were basically stolen from me heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
 This time I didn&amp;rsquo;t spend much time reasearching, and I couldn&amp;rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&amp;rsquo;t worry tho, you ransomware operators can still get the admin hashes and username.</description>
     </item>
     
     <item>
       <title>How to summon RCEs</title>
-      <link>/posts/2021/12/how-to-summon-rces/</link>
+      <link>https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/</link>
       <pubDate>Fri, 24 Dec 2021 21:48:00 +0100</pubDate>
       
-      <guid>/posts/2021/12/how-to-summon-rces/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/</guid>
       <description>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.
 In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</description>
     </item>
     
     <item>
       <title>Approaching Windows</title>
-      <link>/posts/2021/06/approaching-windows/</link>
+      <link>https://thatsn0tmy.site/posts/2021/06/approaching-windows/</link>
       <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
       
-      <guid>/posts/2021/06/approaching-windows/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/06/approaching-windows/</guid>
       <description>Well, hello there! Last few weeks have been a little busy between my mere analog life and pwning industrial ovens work. Lately I have been banging my head against this thing known as Windows.
 Its APIs to be precise, as I am trying to move out of my comfort zone of &amp;ldquo;development&amp;rdquo; (I am by no means a developer, but when I make stuff, it&amp;rsquo;s usually on Linux).
 As a side note, while we&amp;rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go.</description>
@@ -41,10 +41,10 @@ As a side note, while we&amp;rsquo;re talking about development, I recently deci
     
     <item>
       <title>XSServe</title>
-      <link>/projects/xsserve/</link>
+      <link>https://thatsn0tmy.site/projects/xsserve/</link>
       <pubDate>Tue, 13 Apr 2021 02:14:30 +0200</pubDate>
       
-      <guid>/projects/xsserve/</guid>
+      <guid>https://thatsn0tmy.site/projects/xsserve/</guid>
       <description>I promise I will revise this page with a decent description of the project, a roadmap, possibly some documentation and stuff. For now, here is the bare bone README.md copy pasted for your own convenience.
 XSServe is a shameless copy of heavely inspired by the XSSHunter by (@IAmMandatory) project, rewritten in Go.
 ⚠ Disclaimer The project is in a VERY bare bone state right now, so if you want a prime experience, use other tools.</description>
@@ -52,10 +52,10 @@ XSServe is a shameless copy of heavely inspired by the XSSHunter by (@IAmMandato
     
     <item>
       <title>Go(ogle) Play Books</title>
-      <link>/posts/2021/04/google-play-books/</link>
+      <link>https://thatsn0tmy.site/posts/2021/04/google-play-books/</link>
       <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
       
-      <guid>/posts/2021/04/google-play-books/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/04/google-play-books/</guid>
       <description>The title is kind of a very bad pun, one of the &amp;ldquo;that&amp;rsquo;s not even funny&amp;rdquo; ones. So, what is today&amp;rsquo;s post about? Google.
 No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&amp;hellip; but books.
 I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&amp;hellip;</description>
@@ -63,10 +63,10 @@ I recently decided to download back all the e-books which I so carefully uploade
     
     <item>
       <title>Public disclosures</title>
-      <link>/posts/2021/03/public-disclosures/</link>
+      <link>https://thatsn0tmy.site/posts/2021/03/public-disclosures/</link>
       <pubDate>Tue, 16 Mar 2021 22:37:40 +0100</pubDate>
       
-      <guid>/posts/2021/03/public-disclosures/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/03/public-disclosures/</guid>
       <description>Well, as mentioned in the last post, some lame XSS I found just went public.
 For those wanting to jump straight to the point:
  muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it  I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.
@@ -76,20 +76,20 @@ Apparently what a researcher thinks is going to happen and what actually happens
     
     <item>
       <title>First commit</title>
-      <link>/posts/2021/03/first-commit/</link>
+      <link>https://thatsn0tmy.site/posts/2021/03/first-commit/</link>
       <pubDate>Wed, 10 Mar 2021 02:18:22 +0100</pubDate>
       
-      <guid>/posts/2021/03/first-commit/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/03/first-commit/</guid>
       <description>For the few souls that ever followed my blog: I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.
 I migrated to Github pages, because&amp;hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&amp;rsquo;s.</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>/about/</link>
+      <link>https://thatsn0tmy.site/about/</link>
       <pubDate>Mon, 02 May 2016 00:00:00 +0000</pubDate>
       
-      <guid>/about/</guid>
+      <guid>https://thatsn0tmy.site/about/</guid>
       <description>I will eventually write something about me here&amp;hellip;</description>
     </item>
     

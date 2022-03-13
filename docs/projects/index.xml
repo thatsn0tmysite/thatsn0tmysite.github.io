@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Projects on thatsn0tmysite</title>
-    <link>/projects/</link>
+    <link>https://thatsn0tmy.site/projects/</link>
     <description>Recent content in Projects on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 13 Apr 2021 02:14:30 +0200</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 13 Apr 2021 02:14:30 +0200</lastBuildDate><atom:link href="https://thatsn0tmy.site/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>XSServe</title>
-      <link>/projects/xsserve/</link>
+      <link>https://thatsn0tmy.site/projects/xsserve/</link>
       <pubDate>Tue, 13 Apr 2021 02:14:30 +0200</pubDate>
       
-      <guid>/projects/xsserve/</guid>
+      <guid>https://thatsn0tmy.site/projects/xsserve/</guid>
       <description>I promise I will revise this page with a decent description of the project, a roadmap, possibly some documentation and stuff. For now, here is the bare bone README.md copy pasted for your own convenience.
 XSServe is a shameless copy of heavely inspired by the XSSHunter by (@IAmMandatory) project, rewritten in Go.
 ⚠ Disclaimer The project is in a VERY bare bone state right now, so if you want a prime experience, use other tools.</description>

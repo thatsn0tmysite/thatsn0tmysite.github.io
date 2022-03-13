@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>api on thatsn0tmysite</title>
-    <link>/tags/api/</link>
+    <link>https://thatsn0tmy.site/tags/api/</link>
     <description>Recent content in api on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 01 Jun 2021 00:41:45 +0200</lastBuildDate><atom:link href="/tags/api/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Jun 2021 00:41:45 +0200</lastBuildDate><atom:link href="https://thatsn0tmy.site/tags/api/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Approaching Windows</title>
-      <link>/posts/2021/06/approaching-windows/</link>
+      <link>https://thatsn0tmy.site/posts/2021/06/approaching-windows/</link>
       <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
       
-      <guid>/posts/2021/06/approaching-windows/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/06/approaching-windows/</guid>
       <description>Well, hello there! Last few weeks have been a little busy between my mere analog life and pwning industrial ovens work. Lately I have been banging my head against this thing known as Windows.
 Its APIs to be precise, as I am trying to move out of my comfort zone of &amp;ldquo;development&amp;rdquo; (I am by no means a developer, but when I make stuff, it&amp;rsquo;s usually on Linux).
 As a side note, while we&amp;rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go.</description>
