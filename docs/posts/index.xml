@@ -178,7 +178,7 @@ Content-Type: image/jpeg
 -----------------------------272557087831800767091975222786--
 </code></pre><h2 id="destroy">Destroy</h2>
 <p>Once again, we can chain some of the vulnerabilities to get to an RCE, sadly this time it requires a tiny bit of effort.</p>
-<p>We first run the script to get a user&rsquo;s hash, then crack it with your favorite cracking too, finally launch the script again giving the hash and credentials.</p>
+<p>We first run the script to get a user&rsquo;s hash, then crack it with your favorite cracking tool, finally launch the script again giving the hash and credentials.</p>
 <p>By default the script attempts to grab the admin&rsquo;s hash if no user is specified. Enjoy:</p>
 <div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic">#!/bin/env python3</span>
 
@@ -259,7 +259,6 @@ RE=re.compile(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#
     <span style="color:#24909d">print</span>(r.text)
 
 <span style="color:#6ab825;font-weight:bold">if</span> __name__ == <span style="color:#ed9d13">&#34;__main__&#34;</span>:
-    <span style="color:#999;font-style:italic">#CHANGE EXPLOIT TO EITHER GET THE HASH OR LOGIN AND EXECUTE COMMANDS VIA RCEs, also eleveate privileges via other vectors for sqli</span>
     meow=<span style="color:#ed9d13">&#34;  ^ ^</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13"> (-.-) ...copycats...</span><span style="color:#ed9d13">\n</span><span style="color:#ed9d13">~( ||)&#34;</span>
 
     parser = ArgumentParser()
