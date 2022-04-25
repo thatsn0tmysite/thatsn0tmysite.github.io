@@ -1,7 +1,7 @@
 baseurl      = "https://thatsn0tmy.site"
 title        = "thatsn0tmysite"
 languageCode = "en-us"
-theme        = "hello-friend-ng"
+theme        = ["hello-friend-ng", "plausible-hugo", "custom"]
 paginate     = 10
 
 # googleAnalytics = ""
@@ -31,6 +31,8 @@ disableHugoGeneratorInject = false
 PygmentsCodeFences = true
 PygmentsStyle = "native"
 
+
+
 [permalinks]
   posts = "/posts/:year/:month/:title/"
 
@@ -42,6 +44,10 @@ PygmentsStyle = "native"
 #    tag      = "tags"
 #    series   = "series"
   
+[params.plausible]
+    enable = true
+    domain = "analytics.thatsn0tmy.site"
+
 [params]
     dateform        = "Jan 2, 2006"
     dateformShort   = "Jan 2"
