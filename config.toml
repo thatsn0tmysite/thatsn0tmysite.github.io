@@ -31,6 +31,10 @@ disableHugoGeneratorInject = false
 PygmentsCodeFences = true
 PygmentsStyle = "native"
 
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "script-src 'self' analytics.thatsn0tmy.site;"
 
 
 [permalinks]
