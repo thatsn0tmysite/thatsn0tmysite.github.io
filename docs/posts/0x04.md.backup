@@ -12,6 +12,12 @@ tags:
   - vulnerability
   - RCE
   - exploit
+  - cve-2021-45842
+  - cve-2021-45841
+  - cve-2021-45840
+  - cve-2021-45839
+  - cve-2021-45837
+  - cve-2021-45836
 ---
 
 The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: `shell_exec`.
@@ -209,7 +215,7 @@ Jumping at the only available XREF for our candidate passphrase we land at `0010
 
 now, at this point I just wanted to break things, luckily I stumbled upon the very friendly [bloodyshell](https://matrix.to/#/@bloodyshell:matrix.org) who happened to be working on my exact device, for obviously different purposes.
 Since he already worked (or worked way quicker than me) on reversing the algorithm, I asked him for help and he blessed me with a decryption tool to "unscrew" the code.
-A link to the utility's source code is [here](https://gist.github.com/thatsn0tmysite/c20602289d2cdc9ab7484851eefd92ba)].
+A link to the utility's source code is [here](https://gist.github.com/thatsn0tmysite/c20602289d2cdc9ab7484851eefd92ba).
 
 Which leaves us with a decrypted web root!
 ```bash
@@ -360,7 +366,7 @@ So, to bypass the login and get a valid session we need to:
 Turns out, `tos_encrypted_str` is not defined in any of the PHP files, which leaves it as a "native" function, which might be defined in the loaded custom module: `php_terra_master.so`.
 
 The function, which is at offset `00103738` basically does the following:
-```python3
+```python
 def tos_encrypt_str(toencrypt):
     key = MAC_ADDRESS[6:] 
     return hashlib.md5(f"{key}{toencrypt}".encode("utf8")).hexdigest()
