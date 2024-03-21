@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="n0tme ">
+<meta name="description" content="Livefect Livefect is a PoC tool to play around with /proc/pid/mem, process_vm_readv and process_vm_write as alternatives ways of injecting into processes without using ptrace directly.
+Technically we still need the same privileges to use this as we need for ptrace but I mean, why not. It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.
+Excuse the terrible C code, it has been so long since I actually wrote anything in it." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="http://localhost:1313/projects/livefect/" />
+
+
+    <title>
+        
+            Livefect :: thatsn0tmysite  — The life of a newborn cyber security kid.
+        
+    </title>
+
+
+
+
+
+<link rel="stylesheet" href="http://localhost:1313/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+    <link rel="manifest" href="http://localhost:1313/site.webmanifest">
+    <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="http://localhost:1313/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Livefect">
+<meta itemprop="description" content="Livefect Livefect is a PoC tool to play around with /proc/pid/mem, process_vm_readv and process_vm_write as alternatives ways of injecting into processes without using ptrace directly.
+Technically we still need the same privileges to use this as we need for ptrace but I mean, why not. It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.
+Excuse the terrible C code, it has been so long since I actually wrote anything in it."><meta itemprop="datePublished" content="2024-03-14T02:19:30+02:00" />
+<meta itemprop="dateModified" content="2024-03-14T02:19:30+02:00" />
+<meta itemprop="wordCount" content="769">
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Livefect"/>
+<meta name="twitter:description" content="Livefect Livefect is a PoC tool to play around with /proc/pid/mem, process_vm_readv and process_vm_write as alternatives ways of injecting into processes without using ptrace directly.
+Technically we still need the same privileges to use this as we need for ptrace but I mean, why not. It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.
+Excuse the terrible C code, it has been so long since I actually wrote anything in it."/>
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-03-14 02:19:30 &#43;0200 &#43;0200" />
+
+
+
+
+
+
+<script defer data-domain="thatsn0tmy.site" src="https://analytics.thatsn0tmy.site/js/plausible.js"></script>
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="http://localhost:1313/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                thatsn0tmysite</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#ffffff;
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="http://localhost:1313/about/">About</a></li><li><a href="http://localhost:1313/posts/">Blog</a></li><li><a href="http://localhost:1313/projects/">Projects</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="http://localhost:1313/projects/livefect/">Livefect</a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <h1 id="livefect">Livefect</h1>
+<p>Livefect is a PoC tool to play around with <code>/proc/pid/mem</code>, <code>process_vm_readv</code> and <code>process_vm_write</code> as alternatives ways of injecting into processes without using <code>ptrace</code> directly.</p>
+<p>Technically we still need the same privileges to use this as we need for <code>ptrace</code> but I mean, why not.
+It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.</p>
+<p>Excuse the terrible C code, it has been so long since I actually wrote anything in it.</p>
+<p>I literally have no idea why I did this or if this is useful in any way or form. Enjoy :).</p>
+<p>Some scenarios where this might be helpful:</p>
+<ul>
+<li>Overwrite of a function&rsquo;s code with our payload is necessary (see options -e, -S, &ndash;symbol, &ndash;library)</li>
+<li>Overwrite of executable data is necessary (i.e. modify a variable&rsquo;s dlsym value to an arbitrary address)</li>
+<li>Overwrite of data (i.e. values which control process flow)</li>
+</ul>
+<blockquote>
+<p>If you end up using this software any feedback or contribution is appreciated. If you go through the code&hellip; I&rsquo;m really, really sorry for the mess (lol?).</p>
+</blockquote>
+<h2 id="todos-and-possible-new-features">TODOs and possible new features</h2>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Rewrite code to be less messy</li>
+<li><input disabled="" type="checkbox"> Rewrite ELF parsing in a more structured way</li>
+<li><input checked="" disabled="" type="checkbox"> When segment to rwx mem is found, write payload at given address (-a), then pad the rest of the mapped area with <code>jmp address</code>, to maximize a chanche of execution</li>
+<li><input disabled="" type="checkbox"> Regex filters for function and export names</li>
+<li><input disabled="" type="checkbox"> iovecs splitting if payload is &gt; page_size (jump added at pagesize_bytes-jmpsize to jmp to next available area)</li>
+<li><input disabled="" type="checkbox"> Find PLT/GOT entries of in-memory/loaded modules, overwrite address (this should be possible on RELRO binaries if the library is loaded at runtime)</li>
+<li><input disabled="" type="checkbox"> See if feasable/useful allow reading ROP gadget addresses from file, file format could be something like that:</li>
+</ul>
+<pre tabindex="0"><code>0x123456 // write first gadget here
+0xff1122 // this is the first gadget
+0x88eeaa // this is the second gadget
+0x1122da // this is the third gadget
+...
+...
+</code></pre><ul>
+<li><input disabled="" type="checkbox"> It&rsquo;d be very cool if it could also look for XREFs in the binary to identify possible injection points</li>
+</ul>
+<pre tabindex="0"><code>Get ELF
+Disassemble and find XREFs
+Fix offsets
+Find all segments with specified permissions (i.e. rwx)
+Return output of 
+ADDR     XREF_COUNT
+0x123    1
+0x456    12
+0x789    234         //then one can further inspect this addr, see if it&#39;s a function (--disams) and write here (-a 0x789)
+</code></pre><h2 id="compile">Compile</h2>
+<p>To compile <code>livefect</code>, <a href="https://github.com/zyantific/zydis">zydis</a> is needed. Just run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>make <span style="color:#999;font-style:italic"># make livefect with all features and victim program</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>make victim <span style="color:#999;font-style:italic"># make the victim program to play around</span>
+</span></span></code></pre></div><h2 id="usage">Usage</h2>
+<p>You will likely need to be <code>root</code> to run this.</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Livefect = Infect live, running processes
+</span></span><span style="display:flex;"><span>Usage: ./livefect [opts]
+</span></span><span style="display:flex;"><span>        -h --help:              show this help message
+</span></span><span style="display:flex;"><span>        -V --process-vm:        use process_vm_writev instead of /proc/[pid]/mem
+</span></span><span style="display:flex;"><span>        -p --pid PID:           run against specified pid (default: NULL)
+</span></span><span style="display:flex;"><span>        -f --file FILE:         file containing data to write/payload (default: NULL)
+</span></span><span style="display:flex;"><span>        -a --addr ADDR:         (raw mode) address to write data/payload to
+</span></span><span style="display:flex;"><span>        -v --verbosity LEVEL:   set verbosity level (default: 0)
+</span></span><span style="display:flex;"><span>        -P --perms PERMS:       which permissions to look for (default: rwxp)
+</span></span><span style="display:flex;"><span>        -S --func-only:         only display function symbols
+</span></span><span style="display:flex;"><span>           --symbol SYMBOL:     write FILE to all symbols with name SYMBOL
+</span></span><span style="display:flex;"><span>           --library LIBRARY:   to use with --symbol allow write to specific SYMBOL from specific LIBRARY
+</span></span><span style="display:flex;"><span>        -D --data-only:         only display data symbols
+</span></span><span style="display:flex;"><span>        -I --inject-all:        (potentially unsafe) force payload injection in any matching memory area
+</span></span><span style="display:flex;"><span>        -m --maps:              only list memory maps
+</span></span><span style="display:flex;"><span>           --disasm N:          (implies -m) try disassemble the first N instructions and show output (default: 0)
+</span></span><span style="display:flex;"><span>           --disasm-bytes N:    (implies -m) bytes to pass to disassembler (default: 64)
+</span></span><span style="display:flex;"><span>        -e --exports:           only list exported functions
+</span></span><span style="display:flex;"><span>        -F --force-disk:        force ELF exports lookup from disk
+</span></span><span style="display:flex;"><span>        -s --skip-root:         do not enforce root checks
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Made while screaming in *PANIC* by @thatsn0mysite (https://thatsn0tmy.site)
+</span></span></code></pre></div><h3 id="recon">Recon</h3>
+<p>To simply display interesting segments we can use the <code>-m</code> or <code>-e</code>, to show memory segments and exports and quit. No writing is done (unless <strong>raw mode</strong> is on).</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./livefect -me --pid <span style="color:#3677a9">123</span>
+</span></span></code></pre></div><h3 id="auto-mayhem">Auto-mayhem</h3>
+<p>The simplest usage is to just run <code>livefect</code> with a payload as such:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./livefect -f shellcodes/reverse_shell 
+</span></span></code></pre></div><p>this will attempt to find all writable segments containing exports and write our payload there, in ALL of em.</p>
+<h3 id="controlled-mayhem">Controlled-mayhem</h3>
+<p>Another basic usage is using <code>livefect</code>&rsquo;s <strong>raw mode</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./livefect -f shellcodes/reverse_shell -a 0x7fb75ed44109
+</span></span></code></pre></div><p>this will attempt to write our payload at the specified address.</p>
+<h3 id="filters">Filters</h3>
+<p>Some basic filtering has been implemented to semplify injection. For example to write payload at the address of symbol <code>test_func</code> we can use the <code>--symbol</code> and <code>--library</code> flags along with <code>-P</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./livefect -f shellcode/reverse_shell --symbol test_func --library /usr/lib/test.so -P <span style="color:#ed9d13">&#34;r*x*&#34;</span> --pid <span style="color:#3677a9">123</span>
+</span></span></code></pre></div><p>if we are lucky, this will write our payload into the <code>test_func</code> of library <code>/usr/lib/test.so</code> from pid <code>123</code>, <code>-P</code> specifies the permissions we are looking for, using <code>proc maps</code> format.</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="http://localhost:1313/bundle.min.85fad2de4f13fec3bcb3b3cb10430cdb44a7b4a9749b32938241a5c6e77718df7624f1002b880521fdc26e24ec1077fda214bf1cb36ee3045510760d09638cae.js" integrity="sha512-hfrS3k8T/sO8s7PLEEMM20SntKl0mzKTgkGlxud3GN92JPEAK4gFIf3CbiTsEHf9ohS/HLNu4wRVEHYNCWOMrg=="></script>
+
+
+
+
+    </body>
+</html>

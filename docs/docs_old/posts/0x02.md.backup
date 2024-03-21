@@ -1,0 +1,165 @@
+---
+title: "Go(ogle) Play Books"
+date: 2021-04-09T21:35:36+02:00
+draft: false
+toc: false
+images:
+tags:
+  - 0x02
+  - google
+  - play 
+  - books
+  - rant
+  - go
+
+
+---
+
+
+The title is kind of a very bad pun, one of the ""that's not even funny" ones. So, what is today's post about? Google.
+
+No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)... but books.
+
+I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back... 
+
+I thought it would take me half a second (more like a bunch of hours, considering the near dial-up internet connection I have recently), but: nope! Apparently my assumptions about a big blue button saying "Download all", right there, in plain sight for the user to press were wrong.
+
+Now, chances are I could be VERY blind and have totally missed it, but that hasn't stopped me from ~~finding a lame excuse to code in Go~~ finding a way around the problem.
+
+So, since I was only able to download **one-book-at-the-time**, which I guess is fine for say... 1 to 5 books, it looked quite a chore to do it 130+ times.
+
+Took me around 20 minutes to hack this thing together. Now... I know the code is ugly, I know it's messy, I know I could have tried just a little bit harder to use selenium instead of **saving the rendered page from the browser** and parsing it... but I just wanted my books back! D:
+
+So without any further ado... here it goes, in all its gorgeous monstrosity, **GoGetMyBooks**:
+
+```go
+package main
+
+import (
+        "fmt"
+        "io"
+        "mime"
+        "net/http"
+        "net/url"
+        "os"
+        "strings"
+        "sync"
+
+        "github.com/antchfx/htmlquery"
+)
+
+type Book struct {
+        Title string
+        URL   string
+        ID    string
+}
+
+func main() {
+        fmt.Println("> GoGetMyBooks v.0.1 - by thatsn0tmysite (a.k.a. n0tme)")
+         
+        cookies := "" // Too lazy to use the flag package, or sys.argv, or anything really...
+        if cookies == "" {
+                panic("Error: variable cookies has no value... copy it from your browser requests")
+        }
+        c := &http.Client{}
+
+        // Read Google Play.html
+        var books []Book
+        booksHTML, err := htmlquery.LoadDoc("Google Play.html")
+        if err != nil {
+                panic("Error: save the Google Play Books page with firefox/chrome")
+        }
+        nodes, err := htmlquery.QueryAll(booksHTML, "//a[contains(@class, 'overlay')]")
+        if err != nil {
+                panic("Error: not a valid XPath expression")
+        }
+
+        // yes, we iterate here...
+        for _, node := range nodes {
+                book := Book{Title: htmlquery.SelectAttr(node, "title"), URL: htmlquery.SelectAttr(node, "href")}
+                u, _ := url.Parse(book.URL) // blindly assume this won't fail
+                book.ID = strings.Split(u.RawQuery, "=")[1]
+                books = append(books, book)
+        }
+        fmt.Println("Found ", len(books), " books...")
+
+        // ...and here, useless, but whatever...
+        var wg sync.WaitGroup
+        for _, book := range books {
+                wg.Add(1)
+
+                //GOGOGO!
+                go func(book Book) {
+                        defer wg.Done()
+                        fmt.Println("Processing: ", book.Title)
+
+                        //filename was unnecessary, so i am using iwantmyfileback
+                        downloadURL := fmt.Sprintf("https://books.google.com/books/download/iwantmyfileback?id=%v&output=uploaded_content&source=gbs_api&authuser=0", book.ID)
+                        req, err := http.NewRequest("GET", downloadURL, nil)
+                        if err != nil {
+                                fmt.Println("httpClientError: ", err)
+                        }
+
+                        //Set request headers for authentication (not using req.SetCookie because... lazyness)
+                        req.Header.Set("Cookie", cookies)
+
+                        // Get the file data
+                        resp, err := c.Do(req)
+                        if err != nil {
+                                fmt.Print("httpClientDoError: ", err)
+                        }
+                        defer resp.Body.Close()
+
+                        // Get a filename
+                        _, params, err := mime.ParseMediaType(resp.Header.Get("Content-Disposition"))
+                        filename := string(params["filename"])
+                        if err != nil {
+                                //fmt.Println("mimeTypeError: ", err)
+                                // for some reason some files throw a mime: invalid media parameter error,
+                                // lets try to handle this quietly forcing a name to the file
+                                // seems to do it on some epub files where it fails to parse the title correctly(?)
+                                // should we always assume it's an epub?
+                                x := strings.Split(book.Title, ".")
+                                ext := x[len(x)-1]
+
+                                if ext == "" {
+                                        filename = fmt.Sprintf("%v.%v", book.Title, "UNKNOWN_EXTENTION")
+                                } else {
+                                        filename = book.Title
+                                }
+                        }
+
+                        // Create empty file
+                        out, err := os.Create(filename)
+                        if err != nil {
+                                fmt.Print("osCreateError(", filename, "): ", err)
+                        }
+                        defer out.Close()
+
+                        // Save to file
+                        written, err := io.Copy(out, resp.Body)
+                        if err != nil {
+                                fmt.Print("ioCopyError: ", err)
+                        }
+                        fmt.Println("Saved file: ", filename, " (", written, " bytes)")
+
+                }(book)
+        }
+        wg.Wait()
+}
+
+```
+
+The usage is quite simple:
+
+1. login to Google Play Books
+- copy the Cookie header value from the authenticated requests into the variable `cookies`
+- click on the "show all" button on the Play Books page to list all the books
+- ctrl-s / save the page from your browser into **GoGetMyBooks**' working directory (be sure to name it `Google Play.html`)
+- run **GoGetMyBooks**
+
+As some of the comments in the code suggest, there are a few issues like the fact that some books' titles get lost (so it falls back to the uploaded filename).
+
+So to sum it all up, fuck Javascript && enjoy my shitty code :).
+
+See ya next time.
