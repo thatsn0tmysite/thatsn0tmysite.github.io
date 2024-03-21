@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Books on thatsn0tmysite</title>
-    <link>//localhost:1313/tags/books/</link>
+    <link>https://thatsn0tmy.site/tags/books/</link>
     <description>Recent content in Books on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Fri, 09 Apr 2021 21:35:36 +0200</lastBuildDate>
-    <atom:link href="//localhost:1313/tags/books/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://thatsn0tmy.site/tags/books/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go(ogle) Play Books</title>
-      <link>//localhost:1313/posts/2021/04/google-play-books/</link>
+      <link>https://thatsn0tmy.site/posts/2021/04/google-play-books/</link>
       <pubDate>Fri, 09 Apr 2021 21:35:36 +0200</pubDate>
-      <guid>//localhost:1313/posts/2021/04/google-play-books/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/04/google-play-books/</guid>
       <description>The title is kind of a very bad pun, one of the &amp;ldquo;that&amp;rsquo;s not even funny&amp;rdquo; ones. So, what is today&amp;rsquo;s post about? Google.&#xA;No, not the privacy concerns or the data usage policies, nor their silly Google Play Store rules. Not the tracking, not the fact that their products seem to be walking dead bodies before they reach their prime time (looking at you Stadia)&amp;hellip; but books.&#xA;I recently decided to download back all the e-books which I so carefully uploaded over the year to their Books service back&amp;hellip;</description>
     </item>
   </channel>

@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Projects on thatsn0tmysite</title>
-    <link>//localhost:1313/projects/</link>
+    <link>https://thatsn0tmy.site/projects/</link>
     <description>Recent content in Projects on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Thu, 14 Mar 2024 02:19:30 +0200</lastBuildDate>
-    <atom:link href="//localhost:1313/projects/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://thatsn0tmy.site/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Livefect</title>
-      <link>//localhost:1313/projects/livefect/</link>
+      <link>https://thatsn0tmy.site/projects/livefect/</link>
       <pubDate>Thu, 14 Mar 2024 02:19:30 +0200</pubDate>
-      <guid>//localhost:1313/projects/livefect/</guid>
+      <guid>https://thatsn0tmy.site/projects/livefect/</guid>
       <description>Livefect Livefect is a PoC tool to play around with /proc/pid/mem, process_vm_readv and process_vm_write as alternatives ways of injecting into processes without using ptrace directly.&#xA;Technically we still need the same privileges to use this as we need for ptrace but I mean, why not. It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.&#xA;Excuse the terrible C code, it has been so long since I actually wrote anything in it.</description>
     </item>
     <item>
       <title>XSServe</title>
-      <link>//localhost:1313/projects/xsserve/</link>
+      <link>https://thatsn0tmy.site/projects/xsserve/</link>
       <pubDate>Tue, 13 Apr 2021 02:14:30 +0200</pubDate>
-      <guid>//localhost:1313/projects/xsserve/</guid>
+      <guid>https://thatsn0tmy.site/projects/xsserve/</guid>
       <description>XSServe XSServe is a shameless copy of heavily inspired by the XSSHunter project (by @IAmMandatory), rewritten in Go.&#xA;⚠ Disclaimer The project is in a SEMI usable state right now, if you want a prime experience I still suggest the use of other tools.&#xA;NOTE: only basic authentication is supported for the UI for now.&#xA;📷 Mandatory screenshot(s) 🏁 Goals The initial goal is to allow users to use the same service, but in a self-contained way for lazy penetration testers, like myself.</description>
     </item>
   </channel>
