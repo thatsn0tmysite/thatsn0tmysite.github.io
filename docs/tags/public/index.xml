@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Public on thatsn0tmysite</title>
-    <link>http://localhost:1313/tags/public/</link>
+    <link>https://thatsn0tmy.site/tags/public/</link>
     <description>Recent content in Public on thatsn0tmysite</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Tue, 16 Mar 2021 22:37:40 +0100</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/public/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://thatsn0tmy.site/tags/public/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Public disclosures</title>
-      <link>http://localhost:1313/posts/2021/03/public-disclosures/</link>
+      <link>https://thatsn0tmy.site/posts/2021/03/public-disclosures/</link>
       <pubDate>Tue, 16 Mar 2021 22:37:40 +0100</pubDate>
-      <guid>http://localhost:1313/posts/2021/03/public-disclosures/</guid>
+      <guid>https://thatsn0tmy.site/posts/2021/03/public-disclosures/</guid>
       <description>Well, as mentioned in the last post, some lame XSS I found just went public.&#xA;For those wanting to jump straight to the point:&#xA;muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.&#xA;That attempt failed.&#xA;Apparently what a researcher thinks is going to happen and what actually happens not always matches.</description>
     </item>
   </channel>
