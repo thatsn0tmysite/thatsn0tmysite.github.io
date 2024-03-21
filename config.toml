@@ -1,4 +1,4 @@
-baseurl      = "https://thatsn0tmy.site"
+baseurl      = "/"
 title        = "thatsn0tmysite"
 languageCode = "en-us"
 theme        = ["hello-friend-ng", "plausible-hugo", "custom"]
