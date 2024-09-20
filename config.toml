@@ -2,10 +2,7 @@ baseurl      = "https://thatsn0tmy.site"
 title        = "thatsn0tmysite"
 languageCode = "en-us"
 theme        = ["hello-friend-ng", "plausible-hugo", "custom"]
-paginate     = 10
 
-# googleAnalytics = ""
-# disqusShortname = ""
 archetypeDir = "archetypes"
 contentDir   = "content"
 dataDir      = "data"
@@ -36,18 +33,19 @@ PygmentsStyle = "native"
   [headers.values]
     Content-Security-Policy = "script-src 'self' analytics.thatsn0tmy.site;"
 
+[pagination]
+    pagerSize = 10
 
 [permalinks]
   posts = "/posts/:year/:month/:title/"
 
-[author]
-  name = "n0tme"
+
 
 #[taxonomies]
 #    category = "blog"
 #    tag      = "tags"
 #    series   = "series"
-  
+
 [params.plausible]
     enable = true
     domain = "analytics.thatsn0tmy.site"
@@ -58,9 +56,12 @@ PygmentsStyle = "native"
     dateformNum     = "2006-01-02"
     dateformNumTime = "2006-01-02 15:04"
 
+    [params.author]
+        name = "n0tme"
+
     # Subtitle for home
     homeSubtitle = "The life of a newborn cyber security kid."
-    
+
     # Set disableReadOtherPosts to true in order to hide the links to other posts.
     #
     disableReadOtherPosts = false
@@ -72,17 +73,17 @@ PygmentsStyle = "native"
     # and add them into your own `layouts/partials/sharing-buttons.html`
     #
     enableSharingButtons = true
-    
+
     # Integrate Javascript files or stylesheets by adding the url to the external assets or by
     # linking local files with their path relative to the static folder, e.g. "css/styles.css"
     #
     customCSS = []
     customJS  = []
-    
+
     footerLeft = "Powered by <a href=\"http://gohugo.io\">Hugo</a>"
     footerRight = "Made with &#10084; by <a href=\"https://github.com/rhazdon\">Djordje Atlialp</a>"
 
-    
+
     [params.logo]
         # Set to a valid CSS color to change the cursor in the logo.
         logoCursorColor = "#ffffff"
@@ -93,7 +94,7 @@ PygmentsStyle = "native"
         # logoCursorDisabled = false
         # logoCursorAnimate  = "2s"
 
-        
+
     # Social icons
     [[params.social]]
         name = "twitter"
@@ -107,24 +108,24 @@ PygmentsStyle = "native"
     #[[params.social]]
         #  name = "email"
         #  url  = "mailto:"
-        
-    # Commento is more than just a comments widget you can embed — 
-    # it’s a return to the roots of the internet. 
-    # An internet without the tracking and invasions of privacy. 
-    # An internet that is simple and lightweight. 
-    # An internet that is focused on interesting discussions, not ads. 
+
+    # Commento is more than just a comments widget you can embed —
+    # it’s a return to the roots of the internet.
+    # An internet without the tracking and invasions of privacy.
+    # An internet that is simple and lightweight.
+    # An internet that is focused on interesting discussions, not ads.
     # A better internet.
     # Uncomment this to enable Commento.
     #
     #[params.commento]
-    #    url = ""    
-    
+    #    url = ""
+
     #Portrait
     [params.portrait]
         path     = "/img/n0tme.svg"
         alt      = "Portrait"
         maxWidth = "150px"
-        
+
     # Set disableReadOtherPosts to true in order to hide the links to other posts.
     disableReadOtherPosts = false
 
@@ -140,7 +141,7 @@ PygmentsStyle = "native"
     [languages.en]
         title = "thatsn0tmysite"
         copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
-    
+
     [languages.en.params]
         readOtherPosts = "Read other posts"
         subtitle = "The life of a newborn cyber security kid."
