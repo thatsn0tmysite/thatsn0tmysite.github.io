@@ -4,7 +4,7 @@
     <title>0 on thatsn0tmysite</title>
     <link>https://thatsn0tmy.site/tags/0/</link>
     <description>Recent content in 0 on thatsn0tmysite</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Wed, 10 Mar 2021 02:18:22 +0100</lastBuildDate>
@@ -14,7 +14,7 @@
       <link>https://thatsn0tmy.site/posts/2021/03/first-commit/</link>
       <pubDate>Wed, 10 Mar 2021 02:18:22 +0100</pubDate>
       <guid>https://thatsn0tmy.site/posts/2021/03/first-commit/</guid>
-      <description>For the few souls that ever followed my blog: I finally migrated. There was no real reason to keep a wordpress blog, as I really never used any features from Wordpress.&#xA;I migrated to Github pages, because&amp;hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&amp;rsquo;s.</description>
+      <description>&lt;p&gt;For the few souls that ever followed my blog: I finally migrated.&#xA;There was no real reason to keep a &lt;a href=&#34;https://thatsn0tmysite.wordpress.com&#34;&gt;wordpress blog&lt;/a&gt;, as I really never used any features from Wordpress.&lt;/p&gt;&#xA;&lt;p&gt;I migrated to Github pages, because&amp;hellip; free hosting, and custom domains. Seemed nice enough to me, also for some reason I ended up using Hugo, over Jekyll. I could never get Jekyll to run even thought the setup is actually almsot the same as Hugo&amp;rsquo;s.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

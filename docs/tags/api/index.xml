@@ -4,7 +4,7 @@
     <title>Api on thatsn0tmysite</title>
     <link>https://thatsn0tmy.site/tags/api/</link>
     <description>Recent content in Api on thatsn0tmysite</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Tue, 01 Jun 2021 00:41:45 +0200</lastBuildDate>
@@ -14,7 +14,7 @@
       <link>https://thatsn0tmy.site/posts/2021/06/approaching-windows/</link>
       <pubDate>Tue, 01 Jun 2021 00:41:45 +0200</pubDate>
       <guid>https://thatsn0tmy.site/posts/2021/06/approaching-windows/</guid>
-      <description>Well, hello there! Last few weeks have been a little busy between my mere analog life and pwning industrial ovens work. Lately I have been banging my head against this thing known as Windows.&#xA;Its APIs to be precise, as I am trying to move out of my comfort zone of &amp;ldquo;development&amp;rdquo; (I am by no means a developer, but when I make stuff, it&amp;rsquo;s usually on Linux).&#xA;As a side note, while we&amp;rsquo;re talking about development, I recently decided to produce a rip-off of the amazing xsshunter and write it in Go.</description>
+      <description>&lt;p&gt;Well, hello there! Last few weeks have been a little busy between my mere analog life and &lt;del&gt;pwning industrial ovens&lt;/del&gt; work.&#xA;Lately I have been banging my head against this thing known as &lt;strong&gt;Windows&lt;/strong&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Its APIs to be precise, as I am trying to move out of my comfort zone of &amp;ldquo;development&amp;rdquo; (I am by &lt;strong&gt;no means&lt;/strong&gt; a developer, but when I make stuff, it&amp;rsquo;s usually on Linux).&lt;/p&gt;&#xA;&lt;p&gt;As a side note, while we&amp;rsquo;re talking about development, I recently decided to produce a rip-off of the amazing &lt;a href=&#34;https://xsshunter.com&#34;&gt;xsshunter&lt;/a&gt; and write it in Go.&#xA;Mostly as a learning exercise for Go stuff. It&amp;rsquo;s coded like shit, and currenty on the low priority list, so feel free to hop in and &lt;a href=&#34;https://github.com/thatsn0tmysite/xsserve&#34;&gt;help&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

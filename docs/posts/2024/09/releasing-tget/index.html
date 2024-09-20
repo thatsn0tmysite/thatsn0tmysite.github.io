@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Hey there lads! 👋
+I just released Torget (a.k.a. tget). What is it, you may ask? Well, it&rsquo;s a, erm&hellip; a Tor http downloader&hellip; ASTONISHING, I know. As always I was supposed to release this months ago, but got busy with other things&hellip;
+But wait! tget is not just your typical downloader, it comes with a tiny twist! Instead of allowing downloads of multiple files over one Tor connection, to speed things up, it establishes multiple Tor circuits and assigns the downloads to each instance.
+" />
+<meta name="keywords" content=", 6, tor, privacy, project, tget, torget" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://thatsn0tmy.site/posts/2024/09/releasing-tget/" />
+
+
+    <title>
+        
+            Releasing tget :: thatsn0tmysite  — The life of a newborn cyber security kid.
+        
+    </title>
+
+
+
+
+
+<link rel="stylesheet" href="https://thatsn0tmy.site/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://thatsn0tmy.site/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://thatsn0tmy.site/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://thatsn0tmy.site/favicon-16x16.png">
+    <link rel="manifest" href="https://thatsn0tmy.site/site.webmanifest">
+    <link rel="mask-icon" href="https://thatsn0tmy.site/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://thatsn0tmy.site/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Releasing tget">
+  <meta itemprop="description" content="Hey there lads! 👋
+I just released Torget (a.k.a. tget). What is it, you may ask? Well, it’s a, erm… a Tor http downloader… ASTONISHING, I know. As always I was supposed to release this months ago, but got busy with other things…
+But wait! tget is not just your typical downloader, it comes with a tiny twist! Instead of allowing downloads of multiple files over one Tor connection, to speed things up, it establishes multiple Tor circuits and assigns the downloads to each instance.">
+  <meta itemprop="datePublished" content="2024-09-19T00:38:57+01:00">
+  <meta itemprop="dateModified" content="2024-09-19T00:38:57+01:00">
+  <meta itemprop="wordCount" content="719">
+  <meta itemprop="keywords" content="6,Tor,Privacy,Project,Tget,Torget">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Releasing tget">
+  <meta name="twitter:description" content="Hey there lads! 👋
+I just released Torget (a.k.a. tget). What is it, you may ask? Well, it’s a, erm… a Tor http downloader… ASTONISHING, I know. As always I was supposed to release this months ago, but got busy with other things…
+But wait! tget is not just your typical downloader, it comes with a tiny twist! Instead of allowing downloads of multiple files over one Tor connection, to speed things up, it establishes multiple Tor circuits and assigns the downloads to each instance.">
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-09-19 00:38:57 &#43;0100 &#43;0100" />
+
+
+
+
+
+
+<script defer data-domain="thatsn0tmy.site" src="https://analytics.thatsn0tmy.site/js/plausible.js"></script>
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://thatsn0tmy.site/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                thatsn0tmysite</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#ffffff;
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://thatsn0tmy.site/about/">About</a></li><li><a href="https://thatsn0tmy.site/posts/">Blog</a></li><li><a href="https://thatsn0tmy.site/projects/">Projects</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://thatsn0tmy.site/posts/2024/09/releasing-tget/">Releasing tget</a>
+      </h1>
+
+      
+
+      
+
+      
+
+      <div class="post-content">
+        <p>Hey there lads! 👋</p>
+<p>I just released <a href="https://github.com/thatsn0tmysite/tget">Torget</a> (a.k.a. <code>tget</code>).
+What is it, you may ask? Well, it&rsquo;s a, erm&hellip; a Tor http downloader&hellip; ASTONISHING, I know.
+As always I was supposed to release this months ago, but got busy with other things&hellip;</p>
+<p>But wait! <code>tget</code> is not just your typical downloader, it comes with a tiny twist!
+Instead of allowing downloads of multiple files over one Tor connection, to speed things up, it establishes multiple Tor circuits and assigns the downloads to each instance.</p>
+<p>Why? Because while using Tor is super easy, it is also notoriously slow, as the theorical speed is based on the slowest node in the circuit.
+In practice, this means that most Tor connections fluctuate between a few Kb/s to 1Mb/s.</p>
+<p>The idea behind it, is simple: let&rsquo;s spawn more connections, so we have more (theoretical) bandwidth! <del>This way we can download more leaks, moar quicker.</del></p>
+<p>And, I mean, it kind of works. While downloading many files over Tor, using tget results in being quite faster compared to a single circuit with parallel downloads.
+To be totally fair, this isn&rsquo;t a novel technique or anything, but I struggled to find a tool to allow me to do the above easily, so <code>tget</code> was born!</p>
+<p>Here is a quick and lazy overview showcasing its current features:</p>
+<pre tabindex="0"><code>Torget is a Tor aware file downloader which uses multiple Tor instances to try to use all available bandwidth.
+Made by thatsn0tmysite (aka n0tme) | Blog: https://thatsn0tmy.site
+
+Usage:
+tget [flags] &lt;url|file&gt; [...url|file]
+
+Flags:
+--concurrency int concurrency level (default 10)
+-c, --conf string .torrc template file to use
+--continue attempt to continue a previously interrupted download
+-b, --cookies string cookie(s) to include in all requests
+-d, --data string body of request to send
+-f, --follow-redirect follow HTTP redirects
+-F, --from-file download from files instead of urls
+-H, --header strings header(s) to include in all requests
+-h, --help help for tget
+--host string host running Tor (default &#34;127.0.0.1&#34;)
+-n, --instances int number of Tor instances to use (default 5)
+--keep-alive do not close Tor instances when done
+-l, --log-path string path to save logs at
+-X, --method string HTTP method to use (default &#34;GET&#34;)
+-o, --out-path string path to save downloaded files in (default &#34;/home/user&#34;)
+-O, --ovewrite overwrite file(s) if they already exist
+-p, --ports uints ports to for Tor to listen on (default [])
+-R, --reuse-instances do not spawn new instances, assume they are already open (implies --keep-alive)
+-S, --socks-version string socks version to use (default &#34;socks5&#34;)
+--test-domain string website to use while testing if Tor is up (default &#34;https://thatsn0tmy.site&#34;)
+-T, --timeout int max time to wait for Tor before canceling (0: no timeout)
+-t, --tor-path string path to Tor binary (default &#34;/usr/bin/tor&#34;)
+-k, --unsafe-tls skip TLS certificates validation
+-U, --useragent string useraget to use when sending requests (default &#34;tget/v0.3&#34;)
+-v, --verbose be (very) verbose
+</code></pre><h2 id="benchmarks">Benchmarks</h2>
+<p>To showcase the results i prepared this <strong>totally accurate benchmark</strong>, acquired by forcing my friends to run <code>tget</code> over and over until data was in my favor (like the best researchers):</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Avg. Download Speed</th>
+          <th style="text-align: left">No Tor</th>
+          <th style="text-align: left">Single Tor instance (tget -n1)</th>
+          <th style="text-align: left">Tget (using default 5 instances)</th>
+          <th style="text-align: left">Performed by</th>
+          <th style="text-align: left">Speedup (%)</th>
+          <th style="text-align: left">Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">~100Mbps</td>
+          <td style="text-align: left">30.80s</td>
+          <td style="text-align: left">8m47s (527s)</td>
+          <td style="text-align: left">7m30s (450s)</td>
+          <td style="text-align: left">dogma</td>
+          <td style="text-align: left">15.76</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">721.9 Mbps</td>
+          <td style="text-align: left">10.1s</td>
+          <td style="text-align: left">1m16s (76)</td>
+          <td style="text-align: left">1m26s (86s)</td>
+          <td style="text-align: left">n/a</td>
+          <td style="text-align: left">-12.34</td>
+          <td style="text-align: left">Amazing uh?</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">742.1 Mbps</td>
+          <td style="text-align: left">10.14s</td>
+          <td style="text-align: left">1m08s (68s)</td>
+          <td style="text-align: left">42.3s</td>
+          <td style="text-align: left">n0tme</td>
+          <td style="text-align: left">47.27</td>
+          <td style="text-align: left">From not my Wifi</td>
+      </tr>
+  </tbody>
+</table>
+<p>The downloaded files for the tests were:</p>
+<pre tabindex="0"><code>https://ash-speed.hetzner.com/100MB.bin
+https://proof.ovh.net/files/10Mb.dat
+https://link.testfile.org/60MB
+https://www.torproject.org/dist/torbrowser/13.0.16/tor-browser-windows-x86_64-portable-13.0.16.exe
+https://archive.org/download/theultimatedoom_doom2_doom.wad/Doom%202.iso
+</code></pre><p>All the poor souls that helped me test performed the download with the following, very complex and sophisticated, script for non Tor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#24909d">time</span> bash -c <span style="color:#ed9d13">&#39;cat urls.txt | parallel -j 5 wget {} &amp;&amp; exit&#39;</span>
+</span></span></code></pre></div><p>And ran the following to download the same files with tget, assuming 5 circuits are already running (to avoid counting the Tor instances bootstrap time):</p>
+<div class="highlight"><pre tabindex="0" style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tget -F urls.txt --ports 9050,9060,9070,9080,9090 -R -o /tmp
+</span></span></code></pre></div><p>Anyway, based on the very accurate dataset we can observe an average of 16.89% speedup in the total download time. I think this is quite nice!</p>
+<blockquote>
+<p><strong>NOTE</strong> keep in mind that between tests circuits might change and may produce different results, depending on the bandwidth of each one.</p>
+</blockquote>
+<p>That was it, feel free to take <code>tget</code> for a ride, test it, break it and contribute, code is as usual ugly as hell and on <a href="https://github.com/thatsn0tmysite/tget">github</a>. Go get them <a href="https://ddosecrets.com/article/israeli-defense-forces-ganosec">dataleaks</a> pirates, 🏴‍☠️ arghhh!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://thatsn0tmy.site/tags/6/">6</a></span>
+        <span class="tag"><a href="https://thatsn0tmy.site/tags/tor/">tor</a></span>
+        <span class="tag"><a href="https://thatsn0tmy.site/tags/privacy/">privacy</a></span>
+        <span class="tag"><a href="https://thatsn0tmy.site/tags/project/">project</a></span>
+        <span class="tag"><a href="https://thatsn0tmy.site/tags/tget/">tget</a></span>
+        <span class="tag"><a href="https://thatsn0tmy.site/tags/torget/">torget</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        719 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-09-19 01:38
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+        <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+        </div>
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://thatsn0tmy.site/posts/2022/03/all-you-can-pwn-buffet/">
+                    <span class="button__text">All you can PWN buffet</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://thatsn0tmy.site/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

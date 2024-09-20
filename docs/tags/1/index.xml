@@ -4,7 +4,7 @@
     <title>1 on thatsn0tmysite</title>
     <link>https://thatsn0tmy.site/tags/1/</link>
     <description>Recent content in 1 on thatsn0tmysite</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Tue, 16 Mar 2021 22:37:40 +0100</lastBuildDate>
@@ -14,7 +14,7 @@
       <link>https://thatsn0tmy.site/posts/2021/03/public-disclosures/</link>
       <pubDate>Tue, 16 Mar 2021 22:37:40 +0100</pubDate>
       <guid>https://thatsn0tmy.site/posts/2021/03/public-disclosures/</guid>
-      <description>Well, as mentioned in the last post, some lame XSS I found just went public.&#xA;For those wanting to jump straight to the point:&#xA;muoversiaroma.it romamobile.it travel.mob.cotralspa.it servizi.cotralspa.it I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.&#xA;That attempt failed.&#xA;Apparently what a researcher thinks is going to happen and what actually happens not always matches.</description>
+      <description>&lt;p&gt;Well, as mentioned in the last &lt;a href=&#34;https://thatsn0tmy.site/posts/2021/03/first-commit/&#34;&gt;post&lt;/a&gt;, some lame XSS I found just went public.&lt;/p&gt;&#xA;&lt;p&gt;For those wanting to jump straight to the point:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.openbugbounty.org/reports/1610312/&#34;&gt;muoversiaroma.it&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.openbugbounty.org/reports/1610327/&#34;&gt;romamobile.it&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.openbugbounty.org/reports/1610334/&#34;&gt;travel.mob.cotralspa.it&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.openbugbounty.org/reports/1610344/&#34;&gt;servizi.cotralspa.it&lt;/a&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;I am a firm believer in the philosophy of &amp;ldquo;disclose as you please&amp;rdquo;, for the vulnerabilities above, I decided to attempt and be as ethical as possible and tried to disclose them responsibly.&lt;/p&gt;&#xA;&lt;p&gt;That attempt failed.&lt;/p&gt;&#xA;&lt;p&gt;Apparently what a researcher thinks is going to happen and what actually happens not always matches. Actually, almost never does in my experience.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

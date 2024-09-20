@@ -4,7 +4,7 @@
     <title>4 on thatsn0tmysite</title>
     <link>https://thatsn0tmy.site/tags/4/</link>
     <description>Recent content in 4 on thatsn0tmysite</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Fri, 24 Dec 2021 21:48:00 +0100</lastBuildDate>
@@ -14,7 +14,7 @@
       <link>https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/</link>
       <pubDate>Fri, 24 Dec 2021 21:48:00 +0100</pubDate>
       <guid>https://thatsn0tmy.site/posts/2021/12/how-to-summon-rces/</guid>
-      <description>The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: shell_exec.&#xA;In the last couple weeks I was waiting for ZDI to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.</description>
+      <description>&lt;p&gt;The mystic arts of summoning RCEs seem obscure and complex to those who are not trained for it, but in reality, the secret to all of them is one: &lt;code&gt;shell_exec&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In the last couple weeks I was waiting for &lt;a href=&#34;https://www.zerodayinitiative.com/&#34;&gt;ZDI&lt;/a&gt; to know if they were interested in giving me some cash for this, but unfortunately they were not, so here you go: a freshly spawned 0day - merry fucking XMAS.&lt;/p&gt;&#xA;&lt;p&gt;I don&amp;rsquo;t know if many of you are aware but legends speak of magic devices, called NASes (Network Attached Storage), which can be used to store all your data and backups so your other devices stay quick and light!&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

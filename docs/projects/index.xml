@@ -4,24 +4,31 @@
     <title>Projects on thatsn0tmysite</title>
     <link>https://thatsn0tmy.site/projects/</link>
     <description>Recent content in Projects on thatsn0tmysite</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 14 Mar 2024 02:19:30 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 19 Sep 2024 00:38:57 +0100</lastBuildDate>
     <atom:link href="https://thatsn0tmy.site/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Torget (tget)</title>
+      <link>https://thatsn0tmy.site/projects/tget/</link>
+      <pubDate>Thu, 19 Sep 2024 00:38:57 +0100</pubDate>
+      <guid>https://thatsn0tmy.site/projects/tget/</guid>
+      <description>&lt;p&gt;&lt;img alt=&#34;torget logo&#34; src=&#34;https://thatsn0tmy.site/img/projects/tget/logo.png&#34; title=&#34;torget by thatsn0tmysite&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;Torget, or &lt;code&gt;tget&lt;/code&gt; for short, is a http(s) file downloader for Tor made by &lt;a href=&#34;https://thatsn0tmy.site&#34;&gt;thatsn0tmysite&lt;/a&gt; (a.k.a. n0tme).&lt;/p&gt;&#xA;&lt;p&gt;Where &lt;code&gt;tget&lt;/code&gt; &amp;ldquo;shines&amp;rdquo; over other tools is its (ab)use of bandwith, it spawns multiple Tor instances, it allows downloads of multiple files over multiple Tor clients, avoiding saturating the bandwith with concurrent downloads.&#xA;This allows for faster parallel downloads and a more total (theorical) bandwith.&lt;/p&gt;&#xA;&lt;p&gt;Not the most novel (nor elegant) technique but&amp;hellip; meh.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Livefect</title>
       <link>https://thatsn0tmy.site/projects/livefect/</link>
       <pubDate>Thu, 14 Mar 2024 02:19:30 +0200</pubDate>
       <guid>https://thatsn0tmy.site/projects/livefect/</guid>
-      <description>Livefect Livefect is a PoC tool to play around with /proc/pid/mem, process_vm_readv and process_vm_write as alternatives ways of injecting into processes without using ptrace directly.&#xA;Technically we still need the same privileges to use this as we need for ptrace but I mean, why not. It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.&#xA;Excuse the terrible C code, it has been so long since I actually wrote anything in it.</description>
+      <description>&lt;h1 id=&#34;livefect&#34;&gt;Livefect&lt;/h1&gt;&#xA;&lt;p&gt;Livefect is a PoC tool to play around with &lt;code&gt;/proc/pid/mem&lt;/code&gt;, &lt;code&gt;process_vm_readv&lt;/code&gt; and &lt;code&gt;process_vm_write&lt;/code&gt; as alternatives ways of injecting into processes without using &lt;code&gt;ptrace&lt;/code&gt; directly.&lt;/p&gt;&#xA;&lt;p&gt;Technically we still need the same privileges to use this as we need for &lt;code&gt;ptrace&lt;/code&gt; but I mean, why not.&#xA;It was fun to play around with this as I had to learn about ELF, shellcodes and Linux in general.&lt;/p&gt;&#xA;&lt;p&gt;Excuse the terrible C code, it has been so long since I actually wrote anything in it.&lt;/p&gt;</description>
     </item>
     <item>
       <title>XSServe</title>
       <link>https://thatsn0tmy.site/projects/xsserve/</link>
       <pubDate>Tue, 13 Apr 2021 02:14:30 +0200</pubDate>
       <guid>https://thatsn0tmy.site/projects/xsserve/</guid>
-      <description>XSServe XSServe is a shameless copy of heavily inspired by the XSSHunter project (by @IAmMandatory), rewritten in Go.&#xA;⚠ Disclaimer The project is in a SEMI usable state right now, if you want a prime experience I still suggest the use of other tools.&#xA;NOTE: only basic authentication is supported for the UI for now.&#xA;📷 Mandatory screenshot(s) 🏁 Goals The initial goal is to allow users to use the same service, but in a self-contained way for lazy penetration testers, like myself.</description>
+      <description>&lt;h1 id=&#34;xsserve&#34;&gt;XSServe&lt;/h1&gt;&#xA;&lt;p&gt;XSServe is &lt;del&gt;a shameless copy of&lt;/del&gt; heavily inspired by the &lt;a href=&#34;https://xsshunter.com&#34;&gt;XSSHunter&lt;/a&gt; project (by &lt;a href=&#34;https://twitter.com/IAmMandatory&#34;&gt;@IAmMandatory&lt;/a&gt;), rewritten in Go.&lt;/p&gt;&#xA;&lt;h2 id=&#34;-disclaimer&#34;&gt;⚠ Disclaimer&lt;/h2&gt;&#xA;&lt;p&gt;The project is in a SEMI usable state right now, if you want a prime experience I still suggest the use of other tools.&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;NOTE: only basic authentication is supported for the UI for now.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;h2 id=&#34;-mandatory-screenshots&#34;&gt;📷 Mandatory screenshot(s)&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img alt=&#34;Mandatory screenshot&#34; src=&#34;https://thatsn0tmy.site/img/projects/xsserve/mandatory.png&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;&lt;img alt=&#34;Mandatory screenshot 2&#34; src=&#34;https://thatsn0tmy.site/img/projects/xsserve/mandatory2.png&#34;&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;-goals&#34;&gt;🏁 Goals&lt;/h2&gt;&#xA;&lt;p&gt;The initial goal is to allow users to use the same service, but in a self-contained way for lazy penetration testers, like myself.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
